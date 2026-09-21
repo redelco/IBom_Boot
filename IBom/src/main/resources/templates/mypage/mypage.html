@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>마이페이지 - 아이봄</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --pink-main: #F8466D;
+    --pink-bg: #FFF7F8;
+    --pink-soft: #FFECEF;
+    --pink-line: #F5DADA;
+    --white: #FFFFFF;
+    --black: #000000;
+    --gray: #D9D9D9;
+    --line: #E8E8E8;
+    --border: #DDDDDD;
+    --text-sub: #777777;
+  }
+
+  *{ box-sizing:border-box; margin:0; padding:0; }
+
+  body{
+    font-family:'Noto Sans KR', sans-serif;
+    color:var(--black);
+    background:var(--pink-bg);
+    -webkit-font-smoothing:antialiased;
+  }
+
+  a{ text-decoration:none; color:inherit; }
+  button{ font-family:inherit; cursor:pointer; border:none; background:none; color:inherit; }
+  ul{ list-style:none; }
+
+  .wrap{
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 40px;
+  }
+
+  /* ===== Header (상세 페이지와 동일) ===== */
+  header{
+    background: var(--white);
+    border-bottom: 1px solid #f2f2f2;
+  }
+  .header-inner{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding-top:18px;
+    padding-bottom:18px;
+  }
+  .logo{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    font-size:22px;
+    font-weight:900;
+  }
+  .logo .cherry{ font-size:20px; }
+
+  nav{
+    display:flex;
+    gap:56px;
+  }
+  nav a{
+    font-size:18px;
+    font-weight:500;
+    color:#222;
+  }
+
+  .header-actions{
+    display:flex;
+    align-items:center;
+    gap:22px;
+  }
+  .btn-write{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    background: var(--pink-main);
+    color: var(--white);
+    font-size:14px;
+    font-weight:500;
+    padding: 8px 12px;
+    border-radius: 3px;
+  }
+  .icon-btn{
+    width:34px;
+    height:34px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#555;
+  }
+
+  /* ===== 본문: 왼쪽 사이드바 + 오른쪽 내용 ===== */
+  .mypage-layout{
+    display:grid;
+    grid-template-columns: 250px 1fr;
+    gap: 34px;
+    align-items:start;
+    padding: 34px 0 60px;
+  }
+
+  /* ===== 사이드바 ===== */
+  .side-menu{
+    position:sticky;
+    top:20px;
+    border-right: 1px solid var(--line);
+    padding-right: 24px;
+    min-height: 420px;
+  }
+  .side-title{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-size:27px;
+    font-weight:900;
+    padding: 6px 12px 22px;
+  }
+  .side-title .cherry{ font-size:22px; }
+
+  /* 홈 / 내활동 / 설정 : 모두 같은 1단계 메뉴 */
+  .menu-item{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding: 13px 14px;
+    border-radius: 8px;
+    font-size:17px;
+    font-weight:500;
+    color:#333;
+  }
+  .menu-item svg{ color:#888; flex-shrink:0; }
+  .menu-item:hover{ background:#FAFAFA; }
+  .menu-item.active{
+    background: var(--pink-soft);
+    color: var(--pink-main);
+    font-weight:700;
+  }
+  .menu-item.active svg{ color: var(--pink-main); }
+
+  /* ===== 공통 카드 ===== */
+  .card{
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+    margin-bottom: 30px;
+  }
+
+  /* ===== 프로필 ===== */
+  .profile{
+    display:flex;
+    align-items:center;
+    gap:22px;
+    padding: 26px 32px 24px;
+  }
+  /* 지역·키워드를 빼면서 글 높이에 맞춰 사진 크기도 줄임 */
+  .avatar{
+    position:relative;
+    width:92px;
+    height:92px;
+    flex-shrink:0;
+  }
+  .avatar .photo{
+    width:100%;
+    height:100%;
+    border-radius:50%;
+    background: var(--gray);
+    overflow:hidden;
+    display:flex;
+    align-items:flex-end;
+    justify-content:center;
+  }
+  .avatar .photo img{ width:100%; height:100%; object-fit:cover; }
+  .btn-photo{
+    position:absolute;
+    right:0;
+    bottom:2px;
+    width:28px;
+    height:28px;
+    border-radius:50%;
+    background:#5A5A5A;
+    color: var(--white);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border: 2px solid var(--white);
+  }
+  .btn-photo:hover{ background: var(--pink-main); }
+
+  .profile-info{ flex:1; min-width:0; }
+  .profile-name{
+    font-size:24px;
+    font-weight:700;
+    margin-bottom: 10px;
+  }
+  .profile-meta{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-size:16px;
+    color:#555;
+  }
+  .profile-meta svg{ color:#999; flex-shrink:0; }
+
+  .btn-edit{
+    display:flex;
+    align-items:center;
+    gap:9px;
+    border:1px solid var(--border);
+    border-radius:8px;
+    background: var(--white);
+    padding: 13px 20px;
+    font-size:16px;
+    color:#333;
+    flex-shrink:0;
+  }
+  .btn-edit:hover{ border-color: var(--pink-main); color: var(--pink-main); }
+  .btn-edit:hover svg{ color: var(--pink-main); }
+  .btn-edit svg{ color:#777; }
+
+  /* 프로필 아래 통계 */
+  .stats{
+    display:grid;
+    grid-template-columns: repeat(3, 1fr);
+    border-top: 1px solid var(--line);
+  }
+  .stat{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:14px;
+    padding: 26px 10px;
+  }
+  .stat + .stat{ border-left: 1px solid var(--line); }
+  .stat .label{
+    font-size:17px;
+    font-weight:500;
+    color:#333;
+  }
+  .stat .num{
+    font-size:23px;
+    font-weight:700;
+    color: var(--pink-main);
+  }
+  .stat svg{ color:#bbb; }
+  .stat:hover .label{ color: var(--pink-main); }
+  .stat:hover svg{ color: var(--pink-main); }
+
+  /* ===== 최근 작성 글 ===== */
+  .recent-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    padding: 28px 32px 0;
+  }
+  .recent-head h2{
+    font-size:23px;
+    font-weight:700;
+  }
+  .tabs{
+    display:flex;
+    gap:12px;
+    padding: 16px 32px 0;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 4px;
+  }
+  .tab{
+    position:relative;
+    font-size:17px;
+    font-weight:500;
+    color:#666;
+    padding: 8px 22px 14px;
+  }
+  .tab.active{
+    color: var(--pink-main);
+    font-weight:700;
+  }
+  .tab.active::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:-1px;
+    height:2.5px;
+    background: var(--pink-main);
+    border-radius:2px;
+  }
+
+  .post-list{ padding: 0 32px 14px; }
+  .post-item{
+    display:flex;
+    align-items:flex-start;
+    gap:22px;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .post-item:last-child{ border-bottom:none; }
+  .post-thumb{
+    width:118px;
+    height:98px;
+    border-radius:6px;
+    background: var(--gray);
+    flex-shrink:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#8c8c8c;
+    font-size:12px;
+    overflow:hidden;
+  }
+  .post-thumb img{ width:100%; height:100%; object-fit:cover; }
+
+  .post-main{ flex:1; min-width:0; }
+  .post-head{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    flex-wrap:wrap;
+    margin-bottom: 8px;
+  }
+  .status-badge{
+    background: var(--pink-soft);
+    color: var(--pink-main);
+    font-size:14px;
+    font-weight:500;
+    padding: 4px 13px;
+    border-radius: 999px;
+    white-space:nowrap;
+  }
+  /* 요청글 긴급도 (요청 게시판과 같은 색) */
+  .status-badge.urgent{
+    background: #FFE4EA;
+    color: var(--pink-main);
+  }
+  .status-badge.normal{
+    background: #EAF8E4;
+    color: #5CB84A;
+  }
+  .post-title{
+    font-size:17px;
+    font-weight:700;
+  }
+  .post-title:hover{ color: var(--pink-main); }
+  .post-meta{
+    font-size:14.5px;
+    color:#888;
+    margin-bottom: 10px;
+  }
+  .post-meta .dot{ margin: 0 7px; }
+  .hashtags{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+  }
+  .hashtags span{
+    font-size:13.5px;
+    color:#666;
+    border:1px solid var(--border);
+    padding: 3px 10px;
+    border-radius:999px;
+  }
+
+  /* ===== 하단 안내 ===== */
+  .notice{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:14px;
+    background: var(--pink-soft);
+    border-radius:10px;
+    padding: 22px 24px;
+    font-size:16px;
+    color:#555;
+    text-align:center;
+  }
+  .notice svg{ color: var(--pink-main); flex-shrink:0; }
+
+  /* ===== Responsive ===== */
+  @media (max-width: 1000px){
+    nav{ gap:28px; }
+    .mypage-layout{ grid-template-columns: 1fr; gap:20px; }
+    .side-menu{
+      position:static;
+      border-right:none;
+      border-bottom: 1px solid var(--line);
+      padding-right:0;
+      padding-bottom: 14px;
+      min-height:0;
+    }
+    .side-title{ padding-bottom:12px; }
+    /* 메뉴를 가로로 */
+    .menu-list{ display:flex; gap:8px; }
+    .menu-item{ padding: 11px 16px; }
+  }
+  @media (max-width: 700px){
+    .wrap{ padding: 0 16px; }
+    .header-inner{ flex-wrap:wrap; gap:12px; padding-bottom:12px; }
+    nav{ order:3; width:100%; justify-content:space-between; gap:0; }
+    nav a{ font-size:16px; }
+    .header-actions{ gap:10px; }
+    .side-title{ font-size:22px; }
+    .menu-item{ font-size:15px; gap:8px; padding: 10px 12px; }
+    .profile{ flex-wrap:wrap; gap:16px; padding: 20px 18px 18px; }
+    .avatar{ width:76px; height:76px; }
+    .btn-photo{ width:26px; height:26px; }
+    .profile-name{ font-size:20px; }
+    .profile-meta{ font-size:14.5px; }
+    .btn-edit{ order:3; width:100%; justify-content:center; }
+    .stats{ grid-template-columns: 1fr; }
+    .stat{ justify-content:space-between; padding: 16px 18px; }
+    .stat + .stat{ border-left:none; border-top: 1px solid var(--line); }
+    .recent-head{ padding: 20px 18px 0; }
+    .recent-head h2{ font-size:19px; }
+    .tabs{ padding: 12px 18px 0; }
+    .post-list{ padding: 0 18px; }
+    .post-item{ gap:14px; }
+    .post-thumb{ width:84px; height:74px; }
+    .post-title{ font-size:15.5px; }
+    .notice{ font-size:14.5px; padding: 18px 16px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap header-inner">
+    <a href="/" class="logo"><span class="cherry">🍒</span> 아이 봄</a>
+    <nav>
+      <a href="/board/share">나눔 게시판</a>
+      <!-- TODO: 요청 게시판 URL은 Controller 매핑 추가 후 연결 -->
+      <a href="#">요청 게시판</a>
+      <!-- TODO: 육아소식 URL은 Controller 매핑 추가 후 연결 -->
+      <a href="#">육아소식</a>
+    </nav>
+    <div class="header-actions">
+      <!-- TODO: 글 작성 페이지 연결 예정 -->
+      <a href="#" class="btn-write">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 17.25V21h3.75L17.8 9.94l-3.75-3.75L3 17.25zm17.7-10.2a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+        글 작성하기
+      </a>
+      <!-- TODO: 알림 기능 연결 예정 -->
+      <button type="button" class="icon-btn" aria-label="알림">
+        <svg width="28" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+      </button>
+      <!-- TODO: 마이페이지 연결 예정 -->
+      <a href="#" class="icon-btn" aria-label="마이페이지">
+        <svg width="34" height="34" viewBox="0 0 34 34" fill="none" aria-hidden="true"><circle cx="17" cy="17" r="15.5" stroke="#555" stroke-width="1.5"/><circle cx="17" cy="13" r="5" fill="#555"/><path d="M8 27c1.6-4.2 5-6.5 9-6.5s7.4 2.3 9 6.5" fill="#555"/></svg>
+      </a>
+    </div>
+  </div>
+</header>
+
+<main class="wrap mypage-layout">
+
+  <!-- ===== 사이드바: 홈 / 내활동 / 설정 ===== -->
+  <aside class="side-menu">
+    <div class="side-title">마이페이지 <span class="cherry">🍒</span></div>
+
+    <ul class="menu-list">
+      <li>
+        <a href="#" class="menu-item active">
+          <!-- 아이콘: 집 -->
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11L12 3l9 8"/><path d="M5 10v11h14V10"/><path d="M9.5 21v-6h5v6"/></svg>
+          홈
+        </a>
+      </li>
+      <li>
+        <!-- TODO: 내활동 페이지 연결 예정 -->
+        <a href="#" class="menu-item">
+          <!-- 아이콘: 목록 -->
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="9" y1="6" x2="20" y2="6"/><line x1="9" y1="12" x2="20" y2="12"/><line x1="9" y1="18" x2="20" y2="18"/><circle cx="4.5" cy="6" r="1.4" fill="currentColor" stroke="none"/><circle cx="4.5" cy="12" r="1.4" fill="currentColor" stroke="none"/><circle cx="4.5" cy="18" r="1.4" fill="currentColor" stroke="none"/></svg>
+          내활동
+        </a>
+      </li>
+      <li>
+        <!-- TODO: 설정 페이지 연결 예정 -->
+        <a href="#" class="menu-item">
+          <!-- 아이콘: 톱니바퀴 -->
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1.03 1.56V21a2 2 0 1 1-4 0v-.09A1.7 1.7 0 0 0 8.9 19.3a1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.7 1.7 0 0 0 4.7 15a1.7 1.7 0 0 0-1.56-1.03H3a2 2 0 1 1 0-4h.09A1.7 1.7 0 0 0 4.7 8.9a1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.7 1.7 0 0 0 9 4.7a1.7 1.7 0 0 0 1.03-1.56V3a2 2 0 1 1 4 0v.09A1.7 1.7 0 0 0 15 4.7a1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.7 1.7 0 0 0 19.3 9v0a1.7 1.7 0 0 0 1.56 1.03H21a2 2 0 1 1 0 4h-.09A1.7 1.7 0 0 0 19.4 15z"/></svg>
+          설정
+        </a>
+      </li>
+    </ul>
+  </aside>
+
+  <!-- ===== 오른쪽 내용 ===== -->
+  <section>
+
+    <!-- 프로필 -->
+    <div class="card">
+      <div class="profile">
+        <div class="avatar">
+          <div class="photo">
+            <!-- TODO: 프로필 사진 연결 예정 -->
+            <svg width="70" height="70" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="15" r="8" fill="#b9b9b9"/><path d="M4 40c0-9 7-15 16-15s16 6 16 15z" fill="#b9b9b9"/></svg>
+          </div>
+          <!-- TODO: 프로필 사진 변경 백엔드 연결 예정 -->
+          <button type="button" class="btn-photo" aria-label="프로필 사진 변경">
+            <!-- 아이콘: 카메라 -->
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8a2 2 0 0 1 2-2h2l1.5-2h7L17 6h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><circle cx="12" cy="12.5" r="3.4"/></svg>
+          </button>
+        </div>
+
+        <div class="profile-info">
+          <div class="profile-name">닉네임</div>
+          <div class="profile-meta">
+            <!-- 아이콘: 달력 -->
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="3" x2="8" y2="7"/><line x1="16" y1="3" x2="16" y2="7"/></svg>
+            가입일 2026.00.00
+          </div>
+        </div>
+
+        <!-- TODO: 내 정보 수정 페이지 연결 예정 -->
+        <button type="button" class="btn-edit">
+          <!-- 아이콘: 연필 -->
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>
+          내 정보 수정
+        </button>
+      </div>
+
+      <!-- 나눔 내역 / 요청 내역 / 관심 목록 -->
+      <div class="stats">
+        <!-- TODO: 나눔 내역 페이지 연결 예정 -->
+        <a href="#" class="stat">
+          <span class="label">나눔 내역</span>
+          <span class="num">12</span>
+          <!-- 아이콘: 오른쪽 꺾쇠 -->
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+        </a>
+        <!-- TODO: 요청 내역 페이지 연결 예정 -->
+        <a href="#" class="stat">
+          <span class="label">요청 내역</span>
+          <span class="num">5</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+        </a>
+        <!-- TODO: 관심 목록 페이지 연결 예정 -->
+        <a href="#" class="stat">
+          <span class="label">관심 목록</span>
+          <span class="num">28</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <!-- 최근 작성 글 -->
+    <div class="card">
+      <div class="recent-head">
+        <h2>최근 작성 글</h2>
+      </div>
+
+      <div class="tabs" id="postTabs">
+        <button type="button" class="tab active" data-type="SHARE">나눔</button>
+        <button type="button" class="tab" data-type="REQUEST">요청</button>
+      </div>
+
+      <!-- TODO: 백엔드 연결 시 .post-item 한 개를 th:each 로 반복 출력 -->
+      <div class="post-list" id="postList"></div>
+    </div>
+
+    <div class="notice">
+      <!-- 아이콘: 하트 -->
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.8 5.6a5 5 0 0 0-7.1 0L12 7.3l-1.7-1.7a5 5 0 0 0-7.1 7.1l8.8 8.8 8.8-8.8a5 5 0 0 0 0-7.1z"/></svg>
+      따뜻한 나눔과 배려가 아이봄을 더 좋은 공간으로 만들어요! 오늘도 함께해주셔서 감사합니다.
+      <!-- 아이콘: 반짝임 -->
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l1.8 5.4L19 9l-5.2 1.6L12 16l-1.8-5.4L5 9l5.2-1.6z"/><path d="M18.5 15l.9 2.6 2.6.9-2.6.9-.9 2.6-.9-2.6-2.6-.9 2.6-.9z"/></svg>
+    </div>
+
+  </section>
+
+</main>
+
+<script>
+  /* =========================================================
+     최근 작성 글 (나눔 / 요청 탭)
+     TODO: 백엔드 연결 시 이 배열과 renderPosts()를 지우고
+           Thymeleaf th:each 로 .post-item 을 반복 출력하도록 교체
+     ========================================================= */
+  const base = { title:'게시글의 제목이 들어갑니다.', time:'1시간 전', tags:['수면', '유아용품'] };
+
+  const dummyPosts = {
+    /* 나눔글: POSTS.STATUS 로 표시 */
+    SHARE: [
+      { ...base, status:'나눔 중' },
+      { ...base, status:'나눔 중' },
+      { ...base, status:'나눔 중' },
+      { ...base, status:'나눔 중' }
+    ],
+    /* 요청글: POSTS.URGENCY (URGENT / NORMAL) 로 표시 */
+    REQUEST: [
+      { ...base, urgency:'URGENT' },
+      { ...base, urgency:'NORMAL' },
+      { ...base, urgency:'URGENT' },
+      { ...base, urgency:'NORMAL' }
+    ]
+  };
+
+  const postList = document.getElementById('postList');
+
+  /* 요청글은 긴급요청 / 일반요청 으로 나누어 표시 */
+  function badgeOf(post){
+    if(post.urgency){
+      const isUrgent = post.urgency === 'URGENT';
+      return `<span class="status-badge ${isUrgent ? 'urgent' : 'normal'}">${isUrgent ? '긴급요청' : '일반요청'}</span>`;
+    }
+    return `<span class="status-badge">${post.status}</span>`;
+  }
+
+  function renderPosts(type){
+    postList.innerHTML = dummyPosts[type].map(post => `
+      <div class="post-item">
+        <!-- TODO: 게시글 대표 이미지 연결 예정 -->
+        <div class="post-thumb">이미지</div>
+        <div class="post-main">
+          <div class="post-head">
+            ${badgeOf(post)}
+            <!-- TODO: 게시글 상세 페이지 연결 예정 -->
+            <a href="#" class="post-title">${post.title}</a>
+          </div>
+          <div class="post-meta">${post.time}</div>
+          <div class="hashtags">${post.tags.map(t => `<span># ${t}</span>`).join('')}</div>
+        </div>
+      </div>`).join('');
+  }
+  renderPosts('SHARE');
+
+  /* 탭 전환 */
+  const tabs = document.querySelectorAll('#postTabs .tab');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      renderPosts(tab.dataset.type);
+      // TODO: 백엔드 연결 예정 (tab.dataset.type 으로 목록 다시 조회)
+    });
+  });
+</script>
+
+</body>
+</html>

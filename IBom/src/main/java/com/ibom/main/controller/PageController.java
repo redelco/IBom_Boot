@@ -1,0 +1,66 @@
+package com.ibom.main.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+
+/**
+ * 화면 확인용 임시 Controller.
+ * 기능을 붙이면서 하나씩 실제 Controller로 옮기고, 여기서는 지웁니다.
+ * ("/", "/member/add", "/board/share" 는 MemberController 에 이미 있으므로 넣지 않습니다)
+ */
+@Controller
+public class PageController {
+
+	/* ===== 게시판 ===== */
+	@GetMapping("/board/request")
+	public String requestBoard() {
+		return "board/request";
+	}
+
+	@GetMapping("/board/shareDetail")
+	public String shareDetail() {
+		return "board/shareDetail";
+	}
+
+	@GetMapping("/board/requestDetail")
+	public String requestDetail() {
+		return "board/requestDetail";
+	}
+
+	@GetMapping("/board/shareWrite")
+	public String shareWrite() {
+		return "board/shareWrite";
+	}
+
+	@GetMapping("/board/requestWrite")
+	public String requestWrite() {
+		return "board/requestWrite";
+	}
+
+	/* ===== 육아소식 ===== */
+	@GetMapping("/news")
+	public String news() {
+		return "news/news";
+	}
+
+	@GetMapping("/news/detail")
+	public String newsDetail() {
+		return "news/newsDetail";
+	}
+
+	/* ===== 마이페이지 ===== */
+	@GetMapping("/mypage")
+	public String mypage() {
+		return "mypage/mypage";
+	}
+
+	@GetMapping("/mypage/activity")
+	public String activity() {
+		return "mypage/activity";
+	}
+
+	@GetMapping("/mypage/settings")
+	public String settings() {
+		return "mypage/settings";
+	}
+}

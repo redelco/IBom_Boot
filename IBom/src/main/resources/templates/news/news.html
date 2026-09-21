@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>육아소식 - 아이봄</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --pink-main: #F8466D;
+    --blue-main: #3F6FE0;
+    --blue-soft: #EAF0FD;
+    --blue-line: #C9D8F7;
+    --hero-from: #EDF2FC;
+    --hero-to: #F8FAFF;
+    --gray: #D9D9D9;
+    --white: #FFFFFF;
+    --black: #000000;
+    --line: #E8E8E8;
+    --border: #DDDDDD;
+    --text-sub: #777777;
+  }
+
+  *{ box-sizing:border-box; margin:0; padding:0; }
+
+  body{
+    font-family:'Noto Sans KR', sans-serif;
+    color:var(--black);
+    background:var(--white);
+    -webkit-font-smoothing:antialiased;
+  }
+
+  a{ text-decoration:none; color:inherit; }
+  button{ font-family:inherit; cursor:pointer; border:none; background:none; color:inherit; }
+  table{ border-collapse:collapse; width:100%; }
+
+  .wrap{
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 40px;
+  }
+
+  /* ===== Header ===== */
+  header{
+    background: var(--white);
+    border-bottom: 1px solid #f2f2f2;
+  }
+  .header-inner{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding-top:18px;
+    padding-bottom:18px;
+  }
+  .logo{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    font-size:22px;
+    font-weight:900;
+  }
+  .logo .cherry{ font-size:20px; }
+
+  nav{
+    display:flex;
+    gap:56px;
+  }
+  nav a{
+    position:relative;
+    font-size:18px;
+    font-weight:500;
+    color:#222;
+    padding-bottom: 20px;
+  }
+  /* 육아소식은 파란 계열이라 활성 표시도 파란색 */
+  nav a.active{
+    color: var(--blue-main);
+    font-weight:700;
+  }
+  nav a.active::after{
+    content:"";
+    position:absolute;
+    left:-8px; right:-8px; bottom:0;
+    height:3px;
+    background: var(--blue-main);
+    border-radius:2px;
+  }
+
+  .header-actions{
+    display:flex;
+    align-items:center;
+    gap:22px;
+  }
+  .icon-btn{
+    width:34px;
+    height:34px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#555;
+  }
+
+  /* ===== Hero ===== */
+  .page-hero{
+    background: linear-gradient(180deg, var(--hero-from) 0%, var(--hero-to) 100%);
+  }
+  .hero-inner{
+    display:flex;
+    align-items:stretch;
+    gap:40px;
+  }
+  .hero-text{
+    flex:1;
+    padding: 46px 0 40px;
+  }
+  .hero-text h1{
+    font-size:32px;
+    font-weight:900;
+    margin-bottom:12px;
+  }
+  .hero-text p{
+    font-size:14.5px;
+    color:#6a6a6a;
+    line-height:1.55;
+  }
+  .hero-image{
+    flex: 0 0 44%;
+    background: #E3E7EE;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:16px;
+    color:#555;
+    min-height: 180px;
+  }
+
+  /* ===== 검색 / 필터 박스 ===== */
+  .filter-box{
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(63,111,224,0.05);
+    padding: 22px 26px 26px;
+    margin-top: -26px;
+    position:relative;
+    z-index:1;
+  }
+  .filter-row{
+    display:grid;
+    grid-template-columns: 150px 150px 150px 1fr;
+    gap: 20px;
+    align-items:end;
+  }
+  .filter-item label{
+    display:block;
+    font-size:14.5px;
+    font-weight:500;
+    color:#333;
+    margin-bottom:10px;
+  }
+  .select{
+    width:100%;
+    appearance:none;
+    -webkit-appearance:none;
+    border:1px solid var(--border);
+    border-radius:8px;
+    padding: 12px 34px 12px 14px;
+    font-family:inherit;
+    font-size:14.5px;
+    color:#444;
+    background: var(--white) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E") no-repeat right 13px center;
+    cursor:pointer;
+    outline:none;
+  }
+  .select:focus{ border-color: var(--blue-main); }
+
+  .search-group{
+    display:flex;
+    border:1px solid var(--border);
+    border-radius:8px;
+    overflow:hidden;
+    background: var(--white);
+  }
+  .search-group input{
+    flex:1;
+    border:none;
+    outline:none;
+    font-family:inherit;
+    font-size:14.5px;
+    padding: 13px 16px;
+    min-width:0;
+  }
+  .search-group input::placeholder{ color:#b3b3b3; }
+  .btn-search{
+    background: var(--blue-main);
+    color: var(--white);
+    font-size:14.5px;
+    font-weight:500;
+    padding: 0 18px;
+  }
+
+  .filter-apply{
+    display:flex;
+    justify-content:center;
+    margin-top: 20px;
+  }
+  .btn-apply{
+    background: var(--blue-main);
+    color: var(--white);
+    font-size:15px;
+    font-weight:700;
+    padding: 11px 30px;
+    border-radius: 8px;
+  }
+
+  /* ===== 자주 찾는 정책 ===== */
+  .quick{
+    padding-top: 36px;
+  }
+  .quick h2{
+    font-size:17px;
+    font-weight:700;
+    margin-bottom: 16px;
+  }
+  .quick-row{
+    display:grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 14px;
+  }
+  .quick-card{
+    border:1px solid var(--line);
+    border-radius:10px;
+    background: var(--white);
+    padding: 20px 6px 16px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:12px;
+    font-size:14px;
+    font-weight:500;
+    color:#333;
+    text-align:center;
+    line-height:1.3;
+  }
+  .quick-card svg{ color:#5b6472; }
+  .quick-card:hover{ border-color: var(--blue-line); }
+  .quick-card.active{
+    border:1.5px solid var(--blue-main);
+    background: var(--blue-soft);
+    color: var(--blue-main);
+    font-weight:700;
+  }
+  .quick-card.active svg{ color: var(--blue-main); }
+
+  /* ===== 목록 ===== */
+  .list-top{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    padding: 38px 0 16px;
+  }
+  .list-count{
+    font-size:18px;
+    font-weight:700;
+  }
+  .list-count .num{ color: var(--blue-main); }
+  .sort-select{
+    width:auto;
+    min-width:130px;
+    border-radius:8px;
+  }
+
+  .table-box{
+    border:1px solid var(--line);
+    border-radius:10px;
+    overflow:hidden;
+  }
+  thead th{
+    background:#F7F8FA;
+    font-size:14.5px;
+    font-weight:500;
+    color:#555;
+    padding: 16px 10px;
+    border-bottom:1px solid var(--line);
+  }
+  tbody td{
+    font-size:15px;
+    color:#333;
+    padding: 17px 10px;
+    border-bottom:1px solid #F0F0F0;
+    text-align:center;
+  }
+  tbody tr:last-child td{ border-bottom:none; }
+  tbody tr:hover{ background:#FAFBFE; }
+
+  .col-no{ width:90px; }
+  .col-file{ width:100px; }
+  .col-region{ width:150px; }
+  .col-date{ width:140px; }
+
+  .cell-title{
+    display:flex;
+    align-items:center;
+    gap:18px;
+    justify-content:center;
+    text-align:left;
+  }
+  .cell-category{
+    color: var(--blue-main);
+    font-size:14.5px;
+    font-weight:500;
+    white-space:nowrap;
+  }
+  .cell-title a:hover{ text-decoration:underline; }
+
+  .btn-file{
+    color:#555;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .btn-file:hover{ color: var(--blue-main); }
+  .no-file{ color:#bbb; }
+
+  .col-region-text{ color:#555; font-size:14.5px; }
+  .col-date-text{ color:#888; font-size:14.5px; }
+
+  /* ===== 페이지네이션 ===== */
+  .pagination{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    padding: 34px 0 30px;
+  }
+  .pagination button, .pagination span.dots{
+    width:34px;
+    height:34px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:50%;
+    font-size:14.5px;
+    color:#666;
+  }
+  .pagination button:hover{ background:#F2F5FC; }
+  .pagination button.active{
+    background: var(--blue-main);
+    color: var(--white);
+    font-weight:700;
+  }
+  .pagination button.arrow{ color:#aaa; }
+
+  /* ===== 안내 문구 ===== */
+  .notice{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    background: var(--blue-soft);
+    border-radius:8px;
+    padding: 18px 22px;
+    margin-bottom: 60px;
+    font-size:14.5px;
+    color:#4a5568;
+  }
+  .notice .badge{
+    width:28px;
+    height:28px;
+    border-radius:50%;
+    background: var(--blue-main);
+    color: var(--white);
+    font-size:9px;
+    font-weight:700;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-shrink:0;
+  }
+
+  /* ===== Responsive ===== */
+  @media (max-width: 1100px){
+    nav{ gap:30px; }
+    .quick-row{ grid-template-columns: repeat(4, 1fr); }
+    .filter-row{ grid-template-columns: 1fr 1fr 1fr; }
+    .filter-row .search-item{ grid-column: 1 / -1; }
+  }
+  @media (max-width: 800px){
+    .hero-inner{ flex-direction:column; gap:0; }
+    .hero-image{ display:none; }
+    .col-region, .col-date{ display:none; }
+  }
+  @media (max-width: 700px){
+    .wrap{ padding: 0 16px; }
+    .header-inner{ flex-wrap:wrap; gap:12px; padding-bottom:0; }
+    nav{ order:3; width:100%; justify-content:space-between; gap:0; }
+    nav a{ font-size:15px; padding-bottom:14px; }
+    nav a.active::after{ left:0; right:0; }
+    .hero-text h1{ font-size:25px; }
+    .filter-box{ padding: 18px 16px 20px; }
+    .filter-row{ grid-template-columns: 1fr 1fr; gap:14px; }
+    .quick-row{ grid-template-columns: repeat(2, 1fr); gap:10px; }
+    .list-top{ padding-top:28px; }
+    .list-count{ font-size:16px; }
+    .cell-title{ flex-direction:column; align-items:flex-start; gap:4px; }
+    tbody td, thead th{ padding: 13px 8px; font-size:14px; }
+    .col-no{ width:56px; }
+    .col-file{ width:60px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap header-inner">
+    <a href="/" class="logo"><span class="cherry">🍒</span> 아이 봄</a>
+    <nav>
+      <a href="/board/share">나눔 게시판</a>
+      <!-- TODO: 요청 게시판 URL은 Controller 매핑 추가 후 연결 -->
+      <a href="#">요청 게시판</a>
+      <!-- TODO: 육아소식 URL은 Controller 매핑 추가 후 연결 -->
+      <a href="#" class="active">육아소식</a>
+    </nav>
+    <div class="header-actions">
+      <!-- TODO: 알림 기능 연결 예정 -->
+      <button type="button" class="icon-btn" aria-label="알림">
+        <svg width="28" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+      </button>
+      <!-- TODO: 마이페이지 연결 예정 -->
+      <a href="#" class="icon-btn" aria-label="마이페이지">
+        <svg width="34" height="34" viewBox="0 0 34 34" fill="none" aria-hidden="true"><circle cx="17" cy="17" r="15.5" stroke="#555" stroke-width="1.5"/><circle cx="17" cy="13" r="5" fill="#555"/><path d="M8 27c1.6-4.2 5-6.5 9-6.5s7.4 2.3 9 6.5" fill="#555"/></svg>
+      </a>
+    </div>
+  </div>
+</header>
+
+<section class="page-hero">
+  <div class="wrap hero-inner">
+    <div class="hero-text">
+      <h1>육아소식</h1>
+      <p>임신 · 출산 · 육아 · 저출산 정책과 지원 정보를<br>한눈에 확인하세요.</p>
+    </div>
+    <div class="hero-image">이미지 자리</div>
+  </div>
+</section>
+
+<main class="wrap">
+
+  <!-- ===== 검색 / 필터 ===== -->
+  <!-- TODO: 검색·필터 백엔드 연결 예정 -->
+  <form class="filter-box" id="filterForm">
+    <div class="filter-row">
+      <div class="filter-item">
+        <label for="category">카테고리</label>
+        <!-- 목록은 아래 script의 CATEGORIES 에서 채움 (자주 찾는 정책과 같은 항목) -->
+        <select class="select" id="category" name="category">
+          <option value="ALL">전체</option>
+        </select>
+      </div>
+      <div class="filter-item">
+        <label for="scope">범위</label>
+        <!-- 목록은 아래 script의 SCOPES 에서 채움 -->
+        <select class="select" id="scope" name="scope">
+          <option value="ALL">전체</option>
+        </select>
+      </div>
+      <div class="filter-item">
+        <label for="region">지역</label>
+        <!-- 목록은 아래 script의 REGIONS 에서 채움 -->
+        <select class="select" id="region" name="region">
+          <option value="ALL">전체</option>
+        </select>
+      </div>
+      <div class="filter-item search-item">
+        <label for="keyword">&nbsp;</label>
+        <div class="search-group">
+          <input type="text" id="keyword" name="keyword" placeholder="부모급여, 산후조리비, 아이돌봄 등을 검색하세요">
+          <button type="submit" class="btn-search">검색</button>
+        </div>
+      </div>
+    </div>
+    <div class="filter-apply">
+      <button type="button" class="btn-apply" id="btnApply">적용하기</button>
+    </div>
+  </form>
+
+  <!-- ===== 자주 찾는 정책 ===== -->
+  <section class="quick">
+    <h2>자주 찾는 정책</h2>
+    <!-- 카드는 아래 script의 CATEGORIES 에서 생성 -->
+    <div class="quick-row" id="quickRow"></div>
+  </section>
+
+  <!-- ===== 목록 ===== -->
+  <div class="list-top">
+    <div class="list-count">전체 <span class="num">126</span>개의 정책 및 소식이 있습니다.</div>
+    <select class="select sort-select" id="sortSelect" aria-label="정렬">
+      <option value="latest">최신순</option>
+      <option value="view">조회순</option>
+    </select>
+  </div>
+
+  <div class="table-box">
+    <table>
+      <colgroup>
+        <col class="col-no">
+        <col>
+        <col class="col-file">
+        <col class="col-region">
+        <col class="col-date">
+      </colgroup>
+      <thead>
+        <tr>
+          <th>번호</th>
+          <th>제목</th>
+          <th>파일</th>
+          <th>범위/지역</th>
+          <th>등록일</th>
+        </tr>
+      </thead>
+      <!-- TODO: 백엔드 연결 시 tr 한 개를 th:each 로 반복 출력 -->
+      <tbody id="newsList"></tbody>
+    </table>
+  </div>
+
+  <!-- TODO: 페이지 이동 백엔드 연결 예정 -->
+  <div class="pagination" id="pagination">
+    <button type="button" class="arrow" aria-label="이전">&#8249;</button>
+    <button type="button" class="active">1</button>
+    <button type="button">2</button>
+    <button type="button">3</button>
+    <button type="button">4</button>
+    <button type="button">5</button>
+    <span class="dots">...</span>
+    <button type="button">15</button>
+    <button type="button" class="arrow" aria-label="다음">&#8250;</button>
+  </div>
+
+  <div class="notice">
+    <span class="badge">아이봄</span>
+    정책 및 지원 내용은 변경되므로, 자세한 사항은 해당 기관의 공식 홈페이지에서 확인해주세요.
+  </div>
+
+</main>
+
+<script>
+  /* =========================================================
+     1) 카테고리 (한 곳에서 관리)
+        - 자주 찾는 정책 카드
+        - 상단 카테고리 선택
+        - 목록의 파란 글씨
+        세 곳이 모두 이 배열을 사용함
+     ========================================================= */
+  const CATEGORIES = [
+    { value:'부모급여',   label:'부모급여',   icon:'person' },
+    { value:'산후조리비', label:'산후조리비', icon:'bottle' },
+    { value:'아이돌봄',   label:'아이돌봄',   icon:'heart'  },
+    { value:'다자녀혜택', label:'다자녀 혜택', icon:'users'  },
+    { value:'출산지원금', label:'출산지원금', icon:'coins'  },
+    { value:'육아휴직',   label:'육아휴직',   icon:'calendar' },
+    { value:'어린이집',   label:'어린이집',   icon:'home'   },
+    { value:'의료지원',   label:'의료지원',   icon:'medical' }
+  ];
+
+  /* 범위 (중앙정부 / 광역자치단체 / 기초자치단체) */
+  const SCOPES = [
+    { value:'CENTRAL', label:'중앙정부' },
+    { value:'METRO',   label:'광역자치단체' },
+    { value:'LOCAL',   label:'기초자치단체' }
+  ];
+
+  /* 지역 (시/도 17곳) */
+  const REGIONS = [
+    '서울', '부산', '대구', '인천', '광주', '대전', '울산', '세종',
+    '경기', '강원', '충북', '충남', '전북', '전남', '경북', '경남', '제주'
+  ];
+
+  const ICONS = {
+    person:  '<circle cx="14" cy="9" r="5"/><path d="M4 26c0-5.5 4.5-9 10-9s10 3.5 10 9"/>',
+    bottle:  '<path d="M11 3h6M12 3v4M16 3v4"/><rect x="9" y="7" width="10" height="18" rx="4"/><path d="M9 13h10M9 18h10"/>',
+    heart:   '<path d="M14 24S4 18 4 11.5A5.5 5.5 0 0 1 14 8a5.5 5.5 0 0 1 10 3.5C24 18 14 24 14 24z"/>',
+    users:   '<circle cx="10" cy="10" r="4"/><circle cx="19" cy="11" r="3.2"/><path d="M3 24c0-4 3.2-7 7-7s7 3 7 7"/><path d="M18 17c3.4 0 6 2.4 6 6"/>',
+    coins:   '<ellipse cx="14" cy="7" rx="8" ry="3.2"/><path d="M6 7v5c0 1.8 3.6 3.2 8 3.2s8-1.4 8-3.2V7"/><path d="M6 14v5c0 1.8 3.6 3.2 8 3.2s8-1.4 8-3.2v-5"/>',
+    calendar:'<rect x="4" y="6" width="20" height="18" rx="3"/><path d="M4 12h20M10 3v5M18 3v5"/>',
+    home:    '<path d="M4 13L14 4l10 9"/><path d="M6.5 12v11h15V12"/><path d="M11 23v-6h6v6"/>',
+    medical: '<rect x="4" y="5" width="20" height="19" rx="3"/><path d="M14 10v9M9.5 14.5h9"/>'
+  };
+
+  function iconSvg(name){
+    return `<svg width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="currentColor"
+      stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[name]}</svg>`;
+  }
+
+  /* 자주 찾는 정책 카드 만들기 */
+  const quickRow = document.getElementById('quickRow');
+  quickRow.innerHTML = CATEGORIES.map((c, i) => `
+    <button type="button" class="quick-card${i === 0 ? ' active' : ''}" data-value="${c.value}">
+      ${iconSvg(c.icon)}
+      <span>${c.label}</span>
+    </button>`).join('');
+
+  /* 상단 선택 상자 채우기 (카테고리 / 범위 / 지역) */
+  const categorySelect = document.getElementById('category');
+  const scopeSelect = document.getElementById('scope');
+  const regionSelect = document.getElementById('region');
+
+  categorySelect.innerHTML = '<option value="ALL">전체</option>'
+    + CATEGORIES.map(c => `<option value="${c.value}">${c.label}</option>`).join('');
+
+  scopeSelect.innerHTML = '<option value="ALL">전체</option>'
+    + SCOPES.map(s => `<option value="${s.value}">${s.label}</option>`).join('');
+
+  regionSelect.innerHTML = '<option value="ALL">전체</option>'
+    + REGIONS.map(r => `<option value="${r}">${r}</option>`).join('');
+
+  /* 카드 <-> 카테고리 선택 연결 */
+  quickRow.addEventListener('click', e => {
+    const card = e.target.closest('.quick-card');
+    if(!card) return;
+    const isActive = card.classList.contains('active');
+    quickRow.querySelectorAll('.quick-card').forEach(c => c.classList.remove('active'));
+    if(isActive){
+      categorySelect.value = 'ALL';          // 한 번 더 누르면 선택 해제
+    } else {
+      card.classList.add('active');
+      categorySelect.value = card.dataset.value;
+    }
+    // TODO: 백엔드 연결 예정 (선택한 카테고리로 목록 다시 조회)
+  });
+
+  categorySelect.addEventListener('change', () => {
+    quickRow.querySelectorAll('.quick-card').forEach(c => {
+      c.classList.toggle('active', c.dataset.value === categorySelect.value);
+    });
+  });
+
+  /* =========================================================
+     2) 목록 더미 데이터
+     TODO: 백엔드 연결 시 이 배열과 renderList()를 지우고
+           Thymeleaf th:each 로 tr 한 개를 반복 출력하도록 교체
+     ========================================================= */
+  const dummyNews = [
+    { no:127, category:'부모급여',   title:'이곳에 제목이 들어갑니다', hasFile:true,  region:'중앙정부', date:'2026.00.00' },
+    { no:127, category:'산후조리비', title:'이곳에 제목이 들어갑니다', hasFile:false, region:'서울',     date:'2026.00.00' },
+    { no:127, category:'아이돌봄',   title:'이곳에 제목이 들어갑니다', hasFile:false, region:'경기',     date:'2026.00.00' },
+    { no:127, category:'다자녀혜택', title:'이곳에 제목이 들어갑니다', hasFile:true,  region:'강남구',   date:'2026.00.00' },
+    { no:127, category:'출산지원금', title:'이곳에 제목이 들어갑니다', hasFile:false, region:'수원시',   date:'2026.00.00' },
+    { no:127, category:'육아휴직',   title:'이곳에 제목이 들어갑니다', hasFile:false, region:'중앙정부', date:'2026.00.00' },
+    { no:127, category:'어린이집',   title:'이곳에 제목이 들어갑니다', hasFile:false, region:'부산',     date:'2026.00.00' },
+    { no:127, category:'의료지원',   title:'이곳에 제목이 들어갑니다', hasFile:true,  region:'수원시',   date:'2026.00.00' },
+    { no:127, category:'부모급여',   title:'이곳에 제목이 들어갑니다', hasFile:false, region:'제주',     date:'2026.00.00' }
+  ];
+
+  const labelOf = value => (CATEGORIES.find(c => c.value === value) || {}).label || value;
+
+  const fileIcon = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+    stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><polyline points="7 11 12 16 17 11"/><path d="M4 20h16"/></svg>`;
+
+  function renderList(list){
+    document.getElementById('newsList').innerHTML = list.map(item => `
+      <tr>
+        <td>${item.no}</td>
+        <td>
+          <div class="cell-title">
+            <span class="cell-category">${labelOf(item.category)}</span>
+            <!-- TODO: 육아소식 상세 페이지 연결 예정 -->
+            <a href="#">${item.title}</a>
+          </div>
+        </td>
+        <td>${item.hasFile
+              ? `<button type="button" class="btn-file" aria-label="첨부파일 내려받기">${fileIcon}</button>`
+              : '<span class="no-file">-</span>'}</td>
+        <td><span class="col-region-text">${item.region}</span></td>
+        <td><span class="col-date-text">${item.date}</span></td>
+      </tr>`).join('');
+  }
+  renderList(dummyNews);
+
+  /* 첨부파일 내려받기 */
+  document.getElementById('newsList').addEventListener('click', e => {
+    if(e.target.closest('.btn-file')){
+      // TODO: 백엔드 API 연결 예정 (첨부파일 내려받기)
+    }
+  });
+
+  /* =========================================================
+     3) 검색 / 적용 / 정렬 / 페이지 이동
+     ========================================================= */
+  function getFilterValues(){
+    return {
+      category: categorySelect.value,
+      scope: scopeSelect.value,
+      region: regionSelect.value,
+      keyword: document.getElementById('keyword').value.trim(),
+      sort: document.getElementById('sortSelect').value
+    };
+  }
+
+  document.getElementById('filterForm').addEventListener('submit', e => {
+    e.preventDefault();
+    // TODO: 백엔드 연결 예정 (검색)
+  });
+
+  document.getElementById('btnApply').addEventListener('click', () => {
+    // TODO: 백엔드 연결 예정 (getFilterValues() 값으로 목록 다시 조회)
+    console.log('적용할 조건:', getFilterValues());
+  });
+
+  document.getElementById('sortSelect').addEventListener('change', () => {
+    // TODO: 백엔드 연결 예정 (정렬)
+  });
+
+  const pagination = document.getElementById('pagination');
+  pagination.addEventListener('click', e => {
+    const btn = e.target.closest('button');
+    if(!btn || btn.classList.contains('arrow')) return;
+    pagination.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    // TODO: 백엔드 연결 예정 (해당 페이지 목록 조회)
+  });
+</script>
+
+</body>
+</html>
