@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>로그인 - 아이봄</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --pink-bg: #FFEDED;
+    --gray: #D9D9D9;
+    --pink-card: #FFE9E4;
+    --pink-main: #F8466D;
+    --white: #FFFFFF;
+    --black: #000000;
+  }
+
+  *{ box-sizing:border-box; margin:0; padding:0; }
+
+  html, body{ min-height:100%; }
+
+  body{
+    font-family:'Noto Sans KR', sans-serif;
+    color:var(--black);
+    background:var(--pink-bg);
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* 모든 입력/버튼도 Noto Sans KR로 통일 */
+  input, button, label, a, span, div{ font-family:'Noto Sans KR', sans-serif; }
+
+  a{ text-decoration:none; color:inherit; }
+  button{ cursor:pointer; border:none; }
+
+  /* ===== Header ===== */
+  header{
+    background: var(--white);
+    height:78px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+  }
+  .header-inner{
+    max-width:1200px;
+    height:100%;
+    margin:0 auto;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    position:relative;
+  }
+
+  .logo{
+    display:flex;
+    align-items:center;
+    gap:4px;
+    font-size:28px;
+    font-weight:900;
+    letter-spacing:2px;
+  }
+  .logo .cherry{ font-size:30px; }
+
+  nav{
+    position:absolute;
+    left:50%;
+    transform:translateX(-50%);
+    display:flex;
+    gap:56px;
+    white-space:nowrap;
+  }
+  nav a{
+    font-size:20px;
+    font-weight:500;
+    color:var(--black);
+  }
+
+  .btn-login{
+    background: var(--pink-main);
+    color: var(--white);
+    width:100px;
+    height:40px;
+    border-radius:4px;
+    font-size:16px;
+    font-weight:500;
+  }
+
+  /* ===== Login card ===== */
+  .page{
+    display:flex;
+    justify-content:center;
+    padding:122px 20px 80px;
+  }
+
+  .login-card{
+    width:100%;
+    max-width:480px;
+    background: var(--white);
+    border-radius:30px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+    padding:40px 40px 30px;
+  }
+
+  .login-title{
+    text-align:center;
+    font-size:40px;
+    font-weight:700;
+    color:#C68080;
+    line-height:1.2;
+  }
+
+  .login-sub{
+    text-align:center;
+    font-size:20px;
+    font-weight:500;
+    color:#DB8F94;
+    margin-top:6px;
+    margin-bottom:34px;
+  }
+
+  .input-wrap{
+    position:relative;
+    margin-bottom:12px;
+  }
+  .input-wrap svg{
+    position:absolute;
+    left:16px;
+    top:50%;
+    transform:translateY(-50%);
+    width:18px;
+    height:18px;
+    fill:#555;
+  }
+  .input-wrap input{
+    width:100%;
+    height:48px;
+    border:2px solid var(--gray);
+    border-radius:12px;
+    padding:0 16px 0 48px;
+    font-size:16px;
+    color:#333;
+    background:var(--white);
+    outline:none;
+  }
+  input::placeholder{ color:#777; }
+  .input-wrap input:focus{ border-color: var(--pink-main); }
+
+  .options{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin:16px 0 14px;
+    font-size:12px;
+  }
+  .remember{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    cursor:pointer;
+  }
+  .remember input{
+    appearance:none;
+    -webkit-appearance:none;
+    width:20px;
+    height:20px;
+    border:2px solid var(--gray);
+    border-radius:6px;
+    background:var(--white);
+    cursor:pointer;
+    position:relative;
+    flex-shrink:0;
+  }
+  .remember input:checked{
+    background:var(--pink-main);
+    border-color:var(--pink-main);
+  }
+  .remember input:checked::after{
+    content:"";
+    position:absolute;
+    left:5px;
+    top:1px;
+    width:5px;
+    height:10px;
+    border:solid var(--white);
+    border-width:0 2px 2px 0;
+    transform:rotate(45deg);
+  }
+
+  .btn-submit{
+    width:100%;
+    height:48px;
+    background: var(--pink-main);
+    color: var(--white);
+    font-size:22px;
+    font-weight:700;
+    border-radius:24px;
+  }
+
+  .signup-link{
+    text-align:center;
+    font-size:12px;
+    color:#888;
+    margin-top:20px;
+  }
+  .signup-link a{
+    color:#2E9BF0;
+    margin-left:6px;
+  }
+
+  @media (max-width:900px){
+    .header-inner{ padding:0 20px; }
+    nav{ display:none; }
+  }
+  @media (max-width:520px){
+    .page{ padding-top:60px; }
+    .login-card{ padding:32px 24px 26px; }
+    .login-title{ font-size:34px; }
+    .login-sub{ font-size:17px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a href="/" class="logo"><span class="cherry">🍒</span>아이 봄</a>
+    <nav>
+      <a href="#">나눔 게시판</a>
+      <a href="#">요청 게시판</a>
+      <a href="#">육아소식</a>
+    </nav>
+    <a href="/member/login" class="btn-login" style="display:flex;align-items:center;justify-content:center;">로그인</a>
+  </div>
+</header>
+
+<div class="page">
+  <div class="login-card">
+
+    <form action="/member/login" method="post">
+
+      <div class="login-title">로그인</div>
+      <div class="login-sub">함께 키우는 아름다운 나눔 문화</div>
+
+      <div class="input-wrap">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10zm0 2c-4.4 0-8 2.2-8 5v3h16v-3c0-2.8-3.6-5-8-5z"/></svg>
+        <input type="text" id="LOGIN_ID" name="LOGIN_ID" placeholder="아이디" autocomplete="username">
+      </div>
+
+      <div class="input-wrap">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 9V7a5 5 0 0 0-10 0v2H5v13h14V9h-2zm-8-2a3 3 0 0 1 6 0v2H9V7z"/></svg>
+        <input type="password" id="PASSWORD" name="PASSWORD" placeholder="비밀번호" autocomplete="current-password">
+      </div>
+
+      <div class="options">
+        <label class="remember">
+          <input type="checkbox" name="remember">
+          <span>로그인 상태 유지</span>
+        </label>
+        <a href="#">아이디/비밀번호 찾기</a>
+      </div>
+
+      <button type="submit" class="btn-submit">로그인</button>
+
+      <div class="signup-link">
+        아직 회원이 아니신가요?<a href="/member/add">회원가입</a>
+      </div>
+
+    </form>
+
+  </div>
+</div>
+
+</body>
+</html>

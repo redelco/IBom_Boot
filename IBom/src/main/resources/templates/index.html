@@ -1,109 +1,751 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-   <modelVersion>4.0.0</modelVersion>
-   <parent>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-parent</artifactId>
-      <version>4.1.1</version>
-      <relativePath/> <!-- lookup parent from repository -->
-   </parent>
-   <groupId>com.ibom</groupId>
-   <artifactId>IBom</artifactId>
-   <version>0.0.1-SNAPSHOT</version>
-   <name>IBom</name>
-   <description/>
-   <url/>
-   <licenses>
-      <license/>
-   </licenses>
-   <developers>
-      <developer/>
-   </developers>
-   <scm>
-      <connection/>
-      <developerConnection/>
-      <tag/>
-      <url/>
-   </scm>
-   <properties>
-      <java.version>17</java.version>
-   </properties>
-   <dependencies>
-      <dependency>
-         <groupId>org.springframework.boot</groupId>
-         <artifactId>spring-boot-starter-data-jpa</artifactId>
-      </dependency>
-      <dependency>
-         <groupId>org.springframework.boot</groupId>
-         <artifactId>spring-boot-starter-webmvc</artifactId>
-      </dependency>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>아이봄 - 아이를 위한 나눔</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --pink-bg: #FFEDED;
+    --gray: #D9D9D9;
+    --pink-card: #FFE9E4;
+    --pink-main: #F8466D;
+    --white: #FFFFFF;
+    --black: #000000;
+    --text-sub: #6b6b6b;
+    --text-light: #9a9a9a;
+  }
 
-      <dependency>
-         <groupId>org.mariadb.jdbc</groupId>
-         <artifactId>mariadb-java-client</artifactId>
-         <scope>runtime</scope>
-      </dependency>
-      <dependency>
-         <groupId>org.projectlombok</groupId>
-         <artifactId>lombok</artifactId>
-         <optional>true</optional>
-      </dependency>
-      <dependency>
-         <groupId>org.springframework.boot</groupId>
-         <artifactId>spring-boot-starter-data-jpa-test</artifactId>
-         <scope>test</scope>
-      </dependency>
-      <dependency>
-         <groupId>org.springframework.boot</groupId>
-         <artifactId>spring-boot-starter-webmvc-test</artifactId>
-         <scope>test</scope>
-      </dependency>
-   </dependencies>
+  *{ box-sizing: border-box; margin:0; padding:0; }
 
-   <build>
-      <plugins>
-         <plugin>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-maven-plugin</artifactId>
-         </plugin>
-         <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-compiler-plugin</artifactId>
-            <executions>
-               <execution>
-                  <id>default-compile</id>
-                  <phase>compile</phase>
-                  <goals>
-                     <goal>compile</goal>
-                  </goals>
-                  <configuration>
-                     <annotationProcessorPaths>
-                        <path>
-                           <groupId>org.projectlombok</groupId>
-                           <artifactId>lombok</artifactId>
-                        </path>
-                     </annotationProcessorPaths>
-                  </configuration>
-               </execution>
-               <execution>
-                  <id>default-testCompile</id>
-                  <phase>test-compile</phase>
-                  <goals>
-                     <goal>testCompile</goal>
-                  </goals>
-                  <configuration>
-                     <annotationProcessorPaths>
-                        <path>
-                           <groupId>org.projectlombok</groupId>
-                           <artifactId>lombok</artifactId>
-                        </path>
-                     </annotationProcessorPaths>
-                  </configuration>
-               </execution>
-            </executions>
-         </plugin>
-      </plugins>
-   </build>
+  body{
+    font-family: 'Noto Sans KR', sans-serif;
+    color: var(--black);
+    background: var(--white);
+    -webkit-font-smoothing: antialiased;
+  }
 
-</project>
+  a{ text-decoration:none; color:inherit; }
+  button{ font-family:inherit; cursor:pointer; border:none; }
+  img{ max-width:100%; display:block; }
+
+  .wrap{
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 40px;
+  }
+
+  /* ===== Header ===== */
+  header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding: 18px 40px;
+    background: var(--white);
+    border-bottom: 1px solid #f2f2f2;
+  }
+
+  .logo{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    font-size:22px;
+    font-weight:900;
+  }
+  .logo .cherry{ font-size:20px; }
+
+  nav{
+    display:flex;
+    gap:56px;
+  }
+  nav a{
+    font-size:16px;
+    font-weight:500;
+    color:#222;
+  }
+
+  .header-actions{
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+
+  .btn-login{
+    background: var(--pink-main);
+    color: var(--white);
+    padding: 12px 26px;
+    border-radius: 8px;
+    font-size:15px;
+    font-weight:700;
+  }
+
+  .btn-signup{
+    background: var(--white);
+    color: var(--pink-main);
+    border: 1.5px solid var(--pink-main);
+    padding: 11px 24px;
+    border-radius: 8px;
+    font-size:15px;
+    font-weight:700;
+  }
+
+  /* ===== Hero ===== */
+  .hero{
+    background:
+      linear-gradient(rgba(255,237,237,0.88), rgba(255,237,237,0.88)),
+      url('https://images.unsplash.com/photo-1634290996327-099de799f602?fm=jpg&q=80&w=2000&auto=format&fit=crop') center 30% / cover no-repeat;
+    padding: 64px 40px 72px;
+  }
+
+  .hero-left{
+    display:flex;
+    flex-direction:column;
+    justify-content:flex-start;
+    max-width: 640px;
+    margin: 0 auto;
+    text-align:center;
+    align-items:center;
+  }
+
+  .hero-left h1{
+    font-size: 34px;
+    font-weight:900;
+    margin-bottom: 14px;
+    letter-spacing:-0.5px;
+  }
+
+  .hero-left p{
+    font-size:15px;
+    color:#555;
+    margin-bottom:32px;
+  }
+
+  .search-bar{
+    display:flex;
+    align-items:center;
+    background: var(--white);
+    border-radius: 10px;
+    padding: 4px 4px 4px 22px;
+    width: 100%;
+    max-width: 600px;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.06);
+  }
+  .search-bar input{
+    flex:1;
+    border:none;
+    outline:none;
+    font-size:15px;
+    font-family:inherit;
+    padding: 16px 0;
+    background:transparent;
+  }
+  .search-bar input::placeholder{ color:#b9b9b9; }
+  .search-icon-btn{
+    width:48px;
+    height:48px;
+    border-radius:8px;
+    background: var(--pink-main);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-shrink:0;
+  }
+
+  .hero-buttons{
+    display:flex;
+    gap:14px;
+    width:100%;
+    max-width: 600px;
+    margin-top: 20px;
+  }
+
+  .hero-buttons button{
+    flex:1;
+    padding: 16px 0;
+    border-radius: 8px;
+    font-size:16px;
+    font-weight:700;
+  }
+
+  .btn-share{
+    background: var(--pink-main);
+    color: var(--white);
+  }
+  .btn-request{
+    background: #FFD3DC;
+    color: var(--pink-main);
+  }
+
+  /* ===== Category row ===== */
+  .categories{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:0;
+    padding: 44px 40px 40px;
+  }
+
+  .category{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:10px;
+    cursor:pointer;
+    padding: 0 22px;
+  }
+
+  .category .icon-circle{
+    width:66px;
+    height:66px;
+    border-radius:50%;
+    background: var(--gray);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#4a4a4a;
+    font-size:11px;
+    font-weight:500;
+  }
+
+  .category.active .icon-circle{
+    background: var(--pink-main);
+    color: var(--white);
+  }
+
+  .category span.label{
+    font-size:15px;
+    font-weight:700;
+    color:#222;
+  }
+
+  .category.active span.label{
+    color: var(--pink-main);
+  }
+
+  .divider{
+    width:1px;
+    height:56px;
+    background:#e6e6e6;
+  }
+
+  /* ===== Urgent request section ===== */
+  .section-wrap{
+    padding: 0 40px 40px;
+  }
+
+  .urgent-box{
+    border: 1px solid #eee;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+    overflow:hidden;
+  }
+
+  .urgent-header{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding: 22px 28px;
+    border-bottom: 1px solid #f1f1f1;
+  }
+
+  .icon-sq{
+    width:34px;
+    height:34px;
+    border-radius:6px;
+    background: var(--gray);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:10px;
+    color:#555;
+    flex-shrink:0;
+  }
+
+  .urgent-header h2{
+    font-size:19px;
+    font-weight:900;
+  }
+
+  .urgent-header .sub{
+    font-size:14px;
+    color:#999;
+    font-weight:500;
+  }
+
+  .urgent-row{
+    display:flex;
+    align-items:center;
+    gap:18px;
+    padding: 20px 28px;
+    border-bottom: 1px solid #f4f4f4;
+  }
+  .urgent-row:last-of-type{ border-bottom:none; }
+
+  .tag-urgent{
+    background: var(--pink-main);
+    color: var(--white);
+    font-size:13px;
+    font-weight:700;
+    padding: 8px 14px;
+    border-radius: 6px;
+    flex-shrink:0;
+  }
+
+  .urgent-content{ flex:1; min-width:0; }
+  .urgent-content .title{
+    font-size:16px;
+    font-weight:700;
+    margin-bottom:6px;
+  }
+  .urgent-content .meta{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-size:13px;
+    color:#999;
+  }
+  .urgent-content .meta .hashtag{
+    color:#b6b6b6;
+  }
+
+  .urgent-stats{
+    display:flex;
+    gap:10px;
+    flex-shrink:0;
+  }
+  .stat-pill{
+    display:flex;
+    align-items:center;
+    gap:5px;
+    font-size:13px;
+    color:#888;
+    background:#f7f7f7;
+    padding:6px 10px;
+    border-radius:6px;
+  }
+  .stat-pill .mini-icon{
+    width:14px;
+    height:14px;
+    border-radius:3px;
+    background: var(--gray);
+    display:inline-block;
+  }
+
+  .btn-help{
+    background: var(--pink-main);
+    color: var(--white);
+    font-size:14px;
+    font-weight:700;
+    padding: 12px 18px;
+    border-radius: 6px;
+    white-space:nowrap;
+    flex-shrink:0;
+  }
+
+  .urgent-footer{
+    text-align:center;
+    padding: 20px;
+  }
+  .urgent-footer a{
+    color: var(--pink-main);
+    font-weight:700;
+    font-size:15px;
+  }
+
+  /* ===== Recent sharing ===== */
+  .recent-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding: 8px 4px 22px;
+  }
+  .recent-header-left{
+    display:flex;
+    align-items:center;
+    gap:14px;
+  }
+  .recent-header h2{
+    font-size:19px;
+    font-weight:900;
+  }
+  .recent-header .sub{
+    font-size:14px;
+    color:#999;
+    font-weight:500;
+  }
+  .recent-header .more{
+    color:#999;
+    font-weight:700;
+    font-size:14px;
+  }
+
+  .card-grid{
+    display:grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap:20px;
+  }
+
+  .card{
+    border:1px solid #f0f0f0;
+    border-radius: 10px;
+    overflow:hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+  }
+
+  .card-image{
+    position:relative;
+    background: var(--pink-card);
+    aspect-ratio: 1/1;
+  }
+  .card-image .icon-sq{
+    position:absolute;
+    top:10px;
+    right:10px;
+    background: var(--gray);
+  }
+
+  .card-body{
+    padding: 16px;
+  }
+  .card-body .title{
+    font-size:16px;
+    font-weight:700;
+    margin-bottom:8px;
+  }
+  .card-body .meta{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    font-size:12.5px;
+    color:#999;
+    margin-bottom:12px;
+  }
+  .card-body .meta .mini-icon{
+    width:14px;
+    height:14px;
+    border-radius:3px;
+    background:var(--gray);
+    display:inline-block;
+  }
+  .card-body .hashtags{
+    display:flex;
+    gap:6px;
+    flex-wrap:wrap;
+  }
+  .card-body .hashtags span{
+    font-size:12px;
+    color:#888;
+    background:#f7f7f7;
+    padding:5px 9px;
+    border-radius: 5px;
+  }
+
+  /* ===== Stats ===== */
+  .stats{
+    display:flex;
+    justify-content:space-around;
+    align-items:center;
+    padding: 56px 40px;
+    background: var(--white);
+    border-top: 1px solid #f2f2f2;
+  }
+  .stat-item{
+    text-align:center;
+  }
+  .stat-item .num{
+    font-size:38px;
+    font-weight:900;
+    color: #F5A28E;
+    margin-bottom:8px;
+  }
+  .stat-item .label{
+    font-size:14px;
+    color:#777;
+    font-weight:500;
+  }
+
+  /* ===== Footer ===== */
+  footer{
+    background: var(--pink-bg);
+    padding: 40px;
+  }
+  footer .company{
+    font-size:18px;
+    font-weight:900;
+    margin-bottom:16px;
+  }
+  footer .info-line{
+    font-size:13.5px;
+    color:#555;
+    margin-bottom:12px;
+  }
+  footer .info-line a{ color:#555; }
+  footer .links a{
+    margin-right:14px;
+  }
+  footer .copyright{
+    font-size:12.5px;
+    color:#999;
+    margin-top:12px;
+  }
+
+  @media (max-width: 1100px){
+    .card-grid{ grid-template-columns: repeat(3, 1fr); }
+    nav{ gap:28px; }
+  }
+  @media (max-width: 700px){
+    header{ flex-wrap:wrap; gap:14px; padding:16px 20px; }
+    .header-actions{ gap:8px; }
+    .btn-signup, .btn-login{ padding:10px 16px; font-size:14px; }
+    nav{ order:3; width:100%; justify-content:space-between; gap:0; }
+    .wrap, .hero, .section-wrap, .stats, footer{ padding-left:20px; padding-right:20px; }
+    .categories{ overflow-x:auto; justify-content:flex-start; padding:28px 20px; }
+    .card-grid{ grid-template-columns: repeat(2, 1fr); }
+    .stats{ flex-wrap:wrap; gap:28px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo"><span class="cherry">🍒</span> 아이 봄</div>
+  <nav>
+    <a href="#">나눔 게시판</a>
+    <a href="#">요청 게시판</a>
+    <a href="#">육아소식</a>
+  </nav>
+  <div class="header-actions">
+    <a href="/member/add" class="btn-signup">회원가입</a>
+    <a href="/member/login" class="btn-login">로그인</a>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap" style="padding:0;">
+    <div class="hero-left">
+      <h1>아이를 위한 나눔, 아이봄</h1>
+      <p>엄마와 아이를 위한 따뜻한 나눔 커뮤니티</p>
+      <div class="search-bar">
+        <input type="text" placeholder="검색어를 입력해주세요">
+        <div class="search-icon-btn">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </div>
+      </div>
+      <div class="hero-buttons">
+        <button class="btn-share">나눔 글쓰기</button>
+        <button class="btn-request">요청 글쓰기</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="categories">
+  <div class="category active">
+    <div class="icon-circle">아이콘</div>
+    <span class="label">전체</span>
+  </div>
+  <div class="divider"></div>
+  <div class="category">
+    <div class="icon-circle">아이콘</div>
+    <span class="label">수유</span>
+  </div>
+  <div class="divider"></div>
+  <div class="category">
+    <div class="icon-circle">아이콘</div>
+    <span class="label">의류</span>
+  </div>
+  <div class="divider"></div>
+  <div class="category">
+    <div class="icon-circle">아이콘</div>
+    <span class="label">외출</span>
+  </div>
+  <div class="divider"></div>
+  <div class="category">
+    <div class="icon-circle">아이콘</div>
+    <span class="label">위생</span>
+  </div>
+  <div class="divider"></div>
+  <div class="category">
+    <div class="icon-circle">아이콘</div>
+    <span class="label">수면</span>
+  </div>
+  <div class="divider"></div>
+  <div class="category">
+    <div class="icon-circle">아이콘</div>
+    <span class="label">놀이</span>
+  </div>
+  <div class="divider"></div>
+  <div class="category">
+    <div class="icon-circle">아이콘</div>
+    <span class="label">건강</span>
+  </div>
+</section>
+
+<div class="wrap section-wrap">
+  <div class="urgent-box">
+    <div class="urgent-header">
+      <div class="icon-sq">아이콘</div>
+      <h2>긴급 요청</h2>
+      <span class="sub">지금 도움이 필요한 이웃이 있어요!</span>
+    </div>
+
+    <!-- repeat 5 rows -->
+    <div class="urgent-row">
+      <span class="tag-urgent">급해요</span>
+      <div class="urgent-content">
+        <div class="title">요청 게시글의 제목이 들어갑니다.</div>
+        <div class="meta"><span>서울 강남구</span><span>·</span><span>유아용품</span><span class="hashtag"># 수면</span></div>
+      </div>
+      <div class="urgent-stats">
+        <span class="stat-pill"><span class="mini-icon"></span>00</span>
+        <span class="stat-pill"><span class="mini-icon"></span>00</span>
+      </div>
+      <button class="btn-help">도와줄게요!</button>
+    </div>
+
+    <div class="urgent-row">
+      <span class="tag-urgent">급해요</span>
+      <div class="urgent-content">
+        <div class="title">요청 게시글의 제목이 들어갑니다.</div>
+        <div class="meta"><span>서울 강남구</span><span>·</span><span>유아용품</span><span class="hashtag"># 수면</span></div>
+      </div>
+      <div class="urgent-stats">
+        <span class="stat-pill"><span class="mini-icon"></span>00</span>
+        <span class="stat-pill"><span class="mini-icon"></span>00</span>
+      </div>
+      <button class="btn-help">도와줄게요!</button>
+    </div>
+
+    <div class="urgent-row">
+      <span class="tag-urgent">급해요</span>
+      <div class="urgent-content">
+        <div class="title">요청 게시글의 제목이 들어갑니다.</div>
+        <div class="meta"><span>서울 강남구</span><span>·</span><span>유아용품</span><span class="hashtag"># 수면</span></div>
+      </div>
+      <div class="urgent-stats">
+        <span class="stat-pill"><span class="mini-icon"></span>00</span>
+        <span class="stat-pill"><span class="mini-icon"></span>00</span>
+      </div>
+      <button class="btn-help">도와줄게요!</button>
+    </div>
+
+    <div class="urgent-row">
+      <span class="tag-urgent">급해요</span>
+      <div class="urgent-content">
+        <div class="title">요청 게시글의 제목이 들어갑니다.</div>
+        <div class="meta"><span>서울 강남구</span><span>·</span><span>유아용품</span><span class="hashtag"># 수면</span></div>
+      </div>
+      <div class="urgent-stats">
+        <span class="stat-pill"><span class="mini-icon"></span>00</span>
+        <span class="stat-pill"><span class="mini-icon"></span>00</span>
+      </div>
+      <button class="btn-help">도와줄게요!</button>
+    </div>
+
+    <div class="urgent-row">
+      <span class="tag-urgent">급해요</span>
+      <div class="urgent-content">
+        <div class="title">요청 게시글의 제목이 들어갑니다.</div>
+        <div class="meta"><span>서울 강남구</span><span>·</span><span>유아용품</span><span class="hashtag"># 수면</span></div>
+      </div>
+      <div class="urgent-stats">
+        <span class="stat-pill"><span class="mini-icon"></span>00</span>
+        <span class="stat-pill"><span class="mini-icon"></span>00</span>
+      </div>
+      <button class="btn-help">도와줄게요!</button>
+    </div>
+
+    <div class="urgent-footer">
+      <a href="#">더 많은 요청 보기 &gt;</a>
+    </div>
+  </div>
+</div>
+
+<div class="wrap section-wrap">
+  <div class="recent-header">
+    <div class="recent-header-left">
+      <div class="icon-sq">아이콘</div>
+      <h2>최근 나눔</h2>
+      <span class="sub">따뜻한 나눔이 이어지고 있어요</span>
+    </div>
+    <a class="more" href="#">더보기 &gt;</a>
+  </div>
+
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-image"><div class="icon-sq">아이콘</div></div>
+      <div class="card-body">
+        <div class="title">글 제목</div>
+        <div class="meta"><span class="mini-icon"></span> 서울 강남구 · 1시간전</div>
+        <div class="hashtags"><span># 수면</span><span># 0~12개월</span></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-image"><div class="icon-sq">아이콘</div></div>
+      <div class="card-body">
+        <div class="title">글 제목</div>
+        <div class="meta"><span class="mini-icon"></span> 서울 강남구 · 1시간전</div>
+        <div class="hashtags"><span># 수면</span><span># 0~12개월</span></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-image"><div class="icon-sq">아이콘</div></div>
+      <div class="card-body">
+        <div class="title">글 제목</div>
+        <div class="meta"><span class="mini-icon"></span> 서울 강남구 · 1시간전</div>
+        <div class="hashtags"><span># 수면</span><span># 0~12개월</span></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-image"><div class="icon-sq">아이콘</div></div>
+      <div class="card-body">
+        <div class="title">글 제목</div>
+        <div class="meta"><span class="mini-icon"></span> 서울 강남구 · 1시간전</div>
+        <div class="hashtags"><span># 수면</span><span># 0~12개월</span></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-image"><div class="icon-sq">아이콘</div></div>
+      <div class="card-body">
+        <div class="title">글 제목</div>
+        <div class="meta"><span class="mini-icon"></span> 서울 강남구 · 1시간전</div>
+        <div class="hashtags"><span># 수면</span><span># 0~12개월</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section class="stats">
+  <div class="stat-item">
+    <div class="num">1,234</div>
+    <div class="label">총 나눔 건수</div>
+  </div>
+  <div class="stat-item">
+    <div class="num">567</div>
+    <div class="label">회원 수</div>
+  </div>
+  <div class="stat-item">
+    <div class="num">89%</div>
+    <div class="label">나눔 완료율</div>
+  </div>
+  <div class="stat-item">
+    <div class="num">98%</div>
+    <div class="label">만족도</div>
+  </div>
+</section>
+
+<footer>
+  <div class="company">(주)iBom</div>
+  <div class="info-line">대표 아무개&nbsp;&nbsp;|&nbsp;위치: 대충 어딘가의 주소지&nbsp;&nbsp;|&nbsp;사업자번호: 144-456-898&nbsp;&nbsp;|&nbsp;대표전화: 1544-5656</div>
+  <div class="info-line links">
+    <a href="#">개인정보취급방침</a>&nbsp;&nbsp;|&nbsp;<a href="#">이용약관</a>&nbsp;&nbsp;|&nbsp;<a href="#">손해배상 청구절차</a>
+  </div>
+  <div class="info-line">대표 상담 전화: 1544-5656&nbsp;&nbsp;|&nbsp;주말 및 공휴일 상담 가능합니다. (오전 9시 ~ 오후 11시)</div>
+  <div class="copyright">COPYRIGHT@.ALL RIGHT RESERVED.</div>
+</footer>
+
+</body>
+</html>

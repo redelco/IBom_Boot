@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>회원가입 - 아이봄</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --pink-bg: #FFEDED;
+    --gray: #D9D9D9;
+    --pink-card: #FFE9E4;
+    --pink-main: #F8466D;
+    --white: #FFFFFF;
+    --black: #000000;
+  }
+
+  *{ box-sizing:border-box; margin:0; padding:0; }
+
+  body{
+    font-family:'Noto Sans KR', sans-serif;
+    color:var(--black);
+    background:var(--pink-bg);
+    -webkit-font-smoothing:antialiased;
+  }
+
+  a{ text-decoration:none; color:inherit; }
+  button{ font-family:inherit; cursor:pointer; border:none; }
+
+  /* ===== Header ===== */
+  header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding: 18px 40px;
+    background: var(--white);
+    border-bottom: 1px solid #f2f2f2;
+  }
+
+  .logo{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    font-size:22px;
+    font-weight:900;
+  }
+  .logo .cherry{ font-size:20px; }
+
+  nav{
+    display:flex;
+    gap:56px;
+  }
+  nav a{
+    font-size:16px;
+    font-weight:500;
+    color:#222;
+  }
+
+  .btn-login{
+    background: var(--pink-main);
+    color: var(--white);
+    padding: 12px 26px;
+    border-radius: 8px;
+    font-size:15px;
+    font-weight:700;
+  }
+
+  /* ===== Signup card ===== */
+  .page{
+    display:flex;
+    justify-content:center;
+    padding: 40px 20px 80px;
+  }
+
+  .signup-card{
+    width:100%;
+    max-width: 640px;
+    background: var(--white);
+    border-radius: 14px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    padding: 48px 52px 44px;
+  }
+
+  .signup-title{
+    text-align:center;
+    font-size:26px;
+    font-weight:900;
+    color: var(--pink-main);
+    margin-bottom:8px;
+  }
+
+  .signup-sub{
+    text-align:center;
+    font-size:14px;
+    color: #f2a9b8;
+    font-weight:500;
+    margin-bottom:40px;
+  }
+
+  .field{
+    margin-bottom: 26px;
+  }
+
+  .field label{
+    display:block;
+    font-size:15px;
+    font-weight:700;
+    margin-bottom:10px;
+  }
+
+  .field-row{
+    display:flex;
+    gap:10px;
+  }
+
+  .input, input[type="text"], input[type="password"], input[type="email"], input[type="tel"]{
+    width:100%;
+    border:1px solid #e3e3e3;
+    border-radius: 8px;
+    padding: 14px 16px;
+    font-size:15px;
+    font-family:inherit;
+    outline:none;
+    color:#333;
+  }
+  input::placeholder{ color:#c6c6c6; }
+  input:focus{ border-color: var(--pink-main); }
+
+  .field-row input{ flex:1; }
+
+  .btn-action{
+    background: var(--pink-main);
+    color: var(--white);
+    font-size:14px;
+    font-weight:700;
+    padding: 0 20px;
+    border-radius: 8px;
+    white-space:nowrap;
+    flex-shrink:0;
+  }
+
+  .stacked-inputs{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+  }
+
+  .timer-input{
+    position:relative;
+    flex:1;
+  }
+  .timer-input input{
+    padding-right: 60px;
+  }
+  .timer{
+    position:absolute;
+    top:50%;
+    right:16px;
+    transform: translateY(-50%);
+    color: var(--pink-main);
+    font-size:14px;
+    font-weight:700;
+  }
+
+  .phone-block .field-row{
+    margin-bottom:12px;
+  }
+
+  /* checkboxes */
+  .checkbox-row{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:16px;
+  }
+  .checkbox-row input[type="checkbox"]{
+    width:18px;
+    height:18px;
+    accent-color: var(--pink-main);
+    cursor:pointer;
+    flex-shrink:0;
+  }
+  .checkbox-row .agree-label{
+    font-size:15px;
+    font-weight:700;
+  }
+
+  .agree-box{
+    background: var(--pink-bg);
+    border-radius: 10px;
+    padding: 18px 20px;
+    margin-bottom: 30px;
+  }
+  .agree-item{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding: 6px 0;
+  }
+  .agree-item-left{
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .agree-item-left span.optional{
+    font-size:13px;
+    color:#999;
+    font-weight:400;
+  }
+  .agree-item label{
+    font-size:14.5px;
+    font-weight:500;
+    color:#333;
+  }
+  .agree-item .detail{
+    font-size:13px;
+    color:#aaa;
+  }
+
+  .btn-submit{
+    width:100%;
+    background: var(--pink-main);
+    color: var(--white);
+    font-size:17px;
+    font-weight:700;
+    padding: 18px 0;
+    border-radius: 10px;
+  }
+
+  @media (max-width:700px){
+    header{ padding:16px 20px; flex-wrap:wrap; gap:12px; }
+    nav{ gap:24px; order:3; width:100%; justify-content:space-between; }
+    .signup-card{ padding: 36px 24px 32px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo"><span class="cherry">🍒</span> 아이 봄</div>
+  <nav>
+    <a href="#">나눔 게시판</a>
+    <a href="#">요청 게시판</a>
+    <a href="#">육아소식</a>
+  </nav>
+  <button type="button" class="btn-login">로그인</button>
+</header>
+
+<div class="page">
+  <div class="signup-card">
+
+    <form action="/member/add" method="post">
+
+      <div class="signup-title">회원가입</div>
+      <div class="signup-sub">함께 키우는 아름다운 나눔 문화</div>
+
+      <div class="field">
+        <label for="LOGIN_ID">아이디</label>
+        <div class="field-row">
+          <input type="text" id="LOGIN_ID" name="LOGIN_ID">
+          <button type="button" class="btn-action">중복 검색</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="PASSWORD">비밀번호</label>
+        <div class="stacked-inputs">
+          <input type="password" id="PASSWORD" name="PASSWORD">
+          <input type="password" id="passwordConfirm" name="passwordConfirm" placeholder="비밀번호 확인">
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="EMAIL">이메일</label>
+        <input type="email" id="EMAIL" name="EMAIL">
+      </div>
+
+      <div class="field">
+        <label for="NICKNAME">닉네임</label>
+        <input type="text" id="NICKNAME" name="NICKNAME">
+      </div>
+
+      <div class="field phone-block">
+        <label for="PHONE">휴대전화 번호</label>
+        <div class="field-row">
+          <input type="tel" id="PHONE" name="PHONE" placeholder="010-0000-0000">
+          <button type="button" class="btn-action">휴대폰 인증</button>
+        </div>
+        <div class="field-row">
+          <div class="timer-input">
+            <input type="text" name="authCode" placeholder="인증번호를 입력해주세요">
+            <span class="timer">05:00</span>
+          </div>
+          <button type="button" class="btn-action">확인</button>
+        </div>
+      </div>
+
+      <div class="checkbox-row">
+        <input type="checkbox" id="agree-all">
+        <label class="agree-label" for="agree-all">전체 동의</label>
+      </div>
+
+      <div class="agree-box">
+        <div class="agree-item">
+          <div class="agree-item-left">
+            <input type="checkbox" id="agree-terms" name="agreeTerms">
+            <label for="agree-terms">이용약관 동의</label>
+          </div>
+          <span class="detail">상세 보기</span>
+        </div>
+        <div class="agree-item">
+          <div class="agree-item-left">
+            <input type="checkbox" id="agree-privacy" name="agreePrivacy">
+            <label for="agree-privacy">개인정보 수집 · 이용 동의</label>
+          </div>
+          <span class="detail">상세 보기</span>
+        </div>
+        <div class="agree-item">
+          <div class="agree-item-left">
+            <input type="checkbox" id="agree-marketing" name="agreeMarketing">
+            <label for="agree-marketing">마케팅 정보 수신 동의 <span class="optional">(선택)</span></label>
+          </div>
+          <span class="detail">상세 보기</span>
+        </div>
+      </div>
+
+      <button type="submit" class="btn-submit">가입하기</button>
+
+    </form>
+
+  </div>
+</div>
+
+</body>
+</html>
