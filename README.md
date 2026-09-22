@@ -139,3 +139,35 @@ CREATE TABLE USER_BLOCKS (
 
 ALTER TABLE POLICIES ADD COLUMN CATEGORY VARCHAR(50) AFTER TITLE;
 ALTER TABLE POLICIES ADD COLUMN SUMMARY VARCHAR(300) AFTER CATEGORY;
+
+
+INSERT INTO POLICIES (TITLE, CATEGORY, SUMMARY, CONTENT, SCOPE, REGION, SOURCE_URL, IS_ACTIVE) VALUES
+('2026년 부모급여 지원금 확대 안내', '부모급여', '0~1세 아동 가정에 지급되는 부모급여가 인상됩니다.', '부모의 양육 부담을 덜고 아이의 건강한 성장을 지원하기 위해 2026년부터 부모급여 지원금이 확대됩니다.', 'GOVERNMENT', '전국', 'https://www.bokjiro.go.kr', 1),
+('서울시 산후조리비 지원 신청 안내', '산후조리비', '출산 가정에 산후조리 비용을 지원합니다.', '서울시에 거주하는 출산 가정에 산후조리 비용을 지원합니다.', 'METRO', '서울', NULL, 1),
+('아이돌봄 서비스 이용 시간 확대', '아이돌봄', '정부 지원 시간이 연 100시간 늘어납니다.', '맞벌이 가정의 돌봄 공백을 줄이기 위해 아이돌봄 서비스 지원 시간을 확대합니다.', 'GOVERNMENT', '전국', 'https://www.idolbom.go.kr', 1),
+('경기도 다자녀 가정 교통비 지원', '다자녀혜택', '두 자녀 이상 가정에 교통비를 지원합니다.', '경기도에 거주하는 다자녀 가정을 대상으로 대중교통 이용요금을 지원합니다.', 'METRO', '경기', NULL, 1),
+('수원시 출산지원금 신청 방법', '출산지원금', '첫째 100만원, 둘째 200만원을 지원합니다.', '수원시에 출생신고한 가정에 출산지원금을 지급합니다.', 'LOCAL', '수원시', NULL, 1),
+('육아휴직 급여 상한액 인상', '육아휴직', '월 상한액이 250만원으로 올라갑니다.', '육아휴직을 사용하는 근로자의 소득 보전을 강화하기 위해 급여 상한액을 인상합니다.', 'GOVERNMENT', '전국', 'https://www.ei.go.kr', 1),
+('부산시 국공립 어린이집 확충 계획', '어린이집', '2026년까지 50곳을 추가로 설치합니다.', '부산시는 국공립 어린이집을 지속적으로 확충할 계획입니다.', 'METRO', '부산', NULL, 1),
+('영유아 건강검진 항목 확대', '의료지원', '검진 항목에 발달 평가가 추가됩니다.', '영유아의 성장 발달을 조기에 확인할 수 있도록 건강검진 항목을 확대합니다.', 'GOVERNMENT', '전국', NULL, 1),
+('제주도 임신부 교통비 지원', '부모급여', '임신부에게 교통비를 지원합니다.', '제주도에 거주하는 임신부를 대상으로 교통비를 지원합니다.', 'LOCAL', '제주', NULL, 1);
+
+
+
+UPDATE POLICIES SET CONTENT =
+'<p>부모의 양육 부담을 덜고 아이의 건강한 성장을 지원하기 위해<br>2026년부터 부모급여 지원금이 확대됩니다.</p>
+<h2 class="sec-title">지원 대상</h2>
+<ul><li>0~1세 아동을 둔 가정 (2025년 1월 1일 이후 출생아)</li></ul>
+<h2 class="sec-title">지원 내용</h2>
+<table class="info-table">
+  <thead><tr><th>연령</th><th>기준 지원금</th><th>변경 후 지원금</th></tr></thead>
+  <tbody>
+    <tr><td>0세(0~11개월)</td><td>월 70 만원</td><td class="highlight">월 100만원</td></tr>
+    <tr><td>1세(12~23개월)</td><td>월 35 만원</td><td class="highlight">월 50만원</td></tr>
+  </tbody>
+</table>
+<h2 class="sec-title">신청 방법</h2>
+<p class="indent">읍 · 면 · 동 주민센터 방문 또는 복지로에서 온라인 신청</p>
+<h2 class="sec-title">유의사항</h2>
+<ul><li>지원금은 아동 명의 계좌로 지급됩니다.</li></ul>'
+WHERE ID = 1;
