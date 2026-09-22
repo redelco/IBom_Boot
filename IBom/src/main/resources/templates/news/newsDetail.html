@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -134,6 +134,11 @@
   .btn-nav:hover{
     border-color: var(--blue-main);
     color: var(--blue-main);
+  }
+  .btn-nav.disabled{
+    color:#bbb;
+    border-color:#eee;
+    cursor:default;
   }
 
   /* ===== 본문 카드 ===== */
@@ -456,24 +461,29 @@
   <!-- ===== 목록으로 / 이전글 · 다음글 ===== -->
   <div class="detail-top">
     <!-- TODO: 육아소식 목록 URL은 Controller 매핑 추가 후 연결 -->
-    <a href="#" class="btn-back">
+    <a th:href="@{/news}" class="btn-back">
       <!-- 아이콘: 왼쪽 화살표 -->
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="11 18 5 12 11 6"/></svg>
       목록으로 돌아가기
     </a>
-
     <div class="nav-buttons">
-      <!-- TODO: 이전글 / 다음글 백엔드 연결 예정 -->
-      <button type="button" class="btn-nav">
-        <!-- 아이콘: 왼쪽 꺾쇠 -->
+      <a th:if="${prev != null}" th:href="@{/news/detail(id=${prev.id})}" class="btn-nav">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
         이전글
-      </button>
-      <button type="button" class="btn-nav">
+      </a>
+      <span th:unless="${prev != null}" class="btn-nav disabled">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
+        이전글
+      </span>
+
+      <a th:if="${next != null}" th:href="@{/news/detail(id=${next.id})}" class="btn-nav">
         다음글
-        <!-- 아이콘: 오른쪽 꺾쇠 -->
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
-      </button>
+      </a>
+      <span th:unless="${next != null}" class="btn-nav disabled">
+        다음글
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+      </span>
     </div>
   </div>
 
@@ -482,95 +492,39 @@
 
     <div class="title-row">
       <h1 class="post-title">
-        <span class="category">출산지원금</span><span class="dot">•</span>이곳에 제목이 들어갑니다
+        <span class="category" th:text="${policy.category}">출산지원금</span><span class="dot">•</span><span th:text="${policy.title}">이곳에 제목이 들어갑니다</span>
       </h1>
-      <!-- TODO: 스크랩 백엔드 연결 예정 -->
-      <button type="button" class="btn-scrap" id="btnScrap" aria-pressed="false">
-        <!-- 아이콘: 북마크 -->
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
-        스크랩
-      </button>
     </div>
 
-    <p class="post-summary">이곳에 정책 한줄 설명이 들어갑니다</p>
+    <p class="post-summary" th:text="${policy.summary}">이곳에 정책 한줄 설명이 들어갑니다</p>
 
     <div class="post-meta">
       <span class="meta-item">
-        <!-- 아이콘: 위치 핀 (범위/지역) -->
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg>
-        범위or지역
+        <span th:text="${scopeLabel} + ' · ' + ${policy.region}">중앙정부 · 전국</span>
       </span>
       <span class="meta-item">
-        <!-- 아이콘: 달력 (등록일) -->
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="3" x2="8" y2="7"/><line x1="16" y1="3" x2="16" y2="7"/></svg>
-        2026.00.00
-      </span>
-      <span class="meta-item">
-        <!-- 아이콘: 클립 (첨부파일) -->
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.4 11.05l-8.5 8.5a5 5 0 0 1-7.07-7.07l8.49-8.49a3.33 3.33 0 1 1 4.71 4.71l-8.49 8.49a1.67 1.67 0 0 1-2.36-2.36l7.79-7.78"/></svg>
-        첨부파일 1개
+        <span th:text="${#temporals.format(policy.createdAt, 'yyyy.MM.dd')}">2026.00.00</span>
       </span>
     </div>
 
     <!-- TODO: 본문은 DB에서 불러와 출력 예정 (아래는 화면 확인용 예시 내용) -->
-    <div class="post-content">
-      <p>부모의 양육 부담을 덜고 아이의 건강한 성장을 지원하기 위해<br>2025년부터 부모급여 지원금이 확대됩니다.</p>
-
-      <h2 class="sec-title">지원 대상</h2>
-      <ul>
-        <li>0~1세 아동을 둔 가정 (2023년 1월 1일 이후 출생아)</li>
-      </ul>
-
-      <h2 class="sec-title">지원 내용</h2>
-      <table class="info-table">
-        <thead>
-          <tr>
-            <th>연령</th>
-            <th>기준 지원금</th>
-            <th>변경 후 지원금</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>0세(0~11개월)</td>
-            <td>월 70 만원</td>
-            <td class="highlight">월 100만원</td>
-          </tr>
-          <tr>
-            <td>1세(12~23개월)</td>
-            <td>월 35 만원</td>
-            <td class="highlight">월 50만원</td>
-          </tr>
-        </tbody>
-      </table>
-
-      <h2 class="sec-title">신청 방법</h2>
-      <p class="indent">읍 • 면 • 동 주민센터 방문 또는 복지로(www.bokjiro.go.kr)에서 온라인 신청</p>
-
-      <h2 class="sec-title">신청 기간</h2>
-      <p class="indent">상시 신청 가능 (신청한 달부터 지원)</p>
-
-      <h2 class="sec-title">유의사항</h2>
-      <ul>
-        <li>지원금은 아동 명의 계좌로 지급됩니다.</li>
-        <li>자세한 내용은 첨부파일을 확인해주세요.</li>
-      </ul>
+    <!-- 본문은 DB의 CONTENT 를 그대로 출력 (관리자가 HTML 로 입력) -->
+    <div class="post-content" th:utext="${policy.content}">
+      본문이 이곳에 들어갑니다.
     </div>
 
     <!-- ===== 첨부파일 ===== -->
-    <section class="attach">
-      <h2>첨부파일</h2>
-      <!-- TODO: 백엔드 연결 시 .attach-item 한 개를 th:each 로 반복 출력 -->
+    <section class="attach" th:if="${policy.sourceUrl != null and !policy.sourceUrl.isEmpty()}">
+      <h2>원문 보기</h2>
       <div class="attach-item">
-        <!-- 아이콘: 문서 -->
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/></svg>
-        <span class="file-name">부모급여 지원 확대 안내문.pdf (1.2MB)</span>
-        <!-- TODO: 첨부파일 내려받기 백엔드 연결 예정 -->
-        <button type="button" class="btn-download">
-          <!-- 아이콘: 내려받기 -->
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><polyline points="7 11 12 16 17 11"/><path d="M4 20h16"/></svg>
-          다운로드
-        </button>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.5 1.5"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.5-1.5"/></svg>
+        <span class="file-name" th:text="${policy.sourceUrl}">https://www.bokjiro.go.kr</span>
+        <a th:href="${policy.sourceUrl}" target="_blank" class="btn-download">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          바로가기
+        </a>
       </div>
     </section>
 

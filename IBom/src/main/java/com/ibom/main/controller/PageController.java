@@ -37,17 +37,6 @@ public class PageController {
 		return "board/requestWrite";
 	}
 
-	/* ===== 육아소식 ===== */
-	@GetMapping("/news")
-	public String news() {
-		return "news/news";
-	}
-
-	@GetMapping("/news/detail")
-	public String newsDetail() {
-		return "news/newsDetail";
-	}
-
 	/* ===== 마이페이지 ===== */
 	@GetMapping("/mypage")
 	public String mypage() {
