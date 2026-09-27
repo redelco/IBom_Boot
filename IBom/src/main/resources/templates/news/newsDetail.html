@@ -439,9 +439,9 @@
     <nav>
       <a href="/board/share">나눔 게시판</a>
       <!-- TODO: 요청 게시판 URL은 Controller 매핑 추가 후 연결 -->
-      <a href="#">요청 게시판</a>
+      <a href="/board/request">요청 게시판</a>
       <!-- TODO: 육아소식 URL은 Controller 매핑 추가 후 연결 -->
-      <a href="#" class="active">육아소식</a>
+      <a href="/news/news" class="active">육아소식</a>
     </nav>
     <div class="header-actions">
       <!-- TODO: 알림 기능 연결 예정 -->
@@ -449,7 +449,7 @@
         <svg width="28" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
       </button>
       <!-- TODO: 마이페이지 연결 예정 -->
-      <a href="#" class="icon-btn" aria-label="마이페이지">
+      <a href="/mypage/mypage" class="icon-btn" aria-label="마이페이지">
         <svg width="34" height="34" viewBox="0 0 34 34" fill="none" aria-hidden="true"><circle cx="17" cy="17" r="15.5" stroke="#555" stroke-width="1.5"/><circle cx="17" cy="13" r="5" fill="#555"/><path d="M8 27c1.6-4.2 5-6.5 9-6.5s7.4 2.3 9 6.5" fill="#555"/></svg>
       </a>
     </div>
@@ -494,6 +494,14 @@
       <h1 class="post-title">
         <span class="category" th:text="${policy.category}">출산지원금</span><span class="dot">•</span><span th:text="${policy.title}">이곳에 제목이 들어갑니다</span>
       </h1>
+
+      <form th:action="@{/news/bookmark}" method="post" style="flex-shrink:0;">
+        <input type="hidden" name="id" th:value="${policy.id}">
+        <button type="submit" class="btn-scrap" th:classappend="${bookmarked} ? 'on' : ''">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+          <span th:text="${bookmarked} ? '스크랩 해제' : '스크랩'">스크랩</span>
+        </button>
+      </form>
     </div>
 
     <p class="post-summary" th:text="${policy.summary}">이곳에 정책 한줄 설명이 들어갑니다</p>
@@ -557,13 +565,7 @@
 </main>
 
 <script>
-  /* 스크랩 (화면 표시만) */
-  const btnScrap = document.getElementById('btnScrap');
-  btnScrap.addEventListener('click', () => {
-    const on = btnScrap.classList.toggle('on');
-    btnScrap.setAttribute('aria-pressed', on);
-    // TODO: 백엔드 API 연결 예정 (스크랩 추가/삭제)
-  });
+
 
   /* 도움이 되었어요 (화면 표시만) */
   const btnHelpful = document.getElementById('btnHelpful');

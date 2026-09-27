@@ -9,6 +9,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name="USERS")/*DB_USERS에 연결*/
 public class Member {
@@ -36,11 +38,14 @@ public class Member {
 	@Column(name = "REGION")/*컬럼 REGION*/
 	private String REGION;
 	
-	@Column(name = "PROfILE_IMAGE")/*컬럼 PROFILE_IMAGE*/
+	@Column(name = "PROFILE_IMAGE")/*컬럼 PROFILE_IMAGE*/
 	private String profileImage;
 
     @Column(name = "IS_ACTIVE")/*컬럼 IS_ACTIVE*/
     private Integer isActive;
+
+	@Column(name = "CREATED_AT", insertable = false, updatable = false)/*가입일*/
+	private LocalDateTime createdAt;
 
 	public Long getId() {
 		return id;
@@ -109,6 +114,8 @@ public class Member {
 	public Integer getIsActive() {
 		return isActive;
 	}
+
+	public LocalDateTime getCreatedAt() { return createdAt; }
 
 	public void setIsActive(Integer isActive) {
 		this.isActive = isActive;

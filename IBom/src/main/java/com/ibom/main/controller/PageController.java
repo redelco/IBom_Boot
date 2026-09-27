@@ -38,10 +38,6 @@ public class PageController {
 	}
 
 	/* ===== 마이페이지 ===== */
-	@GetMapping("/mypage")
-	public String mypage() {
-		return "mypage/mypage";
-	}
 
 	@GetMapping("/mypage/activity")
 	public String activity() {
