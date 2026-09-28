@@ -12,19 +12,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class PageController {
 
 	/* ===== 게시판 ===== */
-	@GetMapping("/board/request")
-	public String requestBoard() {
-		return "board/request";
-	}
-
 	@GetMapping("/board/shareDetail")
 	public String shareDetail() {
 		return "board/shareDetail";
-	}
-
-	@GetMapping("/board/requestDetail")
-	public String requestDetail() {
-		return "board/requestDetail";
 	}
 
 	@GetMapping("/board/shareWrite")
@@ -38,11 +28,6 @@ public class PageController {
 	}
 
 	/* ===== 마이페이지 ===== */
-
-	@GetMapping("/mypage/activity")
-	public String activity() {
-		return "mypage/activity";
-	}
 
 	@GetMapping("/mypage/settings")
 	public String settings() {

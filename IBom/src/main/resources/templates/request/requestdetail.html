@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>요청 게시글 상세 - 아이봄</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root{
+            --pink-bg: #FFEDED;
+            --gray: #D9D9D9;
+            --pink-card: #FFE9E4;
+            --pink-main: #F8466D;
+            --tag-urgent: #F28C9E;
+            --white: #FFFFFF;
+            --black: #000000;
+        }
+
+        *{ box-sizing:border-box; margin:0; padding:0; }
+
+        body{
+            font-family:'Noto Sans KR', sans-serif;
+            color:var(--black);
+            background:var(--pink-bg);
+            -webkit-font-smoothing:antialiased;
+        }
+
+        a{ text-decoration:none; color:inherit; }
+        button{ font-family:inherit; cursor:pointer; border:none; background:none; }
+
+        /* ===== Header ===== */
+        header{
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            padding: 18px 40px;
+            background: var(--white);
+            border-bottom: 1px solid #f2f2f2;
+        }
+
+        .logo{
+            display:flex;
+            align-items:center;
+            gap:6px;
+            font-size:22px;
+            font-weight:900;
+        }
+        .logo .cherry{ font-size:20px; }
+
+        nav{
+            display:flex;
+            gap:56px;
+        }
+        nav a{
+            font-size:16px;
+            font-weight:500;
+            color:#222;
+        }
+
+        .header-actions{
+            display:flex;
+            align-items:center;
+            gap:18px;
+        }
+
+        .btn-write{
+            display:flex;
+            align-items:center;
+            gap:8px;
+            background: var(--pink-main);
+            color: var(--white);
+            padding: 11px 20px;
+            border-radius: 8px;
+            font-size:14.5px;
+            font-weight:700;
+        }
+
+        .icon-btn{
+            width:22px;
+            height:22px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            color:#333;
+        }
+
+        /* ===== Page ===== */
+        .page{
+            display:flex;
+            justify-content:center;
+            padding: 40px 20px 80px;
+        }
+
+        .post-card{
+            width:100%;
+            max-width: 760px;
+            background: var(--white);
+            border-radius: 14px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            padding: 32px 40px 8px;
+        }
+
+        .post-topbar{
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            margin-bottom: 18px;
+        }
+
+        .tag-urgent{
+            background: var(--tag-urgent);
+            color: var(--white);
+            font-size:14px;
+            font-weight:700;
+            padding: 8px 18px;
+            border-radius: 20px;
+        }
+
+        .topbar-right{
+            display:flex;
+            align-items:center;
+            gap:18px;
+        }
+
+        .share-btn{
+            display:flex;
+            align-items:center;
+            gap:6px;
+            font-size:14px;
+            color:#555;
+            font-weight:500;
+        }
+        .share-btn .mini-icon{
+            width:16px;
+            height:16px;
+            border-radius:3px;
+            background: var(--gray);
+            display:inline-block;
+        }
+
+        .more-btn{
+            font-size:20px;
+            color:#999;
+            letter-spacing:1px;
+            line-height:1;
+            padding: 4px;
+        }
+
+        .post-title{
+            font-size:24px;
+            font-weight:700;
+            margin-bottom: 12px;
+        }
+
+        .post-meta{
+            font-size:14px;
+            color:#999;
+            margin-bottom: 26px;
+        }
+
+        .post-body{
+            font-size:15.5px;
+            line-height: 1.8;
+            color:#333;
+            margin-bottom: 30px;
+        }
+
+        .post-footer-row{
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            padding-bottom: 24px;
+        }
+
+        .post-category{
+            font-size:14px;
+            color:#999;
+        }
+
+        .post-stats{
+            display:flex;
+            align-items:center;
+            gap:14px;
+        }
+        .stat{
+            display:flex;
+            align-items:center;
+            gap:6px;
+            font-size:14px;
+            color:#888;
+        }
+        .stat .mini-icon{
+            width:15px;
+            height:15px;
+            border-radius:3px;
+            background: var(--gray);
+            display:inline-block;
+        }
+
+        .divider-full{
+            border:none;
+            border-top: 1px solid #eee;
+            margin: 0 -40px;
+        }
+
+        /* ===== Comments ===== */
+        .comments-section{
+            padding-top: 26px;
+        }
+
+        .comments-title{
+            font-size:19px;
+            font-weight:900;
+            margin-bottom: 20px;
+        }
+
+        .comment-input-row{
+            display:flex;
+            align-items:center;
+            gap:12px;
+            background: #fafafa;
+            border: 1px solid #eee;
+            border-radius: 10px;
+            padding: 6px 6px 6px 18px;
+            margin-bottom: 26px;
+        }
+        .comment-input-row input{
+            flex:1;
+            border:none;
+            outline:none;
+            background:transparent;
+            font-size:14.5px;
+            font-family:inherit;
+            padding: 12px 0;
+        }
+        .comment-input-row input::placeholder{ color:#bbb; }
+        .lock-icon{
+            color: var(--pink-main);
+            font-size:15px;
+            flex-shrink:0;
+        }
+        .btn-register{
+            background: var(--pink-main);
+            color: var(--white);
+            font-size:14px;
+            font-weight:700;
+            padding: 12px 22px;
+            border-radius: 8px;
+            flex-shrink:0;
+        }
+
+        .comment-list{
+            padding-bottom: 12px;
+        }
+
+        .comment{
+            display:flex;
+            gap:14px;
+            padding: 20px 0;
+            border-bottom: 1px solid #f2f2f2;
+        }
+
+        .comment.reply{
+            margin-left: 42px;
+            width: calc(100% - 42px);
+        }
+
+        .comment-avatar{
+            width:42px;
+            height:42px;
+            border-radius:50%;
+            background: #f1f1f1;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            flex-shrink:0;
+            color:#ccc;
+        }
+
+        .comment-main{
+            flex:1;
+            min-width:0;
+        }
+
+        .comment-name-row{
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+        }
+
+        .comment-name-left{
+            display:flex;
+            align-items:center;
+            gap:8px;
+        }
+
+        .comment-nickname{
+            font-size:15px;
+            font-weight:700;
+        }
+
+        .badge-author{
+            background: var(--tag-urgent);
+            color: var(--white);
+            font-size:11px;
+            font-weight:700;
+            padding: 3px 8px;
+            border-radius: 5px;
+        }
+
+        .comment-more{
+            font-size:18px;
+            color:#bbb;
+            letter-spacing:1px;
+        }
+
+        .comment-text{
+            font-size:14.5px;
+            color:#333;
+            margin: 8px 0 10px;
+            line-height:1.6;
+        }
+
+        .comment-bottom-row{
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+        }
+
+        .comment-meta{
+            display:flex;
+            align-items:center;
+            gap:12px;
+            font-size:13px;
+            color:#aaa;
+        }
+        .comment-meta .reply-link{
+            color:#999;
+            font-weight:500;
+            cursor:pointer;
+        }
+
+        .comment-like{
+            display:flex;
+            align-items:center;
+            gap:6px;
+            font-size:13px;
+            color:#999;
+        }
+        .comment-like .mini-icon{
+            width:20px;
+            height:16px;
+            border-radius:3px;
+            background: var(--gray);
+            display:inline-block;
+            font-size:8px;
+            text-align:center;
+            line-height:16px;
+            color:#666;
+        }
+
+        @media (max-width:700px){
+            header{ padding:16px 20px; flex-wrap:wrap; gap:12px; }
+            nav{ gap:24px; order:3; width:100%; justify-content:space-between; }
+            .post-card{ padding: 26px 20px 8px; }
+            .divider-full{ margin: 0 -20px; }
+            .comment.reply{ margin-left:24px; width: calc(100% - 24px); }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo"><span class="cherry">🍒</span> 아이 봄</div>
+    <nav>
+        <a href="#">나눔 게시판</a>
+        <a href="#">요청 게시판</a>
+        <a href="#">육아소식</a>
+    </nav>
+    <div class="header-actions">
+        <a href="#" class="btn-write">✎ 글 작성하기</a>
+        <button class="icon-btn" aria-label="알림">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+        </button>
+        <button class="icon-btn" aria-label="마이페이지">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9.5"/><circle cx="12" cy="10" r="3.2"/><path d="M6 19c1.2-2.6 3.4-4 6-4s4.8 1.4 6 4"/></svg>
+        </button>
+    </div>
+</header>
+
+<div class="page">
+    <div class="post-card">
+
+        <div class="post-topbar">
+            <span class="tag-urgent">급해요</span>
+            <div class="topbar-right">
+                <span class="share-btn"><span class="mini-icon"></span> 공유하기</span>
+                <button class="more-btn">⋯</button>
+            </div>
+        </div>
+
+        <h1 class="post-title">게시글 제목이 이곳에 들어갑니다</h1>
+        <div class="post-meta">서울시 마포구 · 1시간 전</div>
+
+        <p class="post-body">
+            동해물과 백두산이 마르고 닳도록 하느님이 보우하사 우리나라 만세.<br>
+            무궁화 삼천리 화려강산. 대한사람 대한으로 길이 보전하세.<br>
+            남산 위에 저 소나무 철갑을 두른듯. 바람서리 불변함은 우리 기상일세.
+        </p>
+
+        <div class="post-footer-row">
+            <div class="post-category">카테고리 · 세부 카테고리</div>
+            <div class="post-stats">
+                <span class="stat"><span class="mini-icon"></span> 00</span>
+                <span class="stat"><span class="mini-icon"></span> 00</span>
+            </div>
+        </div>
+
+        <hr class="divider-full">
+
+        <div class="comments-section">
+            <div class="comments-title">댓글 (4)</div>
+
+            <div class="comment-input-row">
+                <input type="text" placeholder="댓글 내용이 표시됩니다.">
+                <span class="lock-icon">🔒</span>
+                <button class="btn-register">등록</button>
+            </div>
+
+            <div class="comment-list">
+
+                <div class="comment">
+                    <div class="comment-avatar">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="3.5"/><path d="M5 19c1.4-3 4-4.8 7-4.8s5.6 1.8 7 4.8"/></svg>
+                    </div>
+                    <div class="comment-main">
+                        <div class="comment-name-row">
+                            <div class="comment-name-left">
+                                <span class="comment-nickname">닉네임</span>
+                            </div>
+                            <button class="comment-more">⋯</button>
+                        </div>
+                        <div class="comment-text">이곳에 댓글 내용이 들어갑니다.</div>
+                        <div class="comment-bottom-row">
+                            <div class="comment-meta">
+                                <span>2026.04.15. 18:42</span>
+                                <span class="reply-link">답글쓰기</span>
+                            </div>
+                            <span class="comment-like"><span class="mini-icon">아이콘</span> 1</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="comment reply">
+                    <div class="comment-avatar">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="3.5"/><path d="M5 19c1.4-3 4-4.8 7-4.8s5.6 1.8 7 4.8"/></svg>
+                    </div>
+                    <div class="comment-main">
+                        <div class="comment-name-row">
+                            <div class="comment-name-left">
+                                <span class="badge-author">작성자</span>
+                                <span class="comment-nickname">닉네임</span>
+                            </div>
+                            <button class="comment-more">⋯</button>
+                        </div>
+                        <div class="comment-text">이곳에 댓글 내용이 들어갑니다.</div>
+                        <div class="comment-bottom-row">
+                            <div class="comment-meta">
+                                <span>2026.04.15. 18:42</span>
+                                <span class="reply-link">답글쓰기</span>
+                            </div>
+                            <span class="comment-like"><span class="mini-icon">아이콘</span> 1</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="comment reply">
+                    <div class="comment-avatar">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="3.5"/><path d="M5 19c1.4-3 4-4.8 7-4.8s5.6 1.8 7 4.8"/></svg>
+                    </div>
+                    <div class="comment-main">
+                        <div class="comment-name-row">
+                            <div class="comment-name-left">
+                                <span class="comment-nickname">닉네임</span>
+                            </div>
+                            <button class="comment-more">⋯</button>
+                        </div>
+                        <div class="comment-text">이곳에 댓글 내용이 들어갑니다.</div>
+                        <div class="comment-bottom-row">
+                            <div class="comment-meta">
+                                <span>2026.04.15. 18:42</span>
+                                <span class="reply-link">답글쓰기</span>
+                            </div>
+                            <span class="comment-like"><span class="mini-icon">아이콘</span> 1</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="comment">
+                    <div class="comment-avatar">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="3.5"/><path d="M5 19c1.4-3 4-4.8 7-4.8s5.6 1.8 7 4.8"/></svg>
+                    </div>
+                    <div class="comment-main">
+                        <div class="comment-name-row">
+                            <div class="comment-name-left">
+                                <span class="comment-nickname">닉네임</span>
+                            </div>
+                            <button class="comment-more">⋯</button>
+                        </div>
+                        <div class="comment-text">이곳에 댓글 내용이 들어갑니다.</div>
+                        <div class="comment-bottom-row">
+                            <div class="comment-meta">
+                                <span>2026.04.15. 18:42</span>
+                                <span class="reply-link">답글쓰기</span>
+                            </div>
+                            <span class="comment-like"><span class="mini-icon">아이콘</span> 1</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>

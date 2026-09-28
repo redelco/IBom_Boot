@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -482,9 +482,9 @@
     <nav>
       <a href="/board/share">나눔 게시판</a>
       <!-- TODO: 요청 게시판 URL은 Controller 매핑 추가 후 연결 -->
-      <a href="#">요청 게시판</a>
+      <a href="/board/request">요청 게시판</a>
       <!-- TODO: 육아소식 URL은 Controller 매핑 추가 후 연결 -->
-      <a href="#">육아소식</a>
+      <a href="/news/news">육아소식</a>
     </nav>
     <div class="header-actions">
       <!-- TODO: 글 작성 페이지 연결 예정 -->
@@ -497,7 +497,7 @@
         <svg width="28" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
       </button>
       <!-- TODO: 마이페이지 연결 예정 -->
-      <a href="#" class="icon-btn" aria-label="마이페이지">
+      <a href="/mypage/mypage" class="icon-btn" aria-label="마이페이지">
         <svg width="34" height="34" viewBox="0 0 34 34" fill="none" aria-hidden="true"><circle cx="17" cy="17" r="15.5" stroke="#555" stroke-width="1.5"/><circle cx="17" cy="13" r="5" fill="#555"/><path d="M8 27c1.6-4.2 5-6.5 9-6.5s7.4 2.3 9 6.5" fill="#555"/></svg>
       </a>
     </div>
@@ -513,14 +513,14 @@
     <ul class="menu-list">
       <li>
         <!-- TODO: 마이페이지 홈 URL은 Controller 매핑 추가 후 연결 -->
-        <a href="#" class="menu-item">
+        <a href="/mypage" class="menu-item">
           <!-- 아이콘: 집 -->
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11L12 3l9 8"/><path d="M5 10v11h14V10"/><path d="M9.5 21v-6h5v6"/></svg>
           홈
         </a>
       </li>
       <li>
-        <a href="#" class="menu-item active">
+        <a href="/mypage/activity" class="menu-item active">
           <!-- 아이콘: 목록 -->
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="9" y1="6" x2="20" y2="6"/><line x1="9" y1="12" x2="20" y2="12"/><line x1="9" y1="18" x2="20" y2="18"/><circle cx="4.5" cy="6" r="1.4" fill="currentColor" stroke="none"/><circle cx="4.5" cy="12" r="1.4" fill="currentColor" stroke="none"/><circle cx="4.5" cy="18" r="1.4" fill="currentColor" stroke="none"/></svg>
           내활동
@@ -542,319 +542,74 @@
 
     <div class="page-head">
       <h1>내 활동</h1>
-      <p id="pageDesc">내가 작성한 나눔 글을 확인하고 관리할 수 있어요.</p>
+      <p th:text="${pageDesc}">내가 작성한 나눔 글을 확인하고 관리할 수 있어요.</p>
     </div>
 
     <div class="tab-bar">
-      <!-- 나눔 / 요청 / 관심 -->
-      <div class="tabs" id="mainTabs">
-        <button type="button" class="tab active" data-tab="SHARE">나눔</button>
-        <button type="button" class="tab" data-tab="REQUEST">요청</button>
-        <button type="button" class="tab" data-tab="FAVORITE">관심</button>
+      <div class="tabs">
+        <a th:href="@{/mypage/activity(tab='SHARE')}"    class="tab" th:classappend="${tab == 'SHARE'} ? 'active' : ''">나눔</a>
+        <a th:href="@{/mypage/activity(tab='REQUEST')}"  class="tab" th:classappend="${tab == 'REQUEST'} ? 'active' : ''">요청</a>
+        <a th:href="@{/mypage/activity(tab='FAVORITE')}" class="tab" th:classappend="${tab == 'FAVORITE'} ? 'active' : ''">관심</a>
       </div>
 
       <div class="tab-right">
-        <!-- 관심 탭에서만 보임 -->
-        <div class="fav-types" id="favTypes" hidden>
-          <label><input type="radio" name="favType" value="SHARE" checked> 나눔</label>
-          <label><input type="radio" name="favType" value="REQUEST"> 요청</label>
-          <label><input type="radio" name="favType" value="NEWS"> 육아소식</label>
-        </div>
-
-        <select class="select" id="sortSelect" aria-label="정렬">
-          <option value="latest">최신순</option>
-          <option value="oldest">오래된순</option>
-        </select>
+        <form th:action="@{/mypage/activity}" method="get">
+          <input type="hidden" name="tab" th:value="${tab}">
+          <select class="select" name="sort" onchange="this.form.submit()" aria-label="정렬">
+            <option value="latest" th:selected="${sort == 'latest'}">최신순</option>
+            <option value="oldest" th:selected="${sort == 'oldest'}">오래된순</option>
+          </select>
+        </form>
       </div>
     </div>
 
     <!-- TODO: 백엔드 연결 시 목록 한 줄을 th:each 로 반복 출력 -->
-    <div id="listArea"></div>
+    <div class="card" th:if="${tab == 'SHARE' or tab == 'REQUEST'}">
+
+      <div class="post-item" th:each="post : ${posts}">
+        <div class="post-thumb" th:if="${tab == 'SHARE'}">이미지</div>
+
+        <div class="post-main">
+          <div class="post-head">
+            <span class="badge share" th:if="${tab == 'SHARE'}"
+                  th:text="${post.status == 'COMPLETED'} ? '나눔 완료' : '나눔 중'">나눔 중</span>
+            <span th:if="${tab == 'REQUEST'}"
+                  th:class="'badge ' + (${post.urgency == 'URGENT'} ? 'urgent' : 'normal')"
+                  th:text="${post.urgency == 'URGENT'} ? '급해요' : '여유있어요'">급해요</span>
+            <!-- TODO: 게시글 상세 페이지 연결 예정 (A 담당) -->
+            <a href="#" class="post-title" th:text="${post.title}">게시글의 제목이 들어갑니다.</a>
+          </div>
+          <div class="post-time" th:text="${#temporals.format(post.createdAt, 'yyyy.MM.dd')}">1시간 전</div>
+          <div class="hashtags"><span th:text="'# ' + ${post.category}"># 수면</span></div>
+        </div>
+
+        <div class="post-actions">
+          <!-- TODO: 글 수정 페이지 연결 예정 (A 담당) -->
+          <a href="#" class="btn-sm">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>
+            수정
+          </a>
+          <form th:action="@{/mypage/activity/delete}" method="post"
+                onsubmit="return confirm('이 글을 삭제할까요? 되돌릴 수 없습니다.');">
+            <input type="hidden" name="id" th:value="${post.id}">
+            <input type="hidden" name="tab" th:value="${tab}">
+            <button type="submit" class="btn-sm danger">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M6 6l1 14h10l1-14"/></svg>
+              삭제
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <p class="empty" th:if="${#lists.isEmpty(posts)}">작성한 글이 없습니다.</p>
+    </div>
+
+    <div class="card" th:if="${tab == 'FAVORITE'}">
+      <p class="empty">관심 목록은 다음 단계에서 연결합니다.</p>
+    </div>
 
   </section>
 
 </main>
-
-<script>
-  /* =========================================================
-     아이콘
-     ========================================================= */
-  const ICON = {
-    edit:  '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>',
-    trash: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M6 6l1 14h10l1-14"/></svg>',
-    heart: '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.8 5.6a5 5 0 0 0-7.1 0L12 7.3l-1.7-1.7a5 5 0 0 0-7.1 7.1l8.8 8.8 8.8-8.8a5 5 0 0 0 0-7.1z"/></svg>',
-    urgent:'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 3v11"/><circle cx="12" cy="19" r="1.2" fill="currentColor" stroke="none"/></svg>',
-    file:  '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><polyline points="7 11 12 16 17 11"/><path d="M4 20h16"/></svg>',
-    star:  '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.2-5.4-2.9-5.4 2.9 1-6.2L3.2 9.5l6.1-.9z"/></svg>'
-  };
-
-  /* =========================================================
-     더미 데이터
-     TODO: 백엔드 연결 시 이 부분을 지우고 Thymeleaf 로 출력
-     ========================================================= */
-  const base = { title:'게시글의 제목이 들어갑니다.', time:'1시간 전', tags:['수면', '유아용품'] };
-
-  const DATA = {
-    /* 내가 쓴 나눔글 : POSTS.STATUS */
-    SHARE: [
-      { ...base, status:'나눔 중' }, { ...base, status:'나눔 중' }, { ...base, status:'나눔 중' },
-      { ...base, status:'나눔 중' }, { ...base, status:'나눔 중' }
-    ],
-    /* 내가 쓴 요청글 : POSTS.URGENCY */
-    REQUEST: [
-      { ...base, urgency:'URGENT' }, { ...base, urgency:'URGENT' }, { ...base, urgency:'URGENT' },
-      { ...base, urgency:'NORMAL' }, { ...base, urgency:'NORMAL' }
-    ],
-    /* 관심 누른 나눔글 */
-    FAV_SHARE: [
-      { ...base, status:'나눔 중' }, { ...base, status:'나눔 중' },
-      { ...base, status:'나눔 완료' }, { ...base, status:'나눔 중' }
-    ],
-    /* 관심 누른 요청글 */
-    FAV_REQUEST: [
-      { ...base, urgency:'URGENT' }, { ...base, urgency:'NORMAL' }, { ...base, urgency:'URGENT' }
-    ],
-    /* 관심 누른 육아소식 : 카테고리는 육아소식 8개 항목 */
-    FAV_NEWS: [
-      { category:'부모급여',   title:'이곳에 제목이 들어갑니다', hasFile:true,  region:'중앙정부', date:'2026.00.00' },
-      { category:'산후조리비', title:'이곳에 제목이 들어갑니다', hasFile:false, region:'서울',     date:'2026.00.00' },
-      { category:'아이돌봄',   title:'이곳에 제목이 들어갑니다', hasFile:true,  region:'경기',     date:'2026.00.00' },
-      { category:'다자녀 혜택', title:'이곳에 제목이 들어갑니다', hasFile:false, region:'수원시',   date:'2026.00.00' },
-      { category:'출산지원금', title:'이곳에 제목이 들어갑니다', hasFile:true,  region:'중앙정부', date:'2026.00.00' },
-      { category:'육아휴직',   title:'이곳에 제목이 들어갑니다', hasFile:false, region:'부산',     date:'2026.00.00' },
-      { category:'의료지원',   title:'이곳에 제목이 들어갑니다', hasFile:true,  region:'제주',     date:'2026.00.00' }
-    ]
-  };
-
-  /* =========================================================
-     조각 만들기
-     ========================================================= */
-  function badgeOf(post){
-    if(post.urgency){
-      const isUrgent = post.urgency === 'URGENT';
-      return `<span class="badge ${isUrgent ? 'urgent' : 'normal'}">
-                ${isUrgent ? ICON.urgent : ''}${isUrgent ? '급해요' : '여유있어요'}
-              </span>`;
-    }
-    return `<span class="badge share">${post.status}</span>`;
-  }
-
-  /* mine = true 이면 수정/삭제, false 이면 관심 해제 */
-  function actionsOf(mine){
-    if(mine){
-      return `<div class="post-actions">
-                <button type="button" class="btn-sm btn-edit">${ICON.edit}수정</button>
-                <button type="button" class="btn-sm danger btn-delete">${ICON.trash}삭제</button>
-              </div>`;
-    }
-    return `<div class="post-actions">
-              <button type="button" class="btn-sm btn-unfav">${ICON.heart}관심 해제</button>
-            </div>`;
-  }
-
-  /* 나눔글 줄 (사진 있음) */
-  function shareRow(post, mine){
-    return `
-      <div class="post-item">
-        <!-- TODO: 게시글 대표 이미지 연결 예정 -->
-        <div class="post-thumb">이미지</div>
-        <div class="post-main">
-          <div class="post-head">
-            ${badgeOf(post)}
-            <!-- TODO: 게시글 상세 페이지 연결 예정 -->
-            <a href="#" class="post-title">${post.title}</a>
-          </div>
-          <div class="post-time">${post.time}</div>
-          <div class="hashtags">${post.tags.map(t => `<span># ${t}</span>`).join('')}</div>
-        </div>
-        ${actionsOf(mine)}
-      </div>`;
-  }
-
-  /* 요청글 줄 (사진 없음) */
-  function requestRow(post, mine){
-    return `
-      <div class="post-item">
-        <div class="post-main">
-          <div class="post-head">
-            ${badgeOf(post)}
-            <!-- TODO: 게시글 상세 페이지 연결 예정 -->
-            <a href="#" class="post-title">${post.title}</a>
-          </div>
-          <div class="post-time">${post.time}</div>
-          <div class="hashtags">${post.tags.map(t => `<span># ${t}</span>`).join('')}</div>
-        </div>
-        ${actionsOf(mine)}
-      </div>`;
-  }
-
-  function pagination(){
-    return `
-      <div class="pagination">
-        <button type="button" class="arrow" aria-label="이전">&#8249;</button>
-        <button type="button" class="active">1</button>
-        <button type="button">2</button>
-        <button type="button">3</button>
-        <button type="button">4</button>
-        <button type="button">5</button>
-        <span class="dots">...</span>
-        <button type="button">15</button>
-        <button type="button" class="arrow" aria-label="다음">&#8250;</button>
-      </div>`;
-  }
-
-  /* 육아소식 표 */
-  function newsTable(list){
-    const rows = list.map(item => `
-      <tr>
-        <td>
-          <div class="cell-title">
-            <span class="cell-category">${item.category}</span>
-            <!-- TODO: 육아소식 상세 페이지 연결 예정 -->
-            <a href="#">${item.title}</a>
-          </div>
-        </td>
-        <td>${item.hasFile
-              ? `<button type="button" class="btn-icon btn-file" aria-label="첨부파일 내려받기">${ICON.file}</button>`
-              : '<span class="no-file">-</span>'}</td>
-        <td>${item.region}</td>
-        <td>${item.date}</td>
-        <td>
-          <button type="button" class="btn-fav-off" aria-pressed="true" aria-label="관심 해제">${ICON.star}</button>
-        </td>
-      </tr>`).join('');
-
-    return `
-      <div class="card table-card">
-        <table>
-          <colgroup>
-            <col>
-            <col class="col-file">
-            <col class="col-region">
-            <col class="col-date">
-            <col class="col-fav">
-          </colgroup>
-          <thead>
-            <tr>
-              <th>제목</th>
-              <th>파일</th>
-              <th>지역</th>
-              <th>등록일</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>${rows}</tbody>
-        </table>
-        ${pagination()}
-      </div>`;
-  }
-
-  /* =========================================================
-     화면 그리기
-     ========================================================= */
-  const listArea = document.getElementById('listArea');
-  const pageDesc = document.getElementById('pageDesc');
-  const favTypes = document.getElementById('favTypes');
-
-  const state = { tab:'SHARE', favType:'SHARE' };
-
-  const DESC = {
-    SHARE:        '내가 작성한 나눔 글을 확인하고 관리할 수 있어요.',
-    REQUEST:      '내가 작성한 요청 글을 확인하고 관리할 수 있어요.',
-    FAV_SHARE:    '관심을 누른 나눔 글이에요.',
-    FAV_REQUEST:  '관심을 누른 요청 글이에요.',
-    FAV_NEWS:     '관심을 누른 육아소식이에요.'
-  };
-
-  function render(){
-    /* 관심 탭에서만 나눔/요청/육아소식 선택을 보여줌 */
-    favTypes.hidden = state.tab !== 'FAVORITE';
-
-    let key, html;
-
-    if(state.tab === 'SHARE'){
-      key = 'SHARE';
-      html = `<div class="card">${DATA.SHARE.map(p => shareRow(p, true)).join('')}${pagination()}</div>`;
-
-    } else if(state.tab === 'REQUEST'){
-      key = 'REQUEST';
-      html = `<div class="card">${DATA.REQUEST.map(p => requestRow(p, true)).join('')}${pagination()}</div>`;
-
-    } else if(state.favType === 'SHARE'){
-      key = 'FAV_SHARE';
-      html = `<div class="card">${DATA.FAV_SHARE.map(p => shareRow(p, false)).join('')}${pagination()}</div>`;
-
-    } else if(state.favType === 'REQUEST'){
-      key = 'FAV_REQUEST';
-      html = `<div class="card">${DATA.FAV_REQUEST.map(p => requestRow(p, false)).join('')}${pagination()}</div>`;
-
-    } else {
-      key = 'FAV_NEWS';
-      html = newsTable(DATA.FAV_NEWS);
-    }
-
-    pageDesc.textContent = DESC[key];
-    listArea.innerHTML = html;
-  }
-  render();
-
-  /* 나눔 / 요청 / 관심 탭 */
-  const tabs = document.querySelectorAll('#mainTabs .tab');
-  tabs.forEach(tab => {
-    tab.addEventListener('click', () => {
-      tabs.forEach(t => t.classList.remove('active'));
-      tab.classList.add('active');
-      state.tab = tab.dataset.tab;
-      render();
-      // TODO: 백엔드 연결 예정 (state 값으로 목록 다시 조회)
-    });
-  });
-
-  /* 관심 탭 안의 나눔 / 요청 / 육아소식 */
-  favTypes.addEventListener('change', e => {
-    if(e.target.name !== 'favType') return;
-    state.favType = e.target.value;
-    render();
-    // TODO: 백엔드 연결 예정
-  });
-
-  /* 정렬 */
-  document.getElementById('sortSelect').addEventListener('change', () => {
-    // TODO: 백엔드 연결 예정 (정렬)
-  });
-
-  /* 수정 / 삭제 / 관심 해제 / 첨부파일 / 페이지 이동 */
-  listArea.addEventListener('click', e => {
-    if(e.target.closest('.btn-edit')){
-      // TODO: 글 수정 페이지 연결 예정
-      return;
-    }
-    if(e.target.closest('.btn-delete')){
-      // TODO: 백엔드 API 연결 예정 (게시글 삭제 — 확인창 띄울지 정한 뒤 연결)
-      return;
-    }
-    if(e.target.closest('.btn-unfav')){
-      // TODO: 백엔드 API 연결 예정 (POST_FAVORITES 삭제)
-      return;
-    }
-    const favOff = e.target.closest('.btn-fav-off');
-    if(favOff){
-      favOff.setAttribute('aria-pressed', favOff.getAttribute('aria-pressed') !== 'true');
-      // TODO: 백엔드 API 연결 예정 (육아소식 관심 해제)
-      return;
-    }
-    if(e.target.closest('.btn-file')){
-      // TODO: 백엔드 API 연결 예정 (첨부파일 내려받기)
-      return;
-    }
-    const page = e.target.closest('.pagination button');
-    if(page && !page.classList.contains('arrow')){
-      listArea.querySelectorAll('.pagination button').forEach(b => b.classList.remove('active'));
-      page.classList.add('active');
-      // TODO: 백엔드 연결 예정 (해당 페이지 목록 조회)
-    }
-  });
-</script>
-
 </body>
 </html>
