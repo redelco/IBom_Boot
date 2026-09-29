@@ -16,6 +16,10 @@ import com.ibom.main.dao.PolicyBookmarkRepository;
 import com.ibom.main.dao.PostFavoriteRepository;
 import com.ibom.main.dao.PostRepository;
 import com.ibom.main.model.Member;
+import com.ibom.main.dao.PolicyRepository;
+import com.ibom.main.model.Policy;
+import com.ibom.main.model.PolicyBookmark;
+import com.ibom.main.model.PostFavorite;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -26,15 +30,17 @@ public class MypageController {
     private final PostRepository postRepository;
     private final PostFavoriteRepository postFavoriteRepository;
     private final PolicyBookmarkRepository policyBookmarkRepository;
+    private final PolicyRepository policyRepository;
 
     public MypageController(MemberRepository memberRepository,
                             PostRepository postRepository,
                             PostFavoriteRepository postFavoriteRepository,
-                            PolicyBookmarkRepository policyBookmarkRepository) {
+                            PolicyBookmarkRepository policyBookmarkRepository, PolicyRepository policyRepository) {
         this.memberRepository = memberRepository;
         this.postRepository = postRepository;
         this.postFavoriteRepository = postFavoriteRepository;
         this.policyBookmarkRepository = policyBookmarkRepository;
+        this.policyRepository = policyRepository;
     }
 
     /** 마이페이지 홈 */
@@ -73,6 +79,7 @@ public class MypageController {
     /** 내 활동 (나눔내역 / 요청내역 / 관심목록) */
     @GetMapping("/mypage/activity")
     public String activity(@RequestParam(required = false, defaultValue = "SHARE") String tab,
+                           @RequestParam(required = false, defaultValue = "SHARE") String favType,
                            @RequestParam(required = false, defaultValue = "latest") String sort,
                            HttpSession session, Model model) {
 
@@ -83,16 +90,62 @@ public class MypageController {
                 : Sort.by(Sort.Order.desc("createdAt"), Sort.Order.desc("id"));
 
         List<Post> posts = List.of();
+        List<Policy> policies = List.of();
+
         if ("SHARE".equals(tab) || "REQUEST".equals(tab)) {
+
+            /* 내가 쓴 글 */
             posts = postRepository.findByUserIdAndTypeAndIsDeletedFalse(userId, tab, sortOption);
+
+        } else if ("FAVORITE".equals(tab)) {
+
+            if ("NEWS".equals(favType)) {
+
+                /* 북마크한 육아소식 */
+                List<Long> policyIds = policyBookmarkRepository.findByUserIdOrderByCreatedAtDesc(userId)
+                        .stream().map(PolicyBookmark::getPolicyId).toList();
+
+                if (!policyIds.isEmpty()) {
+                    policies = policyRepository.findByIdInAndIsActiveTrue(policyIds);
+                }
+
+            } else {
+
+                /* 관심 누른 나눔 · 요청 글 */
+                List<Long> postIds = postFavoriteRepository.findByUserIdOrderByCreatedAtDesc(userId)
+                        .stream().map(PostFavorite::getPostId).toList();
+
+                if (!postIds.isEmpty()) {
+                    posts = postRepository.findByIdInAndTypeAndIsDeletedFalse(postIds, favType, sortOption);
+                }
+            }
         }
 
         model.addAttribute("tab", tab);
+        model.addAttribute("favType", favType);
         model.addAttribute("sort", sort);
         model.addAttribute("posts", posts);
+        model.addAttribute("policies", policies);
         model.addAttribute("pageDesc", pageDesc(tab));
 
         return "mypage/activity";
+    }
+
+    /** 관심 해제 */
+    @PostMapping("/mypage/activity/favorite/remove")
+    public String removeFavorite(@RequestParam Long id,
+                                 @RequestParam String favType,
+                                 HttpSession session) {
+
+        Long userId = currentUserId(session);
+
+        if ("NEWS".equals(favType)) {
+            policyBookmarkRepository.deleteByUserIdAndPolicyId(userId, id);
+        } else {
+            postFavoriteRepository.deleteByUserIdAndPostId(userId, id);
+        }
+
+        return "redirect:/mypage/activity?tab=FAVORITE&favType=" + favType;
     }
 
     /** 내 글 삭제 : 실제로 지우지 않고 IS_DELETED 만 켬 */

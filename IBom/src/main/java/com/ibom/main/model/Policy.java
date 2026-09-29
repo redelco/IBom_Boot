@@ -39,6 +39,7 @@ public class Policy {
     @Column(name = "CONTENT", columnDefinition = "TEXT", nullable = false)
     private String content;
 
+    /** GOVERNMENT / METRO / LOCAL */
     @Setter
     @Column(name = "SCOPE", length = 20, nullable = false)
     private String scope;

@@ -204,6 +204,16 @@
     padding: 12px 20px;
   }
   .fav-types[hidden]{ display:none; }
+
+  .fav-type{
+    font-size:15.5px;
+    color:#666;
+  }
+  .fav-type.on{
+    color: var(--pink-main);
+    font-weight:700;
+  }
+
   .fav-types label{
     display:flex;
     align-items:center;
@@ -547,14 +557,22 @@
 
     <div class="tab-bar">
       <div class="tabs">
-        <a th:href="@{/mypage/activity(tab='SHARE')}"    class="tab" th:classappend="${tab == 'SHARE'} ? 'active' : ''">나눔</a>
-        <a th:href="@{/mypage/activity(tab='REQUEST')}"  class="tab" th:classappend="${tab == 'REQUEST'} ? 'active' : ''">요청</a>
-        <a th:href="@{/mypage/activity(tab='FAVORITE')}" class="tab" th:classappend="${tab == 'FAVORITE'} ? 'active' : ''">관심</a>
+        <a th:href="@{/mypage/activity(tab='SHARE')}"   class="tab" th:classappend="${tab == 'SHARE'} ? 'active' : ''">나눔</a>
+        <a th:href="@{/mypage/activity(tab='REQUEST')}" class="tab" th:classappend="${tab == 'REQUEST'} ? 'active' : ''">요청</a>
+        <a th:href="@{/mypage/activity(tab='FAVORITE',favType='SHARE')}" class="tab" th:classappend="${tab == 'FAVORITE'} ? 'active' : ''">관심</a>
       </div>
 
       <div class="tab-right">
+        <!-- 관심 탭에서만 보임 -->
+        <div class="fav-types" th:if="${tab == 'FAVORITE'}">
+          <a class="fav-type" th:href="@{/mypage/activity(tab='FAVORITE',favType='SHARE')}"   th:classappend="${favType == 'SHARE'} ? 'on' : ''">나눔</a>
+          <a class="fav-type" th:href="@{/mypage/activity(tab='FAVORITE',favType='REQUEST')}" th:classappend="${favType == 'REQUEST'} ? 'on' : ''">요청</a>
+          <a class="fav-type" th:href="@{/mypage/activity(tab='FAVORITE',favType='NEWS')}"    th:classappend="${favType == 'NEWS'} ? 'on' : ''">육아소식</a>
+        </div>
+
         <form th:action="@{/mypage/activity}" method="get">
           <input type="hidden" name="tab" th:value="${tab}">
+          <input type="hidden" name="favType" th:value="${favType}">
           <select class="select" name="sort" onchange="this.form.submit()" aria-label="정렬">
             <option value="latest" th:selected="${sort == 'latest'}">최신순</option>
             <option value="oldest" th:selected="${sort == 'oldest'}">오래된순</option>
@@ -604,8 +622,91 @@
       <p class="empty" th:if="${#lists.isEmpty(posts)}">작성한 글이 없습니다.</p>
     </div>
 
-    <div class="card" th:if="${tab == 'FAVORITE'}">
-      <p class="empty">관심 목록은 다음 단계에서 연결합니다.</p>
+    <!-- 관심 : 나눔 / 요청 -->
+    <div class="card" th:if="${tab == 'FAVORITE' and favType != 'NEWS'}">
+
+      <div class="post-item" th:each="post : ${posts}">
+        <div class="post-thumb" th:if="${favType == 'SHARE'}">이미지</div>
+
+        <div class="post-main">
+          <div class="post-head">
+            <span class="badge share" th:if="${favType == 'SHARE'}"
+                  th:text="${post.status == 'COMPLETED'} ? '나눔 완료' : '나눔 중'">나눔 중</span>
+            <span th:if="${favType == 'REQUEST'}"
+                  th:class="'badge ' + (${post.urgency == 'URGENT'} ? 'urgent' : 'normal')"
+                  th:text="${post.urgency == 'URGENT'} ? '급해요' : '여유있어요'">급해요</span>
+            <!-- TODO: 게시글 상세 연결 예정 (A 담당) -->
+            <a href="#" class="post-title" th:text="${post.title}">게시글의 제목이 들어갑니다.</a>
+          </div>
+          <div class="post-time" th:text="${#temporals.format(post.createdAt, 'yyyy.MM.dd')}">1시간 전</div>
+          <div class="hashtags"><span th:text="'# ' + ${post.category}"># 수면</span></div>
+        </div>
+
+        <div class="post-actions">
+          <form th:action="@{/mypage/activity/favorite/remove}" method="post">
+            <input type="hidden" name="id" th:value="${post.id}">
+            <input type="hidden" name="favType" th:value="${favType}">
+            <button type="submit" class="btn-sm">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.8 5.6a5 5 0 0 0-7.1 0L12 7.3l-1.7-1.7a5 5 0 0 0-7.1 7.1l8.8 8.8 8.8-8.8a5 5 0 0 0 0-7.1z"/></svg>
+              관심 해제
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <p class="empty" th:if="${#lists.isEmpty(posts)}">관심을 누른 글이 없습니다.</p>
+    </div>
+
+    <!-- 관심 : 육아소식 -->
+    <div class="card table-card" th:if="${tab == 'FAVORITE' and favType == 'NEWS'}">
+      <table th:if="${not #lists.isEmpty(policies)}">
+        <colgroup>
+          <col>
+          <col class="col-file">
+          <col class="col-region">
+          <col class="col-date">
+          <col class="col-fav">
+        </colgroup>
+        <thead>
+        <tr>
+          <th>제목</th>
+          <th>링크</th>
+          <th>지역</th>
+          <th>등록일</th>
+          <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="policy : ${policies}">
+          <td>
+            <div class="cell-title">
+              <span class="cell-category" th:text="${policy.category}">카테고리</span>
+              <a th:href="@{/news/detail(id=${policy.id})}" th:text="${policy.title}">제목</a>
+            </div>
+          </td>
+          <td>
+            <a th:if="${policy.sourceUrl != null and !policy.sourceUrl.isEmpty()}"
+               th:href="${policy.sourceUrl}" target="_blank" class="btn-icon" aria-label="원문 보기">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.5 1.5"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.5-1.5"/></svg>
+            </a>
+            <span th:unless="${policy.sourceUrl != null and !policy.sourceUrl.isEmpty()}" class="no-file">-</span>
+          </td>
+          <td th:text="${policy.region}">지역</td>
+          <td th:text="${#temporals.format(policy.createdAt, 'yyyy.MM.dd')}">2026.00.00</td>
+          <td>
+            <form th:action="@{/mypage/activity/favorite/remove}" method="post">
+              <input type="hidden" name="id" th:value="${policy.id}">
+              <input type="hidden" name="favType" value="NEWS">
+              <button type="submit" class="btn-fav-off" aria-label="관심 해제">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.2-5.4-2.9-5.4 2.9 1-6.2L3.2 9.5l6.1-.9z"/></svg>
+              </button>
+            </form>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+
+      <p class="empty" th:if="${#lists.isEmpty(policies)}">저장한 육아소식이 없습니다.</p>
     </div>
 
   </section>

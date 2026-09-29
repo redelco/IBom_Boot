@@ -35,4 +35,7 @@ public interface PolicyRepository extends JpaRepository<Policy, Long> {
                         @Param("region") String region,
                         @Param("keyword") String keyword,
                         Sort sort);
+
+    /** 북마크한 육아소식 (관심 탭 - 육아소식) */
+    List<Policy> findByIdInAndIsActiveTrue(List<Long> ids);
 }
