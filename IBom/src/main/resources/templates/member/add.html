@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -235,18 +235,11 @@
       .signup-card{ padding: 36px 24px 32px; }
     }
   </style>
+  <link rel="stylesheet" href="/css/common.css">
 </head>
 <body>
 
-<header>
-  <div class="logo"><span class="cherry">🍒</span> 아이 봄</div>
-  <nav>
-    <a href="#">나눔 게시판</a>
-    <a href="#">요청 게시판</a>
-    <a href="#">육아소식</a>
-  </nav>
-  <button type="button" class="btn-login">로그인</button>
-</header>
+<header th:replace="~{fragments/layout :: header('')}"></header>
 
 <div class="page">
   <div class="signup-card">

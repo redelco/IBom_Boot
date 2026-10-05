@@ -27,10 +27,4 @@ public class PageController {
 		return "board/requestWrite";
 	}
 
-	/* ===== 마이페이지 ===== */
-
-	@GetMapping("/mypage/settings")
-	public String settings() {
-		return "mypage/settings";
-	}
 }

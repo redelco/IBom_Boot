@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -369,26 +369,11 @@
             .comment.reply{ margin-left:24px; width: calc(100% - 24px); }
         }
     </style>
+  <link rel="stylesheet" href="/css/common.css">
 </head>
 <body>
 
-<header>
-    <div class="logo"><span class="cherry">🍒</span> 아이 봄</div>
-    <nav>
-        <a href="#">나눔 게시판</a>
-        <a href="#">요청 게시판</a>
-        <a href="#">육아소식</a>
-    </nav>
-    <div class="header-actions">
-        <a href="#" class="btn-write">✎ 글 작성하기</a>
-        <button class="icon-btn" aria-label="알림">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
-        </button>
-        <button class="icon-btn" aria-label="마이페이지">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9.5"/><circle cx="12" cy="10" r="3.2"/><path d="M6 19c1.2-2.6 3.4-4 6-4s4.8 1.4 6 4"/></svg>
-        </button>
-    </div>
-</header>
+<header th:replace="~{fragments/layout :: header('request')}"></header>
 
 <div class="page">
     <div class="post-card">

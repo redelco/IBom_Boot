@@ -8,8 +8,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
-
+import com.ibom.main.model.Member;
 import com.ibom.main.model.Post;
 import com.ibom.main.dao.MemberRepository;
 import com.ibom.main.dao.PolicyBookmarkRepository;
@@ -164,6 +165,80 @@ public class MypageController {
         }
 
         return "redirect:/mypage/activity?tab=" + tab;
+    }
+
+    /* =========================================================
+   설정 - 화면
+   ========================================================= */
+    @GetMapping("/mypage/settings")
+    public String settings(HttpSession session, Model model) {
+
+        Long userId = currentUserId(session);
+        Member member = memberRepository.findById(userId).orElse(null);
+
+        if (member == null) {
+            return "redirect:/member/login";
+        }
+
+        model.addAttribute("nickname", member.getNICKNAME());
+        model.addAttribute("loginId",  member.getLOGIN_ID());
+        model.addAttribute("joinedAt", member.getCreatedAt());
+
+        return "mypage/settings";
+    }
+
+    /* =========================================================
+       설정 - 닉네임 수정 (POST 후 redirect)
+       ========================================================= */
+    @PostMapping("/mypage/settings/nickname")
+    public String updateNickname(@RequestParam("nickname") String nickname,
+                                 HttpSession session) {
+
+        Long userId = currentUserId(session);
+        Member member = memberRepository.findById(userId).orElse(null);
+
+        if (member == null) {
+            return "redirect:/member/login";
+        }
+
+        String newNickname = (nickname == null) ? "" : nickname.trim();
+
+        if (newNickname.isEmpty()) {
+            return "redirect:/mypage/settings?error=empty";
+        }
+        if (newNickname.length() > 20) {
+            return "redirect:/mypage/settings?error=length";
+        }
+        if (memberRepository.existsNicknameExceptMe(newNickname, userId)) {
+            return "redirect:/mypage/settings?error=dup";
+        }
+
+        member.setNICKNAME(newNickname);
+        memberRepository.save(member);
+
+        /* 헤더에 보이는 닉네임도 같이 갱신 */
+        session.setAttribute("loginNickname", newNickname);
+
+        return "redirect:/mypage/settings?ok=1";
+    }
+
+    /* =========================================================
+       설정 - 닉네임 중복 검색 버튼용 (문자열만 돌려줌)
+       ========================================================= */
+    @GetMapping("/mypage/settings/check-nickname")
+    @ResponseBody
+    public String checkNickname(@RequestParam("nickname") String nickname,
+                                HttpSession session) {
+
+        String value = (nickname == null) ? "" : nickname.trim();
+
+        if (value.isEmpty()) {
+            return "EMPTY";
+        }
+
+        return memberRepository.existsNicknameExceptMe(value, currentUserId(session))
+                ? "DUP"
+                : "OK";
     }
 
     private String pageDesc(String tab) {
