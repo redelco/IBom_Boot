@@ -64,10 +64,9 @@
     nav{ display:flex; gap:56px; }
     nav a{
       position:relative;
-      font-size:16px;
+      font-size:20px;
       font-weight:500;
       color:#222;
-      padding-bottom:22px;
     }
     nav a.active{ color:var(--pink-main); font-weight:700; }
     nav a.active::after{
@@ -472,7 +471,6 @@
 
 
 <main class="wrap board-layout">
-
   <!-- ===== 왼쪽: 필터 ===== -->
   <aside class="filter-side" id="filterSide">
 
@@ -483,48 +481,156 @@
 
     <div class="filter-sections">
 
-      <div class="filter-section" data-group="tradeType">
-        <h3>거래방식</h3>
-        <label class="check-item"><input type="checkbox" name="tradeType" value="ALL" checked> 전체</label>
-        <label class="check-item"><input type="checkbox" name="tradeType" value="DELIVERY"> 택배</label>
-        <label class="check-item"><input type="checkbox" name="tradeType" value="DIRECT"> 직거래</label>
-        <label class="check-item"><input type="checkbox" name="tradeType" value="DOORKNOB"> 문고리 거래</label>
-        <label class="check-item"><input type="checkbox" name="tradeType" value="CONTACTLESS"> 비대면 거래</label>
-      </div>
-
-      <div class="filter-section" data-group="itemCondition">
-        <h3>물건 상태</h3>
-        <label class="check-item"><input type="checkbox" name="itemCondition" value="ALL" checked> 전체</label>
-        <label class="check-item"><input type="checkbox" name="itemCondition" value="NEW"> 미개봉(새 상품)</label>
-        <label class="check-item"><input type="checkbox" name="itemCondition" value="LIKE_NEW"> 거의 새 것</label>
-        <label class="check-item"><input type="checkbox" name="itemCondition" value="USED"> 사용감 있음</label>
-      </div>
-
-      <div class="filter-section">
-        <h3>안심키워드</h3>
-        <label class="check-item"><input type="checkbox" name="safeKeyword" value="NON_SMOKING"> 비흡연</label>
-        <label class="check-item"><input type="checkbox" name="safeKeyword" value="NO_PET"> 반려동물 없음</label>
-        <label class="check-item"><input type="checkbox" name="safeKeyword" value="DISINFECTED"> 살균 완료</label>
-      </div>
-
-      <div class="filter-section">
-        <h3>나눔 상태</h3>
-        <label class="check-item"><input type="checkbox" name="status" value="SHARING" checked> 나눔 중</label>
-        <label class="check-item"><input type="checkbox" name="status" value="RESERVED"> 예약 중</label>
-        <label class="check-item"><input type="checkbox" name="status" value="DONE"> 나눔 완료</label>
-      </div>
-
+      <!-- 1. 용품 종류 -->
       <div class="filter-section" data-group="itemType">
         <h3>용품 종류</h3>
-        <label class="check-item"><input type="checkbox" name="itemType" value="ALL" checked> 전체</label>
-        <label class="check-item"><input type="checkbox" name="itemType" value="BABY"> 유아용품</label>
-        <label class="check-item"><input type="checkbox" name="itemType" value="MOM"> 엄마용품</label>
+
+        <label class="check-item">
+          <input type="checkbox" name="itemType" value="ALL" checked>
+          전체
+        </label>
+
+        <label class="check-item">
+          <input type="checkbox" name="itemType" value="BABY">
+          유아용품
+        </label>
+
+        <label class="check-item">
+          <input type="checkbox" name="itemType" value="MOM">
+          엄마용품
+        </label>
+      </div>
+
+
+      <!-- 2. 카테고리 -->
+      <div class="filter-section" data-group="category">
+        <h3>카테고리</h3>
+
+        <label class="check-item">
+          <input type="checkbox" name="category" value="ALL" checked>
+          전체
+        </label>
+
+        <label class="check-item">
+          <input type="checkbox" name="category" value="0~6개월">
+          0~6개월
+        </label>
+
+        <label class="check-item">
+          <input type="checkbox" name="category" value="6~12개월">
+          6~12개월
+        </label>
+
+        <label class="check-item">
+          <input type="checkbox" name="category" value="12~24개월">
+          12~24개월
+        </label>
+
+        <label class="check-item">
+          <input type="checkbox" name="category" value="2~3세">
+          2~3세
+        </label>
+
+        <label class="check-item">
+          <input type="checkbox" name="category" value="3~5세">
+          3~5세
+        </label>
+
+        <label class="check-item">
+          <input type="checkbox" name="category" value="5~7세">
+          5~7세
+        </label>
+
+        <label class="check-item">
+          <input type="checkbox" name="category" value="기타">
+          기타
+        </label>
+      </div>
+
+
+      <!-- 3. 물건 상태 -->
+      <div class="filter-section" data-group="itemCondition">
+        <h3>물건 상태</h3>
+
+        <label class="check-item">
+          <input type="checkbox" name="itemCondition" value="ALL" checked>
+          전체
+        </label>
+
+        <label class="check-item">
+          <input type="checkbox" name="itemCondition" value="NEW">
+          미개봉(새 상품)
+        </label>
+
+        <label class="check-item">
+          <input type="checkbox" name="itemCondition" value="LIKE_NEW">
+          거의 새 것
+        </label>
+
+        <label class="check-item">
+          <input type="checkbox" name="itemCondition" value="USED">
+          사용감 있음
+        </label>
+      </div>
+
+
+      <!-- 4. 안심키워드 -->
+      <div class="filter-section" data-group="safeKeyword">
+        <h3>안심키워드</h3>
+
+        <label class="check-item">
+          <input type="checkbox" name="safeKeyword" value="NON_SMOKING">
+          비흡연
+        </label>
+
+        <label class="check-item">
+          <input type="checkbox" name="safeKeyword" value="NO_PET">
+          반려동물 없음
+        </label>
+
+        <label class="check-item">
+          <input type="checkbox" name="safeKeyword" value="DISINFECTED">
+          살균 완료
+        </label>
+      </div>
+
+
+      <!-- 5. 거래 방식 -->
+      <div class="filter-section" data-group="tradeType">
+        <h3>거래방식</h3>
+
+        <label class="check-item">
+          <input type="checkbox" name="tradeType" value="ALL" checked>
+          전체
+        </label>
+
+        <label class="check-item">
+          <input type="checkbox" name="tradeType" value="DELIVERY">
+          택배
+        </label>
+
+        <label class="check-item">
+          <input type="checkbox" name="tradeType" value="DIRECT">
+          직거래
+        </label>
+
+        <label class="check-item">
+          <input type="checkbox" name="tradeType" value="DOORKNOB">
+          문고리 거래
+        </label>
+
+        <label class="check-item">
+          <input type="checkbox" name="tradeType" value="CONTACTLESS">
+          비대면 거래
+        </label>
       </div>
 
     </div>
 
     <div class="filter-foot">
-      <button type="button" class="btn-apply" id="btnApply">적용하기</button>
+      <button type="button" class="btn-apply" id="btnApply">
+        적용하기
+      </button>
     </div>
 
   </aside>
