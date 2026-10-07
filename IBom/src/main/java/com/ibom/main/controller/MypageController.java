@@ -209,6 +209,10 @@ public class MypageController {
         if (newNickname.length() > 20) {
             return "redirect:/mypage/settings?error=length";
         }
+        /* 값이 그대로면 저장도 안내도 하지 않는다 */
+        if (newNickname.equals(member.getNICKNAME())) {
+            return "redirect:/mypage/settings";
+        }
         if (memberRepository.existsNicknameExceptMe(newNickname, userId)) {
             return "redirect:/mypage/settings?error=dup";
         }
@@ -239,6 +243,54 @@ public class MypageController {
         return memberRepository.existsNicknameExceptMe(value, currentUserId(session))
                 ? "DUP"
                 : "OK";
+    }
+
+    /* =========================================================
+   설정 - 비밀번호 변경
+   ========================================================= */
+    @PostMapping("/mypage/settings/password")
+    public String updatePassword(@RequestParam("currentPassword") String currentPassword,
+                                 @RequestParam("newPassword")     String newPassword,
+                                 @RequestParam("newPassword2")    String newPassword2,
+                                 HttpSession session) {
+
+        Long userId = currentUserId(session);
+        Member member = memberRepository.findById(userId).orElse(null);
+
+        if (member == null) {
+            return "redirect:/member/login";
+        }
+
+        String cur = (currentPassword == null) ? "" : currentPassword.trim();
+        String np1 = (newPassword     == null) ? "" : newPassword.trim();
+        String np2 = (newPassword2    == null) ? "" : newPassword2.trim();
+
+        /* 빈 칸 */
+        if (cur.isEmpty() || np1.isEmpty() || np2.isEmpty()) {
+            return "redirect:/mypage/settings?pwError=empty";
+        }
+        /* 현재 비밀번호 불일치 (평문 비교 - 로그인과 같은 방식) */
+        if (!cur.equals(member.getPASSWORD())) {
+            return "redirect:/mypage/settings?pwError=wrong";
+        }
+        /* 새 비밀번호 확인 불일치 */
+        if (!np1.equals(np2)) {
+            return "redirect:/mypage/settings?pwError=mismatch";
+        }
+        /* 현재 비밀번호와 동일 */
+        if (np1.equals(member.getPASSWORD())) {
+            return "redirect:/mypage/settings?pwError=same";
+        }
+        /* 길이 (화면용 최소 제한) */
+        if (np1.length() < 4) {
+            return "redirect:/mypage/settings?pwError=length";
+        }
+
+        member.setPASSWORD(np1);
+        memberRepository.save(member);
+
+        /* 세션은 그대로 둔다 (로그인 유지) */
+        return "redirect:/mypage/settings?pwOk=1";
     }
 
     private String pageDesc(String tab) {
