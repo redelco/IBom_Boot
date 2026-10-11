@@ -10,7 +10,10 @@ import com.ibom.main.model.Member;
 
 public interface MemberRepository extends JpaRepository<Member, Long> {
 
-    @Query("SELECT m FROM Member m WHERE m.LOGIN_ID = :loginId AND m.PASSWORD = :password")
+    /* isActive 가 NULL 인 기존 회원도 로그인되도록 NULL 을 활성으로 본다 */
+    @Query("SELECT m FROM Member m "
+            + "WHERE m.LOGIN_ID = :loginId AND m.PASSWORD = :password "
+            + "  AND (m.isActive IS NULL OR m.isActive = 1)")
     Optional<Member> login(@Param("loginId") String loginId, @Param("password") String password);
 
     /** 아이디 중복 검사 (회원가입용) */
@@ -21,4 +24,5 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     @Query("SELECT COUNT(m) > 0 FROM Member m WHERE m.NICKNAME = :nickname AND m.id <> :userId")
     boolean existsNicknameExceptMe(@Param("nickname") String nickname,
                                    @Param("userId") Long userId);
+
 }

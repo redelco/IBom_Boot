@@ -2,6 +2,7 @@ package com.ibom.main.controller;
 
 import java.util.List;
 
+import com.ibom.main.dao.*;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -12,15 +13,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.ibom.main.model.Member;
 import com.ibom.main.model.Post;
-import com.ibom.main.dao.MemberRepository;
-import com.ibom.main.dao.PolicyBookmarkRepository;
-import com.ibom.main.dao.PostFavoriteRepository;
-import com.ibom.main.dao.PostRepository;
-import com.ibom.main.model.Member;
-import com.ibom.main.dao.PolicyRepository;
 import com.ibom.main.model.Policy;
 import com.ibom.main.model.PolicyBookmark;
 import com.ibom.main.model.PostFavorite;
+
+import java.util.ArrayList;
+import com.ibom.main.dao.UserBlockRepository;
+import com.ibom.main.model.UserBlock;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -32,16 +31,20 @@ public class MypageController {
     private final PostFavoriteRepository postFavoriteRepository;
     private final PolicyBookmarkRepository policyBookmarkRepository;
     private final PolicyRepository policyRepository;
+    private final UserBlockRepository userBlockRepository;
 
     public MypageController(MemberRepository memberRepository,
                             PostRepository postRepository,
                             PostFavoriteRepository postFavoriteRepository,
-                            PolicyBookmarkRepository policyBookmarkRepository, PolicyRepository policyRepository) {
+                            PolicyBookmarkRepository policyBookmarkRepository,
+                            PolicyRepository policyRepository,
+                            UserBlockRepository userBlockRepository) {
         this.memberRepository = memberRepository;
         this.postRepository = postRepository;
         this.postFavoriteRepository = postFavoriteRepository;
         this.policyBookmarkRepository = policyBookmarkRepository;
         this.policyRepository = policyRepository;
+        this.userBlockRepository = userBlockRepository;
     }
 
     /** 마이페이지 홈 */
@@ -183,6 +186,22 @@ public class MypageController {
         model.addAttribute("nickname", member.getNICKNAME());
         model.addAttribute("loginId",  member.getLOGIN_ID());
         model.addAttribute("joinedAt", member.getCreatedAt());
+        model.addAttribute("email",    member.getEMAIL());
+        model.addAttribute("phone",    member.getPHONE());
+
+        /* 차단 목록: USER_BLOCKS 에서 상대 ID 를 뽑아 USERS 를 한 번에 조회 */
+        List<UserBlock> blocks = userBlockRepository.findByBlockerIdOrderByCreatedAtDesc(userId);
+
+        List<Long> blockedIds = new ArrayList<>();
+        for (UserBlock block : blocks) {
+            blockedIds.add(block.getBlockedId());
+        }
+
+        List<Member> blockedMembers = blockedIds.isEmpty()
+                ? new ArrayList<>()
+                : memberRepository.findAllById(blockedIds);
+
+        model.addAttribute("blockedMembers", blockedMembers);
 
         return "mypage/settings";
     }
@@ -303,5 +322,59 @@ public class MypageController {
     private Long currentUserId(HttpSession session) {
         Object loginUserId = session.getAttribute("loginUserId");
         return (loginUserId != null) ? (Long) loginUserId : 1L;
+    }
+
+    /* =========================================================
+   설정 - 회원 탈퇴 (소프트 삭제)
+   ========================================================= */
+    @PostMapping("/mypage/settings/withdraw")
+    public String withdraw(@RequestParam("password") String password,
+                           HttpSession session) {
+
+        Long userId = currentUserId(session);
+        Member member = memberRepository.findById(userId).orElse(null);
+
+        if (member == null) {
+            return "redirect:/member/login";
+        }
+
+        String pw = (password == null) ? "" : password.trim();
+
+        if (pw.isEmpty()) {
+            return "redirect:/mypage/settings?wdError=empty";
+        }
+        if (!pw.equals(member.getPASSWORD())) {
+            return "redirect:/mypage/settings?wdError=wrong";
+        }
+
+        /* 1) 내가 쓴 나눔/요청 글을 전부 소프트 삭제 */
+        List<Post> myPosts = postRepository.findByUserIdAndIsDeletedFalse(userId);
+        for (Post post : myPosts) {
+            post.setIsDeleted(true);
+        }
+        postRepository.saveAll(myPosts);
+
+        /* 2) 계정 비활성화 (USERS.IS_ACTIVE = 0) */
+        member.setIsActive(0);
+        memberRepository.save(member);
+
+        /* 3) 세션 정리 */
+        session.invalidate();
+
+        return "redirect:/";
+    }
+
+    /* =========================================================
+   설정 - 차단 해제
+   ========================================================= */
+    @PostMapping("/mypage/settings/unblock")
+    public String unblock(@RequestParam("blockedId") Long blockedId,
+                          HttpSession session) {
+
+        Long userId = currentUserId(session);
+
+        userBlockRepository.deleteByBlockerIdAndBlockedId(userId, blockedId);
+
+        return "redirect:/mypage/settings?ubOk=1";
     }
 }

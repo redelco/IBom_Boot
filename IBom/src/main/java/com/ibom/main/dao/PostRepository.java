@@ -20,4 +20,8 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     /** 관심 누른 글 목록에서 쓰임 (ID 여러 개로 한 번에 조회) */
     List<Post> findByIdInAndTypeAndIsDeletedFalse(List<Long> ids, String type, Sort sort);
+
+    /** 회원 탈퇴 시 그 회원의 글을 한꺼번에 가져옴 */
+    List<Post> findByUserIdAndIsDeletedFalse(Long userId);
+
 }
