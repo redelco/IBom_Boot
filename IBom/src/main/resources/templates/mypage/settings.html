@@ -834,6 +834,7 @@
         <p class="empty" th:if="${#lists.isEmpty(blockedMembers)}">차단한 사용자가 없습니다.</p>
 
       </div>
+    </div>
 
     <!-- 회원 탈퇴 오류 -->
     <div class="alert error" th:if="${param.wdError != null}" th:switch="${param.wdError[0]}">

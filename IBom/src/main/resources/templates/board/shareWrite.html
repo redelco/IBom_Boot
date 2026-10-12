@@ -392,13 +392,13 @@
 
     <!-- TODO: 나눔/요청 글쓰기 URL은 Controller 매핑 추가 후 연결 -->
     <div class="tabs">
-      <a href="#" class="tab active">나눔 글쓰기</a>
-      <a href="#" class="tab">요청 글쓰기</a>
+      <a href="/board/shareWrite" class="tab active">나눔 글쓰기</a>
+      <a href="/board/requestWrite" class="tab">요청 글쓰기</a>
     </div>
 
     <!-- TODO: 등록 백엔드 연결 예정 (action / enctype 은 Controller 만든 뒤 지정) -->
-    <form class="write-body" id="writeForm" novalidate>
-      <h1>나눔 글쓰기</h1>
+    <form class="write-body" id="writeForm" action="/post/add" method="post">
+      <input type="hidden" name="type" value="SHARE">
       <hr class="rule">
 
       <div class="field">
@@ -592,12 +592,8 @@
   /* =========================================================
      N) 등록 / 취소
      ========================================================= */
-  document.getElementById('writeForm').addEventListener('submit', e => {
-    e.preventDefault();
-    // TODO: 백엔드 API 연결 예정 (게시글 등록)
-  });
   document.getElementById('btnCancel').addEventListener('click', () => {
-    // TODO: 취소 시 이동할 페이지 정한 뒤 연결
+    location.href = '/board/share';
   });
 </script>
 

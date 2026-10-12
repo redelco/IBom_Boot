@@ -1,50 +1,65 @@
 package com.ibom.main.controller;
 
-import java.util.List;
+import java.time.LocalDateTime;
 
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
+import com.ibom.main.dao.CommentRepository;
+import com.ibom.main.dao.PostRepository;
 import com.ibom.main.model.Comment;
-import com.ibom.main.service.CommentService;
+import com.ibom.main.model.Post;
 
-@RestController
-@RequestMapping("/comment")
+import jakarta.servlet.http.HttpSession;
+
+@Controller
 public class CommentController {
 
+    private final CommentRepository commentRepository;
+    private final PostRepository postRepository;
 
-    private final CommentService commentService;
-
-    public CommentController(CommentService commentService) {
-        this.commentService = commentService;
+    public CommentController(CommentRepository commentRepository,
+                             PostRepository postRepository) {
+        this.commentRepository = commentRepository;
+        this.postRepository = postRepository;
     }
 
-    @PostMapping("/add")
-    public Comment addComment(@RequestBody Comment comment) {
-        return commentService.addComment(comment);
-    }
+    /** 댓글 등록 (나눔 상세 / 요청 상세 공용) */
+    @PostMapping("/comment/add")
+    public String addComment(Comment comment, HttpSession session) {
 
-    @GetMapping("/list/{postId}")
-    public List<Comment> getComments(@PathVariable Long postId) {
-        return commentService.getCommentsByPostId(postId);
-    }
+        Long userID = (Long) session.getAttribute("userID");
+        if (userID == null) {
+            userID = (Long) session.getAttribute("loginUserId");
+        }
+        if (userID == null) {
+            return "redirect:/member/login";
+        }
 
-    @PutMapping("/update/{id}")
-    public Comment updateComment(
-            @PathVariable Long id,
-            @RequestBody Comment comment) {
+        Long postID = comment.getPostId();
+        Post post = postRepository.findById(postID).orElse(null);
 
-        return commentService.updateComment(id, comment.getContent());
-    }
+        if (post == null) {
+            return "redirect:/";
+        }
 
-    @DeleteMapping("/delete/{id}")
-    public void deleteComment(@PathVariable Long id) {
-        commentService.deleteComment(id);
+        /* 글 종류에 따라 돌아갈 페이지를 정한다 */
+        String backUrl = "SHARE".equals(post.getType())
+                ? "redirect:/board/shareDetail?id=" + postID
+                : "redirect:/request/requestdetail?id=" + postID;
+
+        /* 빈 댓글은 저장하지 않는다 (브라우저 required 는 F12로 지울 수 있음) */
+        if (comment.getContent() == null || comment.getContent().isBlank()) {
+            return backUrl;
+        }
+
+        comment.setUserId(userID);
+        comment.setContent(comment.getContent().trim());
+        comment.setCreatedAt(LocalDateTime.now());
+        comment.setUpdatedAt(LocalDateTime.now());
+
+        commentRepository.save(comment);
+
+        return backUrl;
     }
 }

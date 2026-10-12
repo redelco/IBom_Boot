@@ -1,5 +1,8 @@
 package com.ibom.main.controller;
 
+
+import org.springframework.ui.Model;
+import com.ibom.main.dao.PostRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,14 +17,24 @@ import jakarta.servlet.http.HttpSession;
 public class MemberController {
 
 	private final MemberRepository memberRepository;
+	private final PostRepository postRepository;          // ← 추가
 
-	public MemberController(MemberRepository memberRepository) {
+	public MemberController(MemberRepository memberRepository,
+	                        PostRepository postRepository) {   // ← 추가
 		this.memberRepository = memberRepository;
+		this.postRepository = postRepository;             // ← 추가
 	}
 
 	/* 첫 화면 */
 	@GetMapping("/")
-	public String index() {
+	public String index(Model model) {
+
+		model.addAttribute("urgentPosts",
+				postRepository.findTop3ByTypeAndUrgencyAndIsDeletedFalseOrderByCreatedAtDesc("REQUEST", "URGENT"));
+
+		model.addAttribute("recentShares",
+				postRepository.findTop4ByTypeAndIsDeletedFalseOrderByCreatedAtDesc("SHARE"));
+
 		return "index";
 	}
 
@@ -35,12 +48,6 @@ public class MemberController {
 	public String add(Member member) {
 		memberRepository.save(member);
 		return "redirect:/";
-	}
-
-	/* 나눔 게시판 */
-	@GetMapping("/board/share")
-	public String shareBoard() {
-		return "board/share";
 	}
 
 	/* 로그인 화면 */
@@ -61,9 +68,13 @@ public class MemberController {
 			return "redirect:/member/login?error";
 		}
 
-		/* 이 두 줄이 마이페이지·북마크·관심목록과 연결됩니다 */
+		/* 마이페이지·북마크·관심목록에서 사용 */
 		session.setAttribute("loginUserId", member.getId());
 		session.setAttribute("loginNickname", member.getNICKNAME());
+
+		/* 댓글 기능(CommentController)이 사용하는 키 — 없으면 댓글 등록이 로그인 화면으로 튕깁니다 */
+		session.setAttribute("userID", member.getId());
+		session.setAttribute("login", true);
 
 		return "redirect:/";
 	}

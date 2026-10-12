@@ -508,6 +508,11 @@
       .urgent-stats{ order:3; }
       .hero-buttons a{ padding:14px 22px; font-size:15px; }
     }
+
+    /* 긴급 요청 줄 / 최근 나눔 카드를 링크로 사용 */
+    a.urgent-row, a.card{ text-decoration:none; color:inherit; }
+    a.urgent-row:hover{ background:#fff7f9; }
+
   </style>
   <link rel="stylesheet" href="/css/common.css">
 </head>
@@ -547,62 +552,6 @@
   </div>
 </section>
 
-
-<!-- ===== 카테고리 원형 메뉴 ===== -->
-<div class="wrap">
-  <div class="cat-row" id="catRow">
-
-    <button type="button" class="cat-item active" data-cat="ALL">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
-      전체
-    </button>
-    <span class="cat-sep"></span>
-
-    <button type="button" class="cat-item" data-cat="수유">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 2.5h5"/><path d="M10.5 4.5h3V7h-3z"/><rect x="7.5" y="7" width="9" height="14.5" rx="3"/><path d="M7.5 11.5h9"/></svg>
-      수유
-    </button>
-    <span class="cat-sep"></span>
-
-    <button type="button" class="cat-item" data-cat="의류">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 3 5 5.2 3.5 9l3 1.3V21h11V10.3l3-1.3L19 5.2 15.5 3a3.5 3.5 0 0 1-7 0z"/></svg>
-      의류
-    </button>
-    <span class="cat-sep"></span>
-
-    <button type="button" class="cat-item" data-cat="외출">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h2l1.6 5"/><path d="M20 8A8 8 0 0 0 7.6 4"/><path d="M6.6 8h14l-2.3 7H9.2z"/><circle cx="10" cy="20" r="1.6"/><circle cx="17.5" cy="20" r="1.6"/><path d="M10.3 15 10 18.4"/><path d="M17.2 15l.3 3.4"/></svg>
-      외출
-    </button>
-    <span class="cat-sep"></span>
-
-    <button type="button" class="cat-item" data-cat="위생">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3s6 6.2 6 10a6 6 0 0 1-12 0c0-3.8 6-10 6-10z"/><path d="M9.4 14a2.8 2.8 0 0 0 2.6 2.6"/></svg>
-      위생
-    </button>
-    <span class="cat-sep"></span>
-
-    <button type="button" class="cat-item" data-cat="수면">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 14.5A8.5 8.5 0 0 1 9.5 3.5a8.5 8.5 0 1 0 11 11z"/></svg>
-      수면
-    </button>
-    <span class="cat-sep"></span>
-
-    <button type="button" class="cat-item" data-cat="놀이">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3.4 9.5h17.2"/><path d="M3.4 14.5h17.2"/><path d="M12 3c2.6 2.8 2.6 15.2 0 18"/><path d="M12 3c-2.6 2.8-2.6 15.2 0 18"/></svg>
-      놀이
-    </button>
-    <span class="cat-sep"></span>
-
-    <button type="button" class="cat-item" data-cat="건강">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 5.6a5 5 0 0 0-7.1 0L12 7.3l-1.7-1.7a5 5 0 0 0-7.1 7.1l8.8 8.8 8.8-8.8a5 5 0 0 0 0-7.1z"/><path d="M6.6 12h2.6l1.3-2.3 1.8 4.1 1.3-2.5h2.6"/></svg>
-      건강
-    </button>
-
-  </div>
-</div>
-
-
 <!-- ===== 긴급 요청 ===== -->
 <div class="wrap section-wrap">
   <div class="urgent-box">
@@ -615,8 +564,25 @@
       <span class="sub">지금 도움이 필요한 이웃이 있어요!</span>
     </div>
 
-    <!-- TODO: 백엔드 연결 시 아래 목록을 Thymeleaf th:each 로 교체 -->
-    <div id="urgentList"></div>
+    <div id="urgentList">
+
+      <a class="urgent-row" th:each="post : ${urgentPosts}"
+         th:href="@{/request/requestdetail(id=${post.id})}">
+        <span class="tag-urgent">급해요</span>
+        <div class="urgent-content">
+          <div class="title" th:text="${post.title}">요청 게시글의 제목이 들어갑니다.</div>
+          <div class="meta">
+            <span th:text="${post.tradeRegion} ?: '지역 미입력'">서울 강남구</span><span>·</span>
+            <span th:text="${post.category} ?: '카테고리 없음'">유아용품</span>
+          </div>
+        </div>
+      </a>
+
+      <p th:if="${#lists.isEmpty(urgentPosts)}" style="padding:30px 18px;color:#999">
+        지금은 긴급 요청이 없습니다.
+      </p>
+
+    </div>
 
     <div class="urgent-footer">
       <a href="/request">더 많은 요청 보기 &gt;</a>
@@ -640,8 +606,30 @@
     <a class="more" href="/board/share">더보기 &gt;</a>
   </div>
 
-  <!-- TODO: 백엔드 연결 시 아래 목록을 Thymeleaf th:each 로 교체 -->
-  <div class="card-grid" id="recentGrid"></div>
+  <div class="card-grid" id="recentGrid">
+
+    <a class="card" th:each="post : ${recentShares}"
+       th:href="@{/board/shareDetail(id=${post.id})}">
+      <div class="card-image">
+        <div class="icon-circle-sm">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 5.6a5 5 0 0 0-7.1 0L12 7.3l-1.7-1.7a5 5 0 0 0-7.1 7.1l8.8 8.8 8.8-8.8a5 5 0 0 0 0-7.1z"/></svg>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="title" th:text="${post.title}">글 제목</div>
+        <div class="meta">
+          📍 <span th:text="${post.tradeRegion} ?: '지역 미입력'">서울 강남구</span>
+          ·
+          <span th:text="${#temporals.format(post.createdAt, 'MM/dd')}">1시간전</span>
+        </div>
+        <div class="hashtags" th:if="${post.category != null}">
+          <span th:each="tag : ${#strings.arraySplit(post.category, '>')}"
+                th:text="'# ' + ${#strings.trim(tag)}"># 수면</span>
+        </div>
+      </div>
+    </a>
+
+  </div>
 
 </div>
 
@@ -677,62 +665,6 @@
   const eyeIcon  = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>';
   const heartSm  = '<svg width="14" height="14" viewBox="0 0 24 24" fill="#888"><path d="M12 21s-7-4.4-9.5-8.5C.8 9 2 5.5 5.3 5 7.5 4.7 9.5 6 12 8.5 14.5 6 16.5 4.7 18.7 5 22 5.5 23.2 9 21.5 12.5 19 16.6 12 21 12 21z"/></svg>';
   const heartOut = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 5.6a5 5 0 0 0-7.1 0L12 7.3l-1.7-1.7a5 5 0 0 0-7.1 7.1l8.8 8.8 8.8-8.8a5 5 0 0 0 0-7.1z"/></svg>';
-
-  /* =========================================================
-     1. 긴급 요청 더미 목록
-     TODO: 백엔드 연결 예정
-     ========================================================= */
-  let urgentHtml = '';
-  for(let i = 0; i < 5; i++){
-    urgentHtml += `
-      <div class="urgent-row">
-        <span class="tag-urgent">급해요</span>
-        <div class="urgent-content">
-          <div class="title">요청 게시글의 제목이 들어갑니다.</div>
-          <div class="meta">
-            <span>서울 강남구</span><span>·</span><span>유아용품</span>
-            <span class="hashtag"># 수면</span>
-          </div>
-        </div>
-        <div class="urgent-stats">
-          <span class="stat-pill">${eyeIcon}00</span>
-          <span class="stat-pill">${heartSm}00</span>
-        </div>
-        <button type="button" class="btn-help">도와줄게요!</button>
-      </div>`;
-  }
-  document.getElementById('urgentList').innerHTML = urgentHtml;
-
-  /* =========================================================
-     2. 최근 나눔 더미 목록
-     TODO: 백엔드 연결 예정
-     ========================================================= */
-  let recentHtml = '';
-  for(let i = 0; i < 5; i++){
-    recentHtml += `
-      <div class="card">
-        <!-- TODO: 게시글 대표 이미지 연결 예정 (POST_IMAGES 테이블 없음, 분홍 박스 유지) -->
-        <div class="card-image"><div class="icon-circle-sm">${heartOut}</div></div>
-        <div class="card-body">
-          <div class="title">글 제목</div>
-          <div class="meta">${pinIcon} 서울 강남구 · 1시간전</div>
-          <div class="hashtags"><span># 수면</span><span># 0~12개월</span></div>
-        </div>
-      </div>`;
-  }
-  document.getElementById('recentGrid').innerHTML = recentHtml;
-
-  /* =========================================================
-     3. 카테고리 선택
-     ========================================================= */
-  const catItems = document.querySelectorAll('#catRow .cat-item');
-  catItems.forEach(item => {
-    item.addEventListener('click', () => {
-      catItems.forEach(c => c.classList.remove('active'));
-      item.classList.add('active');
-      // TODO: 백엔드 연결 예정 (item.dataset.cat 으로 목록 재조회)
-    });
-  });
 
   /* =========================================================
      4. 검색

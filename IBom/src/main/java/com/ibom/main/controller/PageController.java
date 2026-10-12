@@ -12,10 +12,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class PageController {
 
 	/* ===== 게시판 ===== */
-	@GetMapping("/board/shareDetail")
-	public String shareDetail() {
-		return "board/shareDetail";
-	}
 
 	@GetMapping("/board/shareWrite")
 	public String shareWrite() {

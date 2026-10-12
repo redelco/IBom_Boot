@@ -436,6 +436,8 @@
       .filter-sections{ grid-template-columns: 1fr; }
       .card-grid{ grid-template-columns: repeat(2, 1fr); }
     }
+    /* 카드 전체를 링크로 사용 */
+    a.card{ text-decoration:none; color:inherit; display:block; }
   </style>
   <link rel="stylesheet" href="/css/common.css">
 </head>
@@ -640,17 +642,48 @@
   <section>
 
     <div class="list-top">
-      <div class="list-count">총 1,234개의 나눔글</div>
+      <div class="list-count" th:text="'총 ' + ${postCount} + '개의 나눔글'">총 0개의 나눔글</div>
       <select class="sort-select" id="sortSelect" aria-label="정렬">
         <option value="latest">최신순</option>
         <option value="favorite">관심 많은 순</option>
       </select>
     </div>
 
-    <!-- TODO: 백엔드 연결 시 아래 목록을 Thymeleaf th:each 로 교체 -->
-    <div class="card-grid" id="cardGrid"></div>
+    <div class="card-grid" id="cardGrid">
 
-    <div class="pagination">
+      <a class="card" th:each="post : ${posts}"
+         th:href="@{/board/shareDetail(id=${post.id})}">
+
+        <div class="card-image">
+          <div class="icon-circle-sm">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 5.6a5 5 0 0 0-7.1 0L12 7.3l-1.7-1.7a5 5 0 0 0-7.1 7.1l8.8 8.8 8.8-8.8a5 5 0 0 0 0-7.1z"/></svg>
+          </div>
+        </div>
+
+        <div class="card-body">
+          <div class="title" th:text="${post.title}">글 제목</div>
+
+          <div class="meta">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-6.5-5.9-6.5-11A6.5 6.5 0 0 1 12 3.5 6.5 6.5 0 0 1 18.5 10c0 5.1-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.2"/></svg>
+            <span th:text="${post.tradeRegion} ?: '지역 미입력'">서울 강남구</span>
+            ·
+            <span th:text="${#temporals.format(post.createdAt, 'MM/dd HH:mm')}">1시간전</span>
+          </div>
+
+          <div class="hashtags" th:if="${post.category != null}">
+            <span th:each="tag : ${#strings.arraySplit(post.category, '>')}"
+                  th:text="'# ' + ${#strings.trim(tag)}"># 수면</span>
+          </div>
+        </div>
+      </a>
+
+      <p th:if="${postCount == 0}" style="padding:60px 0;text-align:center;color:#999;grid-column:1/-1">
+        아직 등록된 나눔글이 없습니다.
+      </p>
+
+    </div>
+
+    <div class="pagination" th:if="${postCount > 12}">
       <button type="button" class="arrow">&lt;</button>
       <button type="button" class="active">1</button>
       <button type="button">2</button>
@@ -678,19 +711,6 @@
   const heartOut = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 5.6a5 5 0 0 0-7.1 0L12 7.3l-1.7-1.7a5 5 0 0 0-7.1 7.1l8.8 8.8 8.8-8.8a5 5 0 0 0 0-7.1z"/></svg>';
   const pinIcon  = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-6.5-5.9-6.5-11A6.5 6.5 0 0 1 12 3.5 6.5 6.5 0 0 1 18.5 10c0 5.1-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.2"/></svg>';
 
-  let cardsHtml = '';
-  for(let i = 0; i < 12; i++){
-    cardsHtml += `
-      <div class="card">
-        <!-- TODO: 게시글 대표 이미지 연결 예정 (POST_IMAGES 테이블 없음, 분홍 박스 유지) -->
-        <div class="card-image"><div class="icon-circle-sm">${heartOut}</div></div>
-        <div class="card-body">
-          <div class="title">글 제목</div>
-          <div class="meta">${pinIcon} 서울 강남구 · 1시간전</div>
-          <div class="hashtags"><span># 수면</span><span># 유아용품</span></div>
-        </div>
-      </div>`;
-  }
   document.getElementById('cardGrid').innerHTML = cardsHtml;
 
   /* =========================================================

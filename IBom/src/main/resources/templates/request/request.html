@@ -433,7 +433,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 8px;
+            font-size: 18px;
             color: var(--white);
             flex-shrink: 0;
         }
@@ -837,7 +837,8 @@
                 font-size: 15px;
             }
         }
-
+        /* 긴급도 탭을 링크로 사용 */
+        a.chip{ text-decoration:none; display:inline-flex; align-items:center; }
     </style>
   <link rel="stylesheet" href="/css/common.css">
 </head>
@@ -1091,61 +1092,100 @@
 
     <section>
 
-        <div class="chips" id="urgencyChips">
-
-            <button
-                    type="button"
-                    class="chip active"
-                    data-urgency="ALL"
-            >
-                전체
-            </button>
-
-            <button
-                    type="button"
-                    class="chip"
-                    data-urgency="URGENT"
-            >
-                긴급요청
-            </button>
-
-            <button
-                    type="button"
-                    class="chip"
-                    data-urgency="NORMAL"
-            >
-                일반요청
-            </button>
-
-        </div>
-
-
         <div class="list-top">
 
-            <div class="list-count">
-                총 1,234개의 요청글
+            <div class="list-count" th:text="'총 ' + ${postCount} + '개의 요청글'">
+                총 0개의 요청글
             </div>
 
-            <select
-                    class="sort-select"
-                    id="sortSelect"
-                    aria-label="정렬"
-            >
-
-                <option value="latest">
-                    최신순
-                </option>
-
-                <option value="favorite">
-                    관심 많은 순
-                </option>
-
+            <select class="sort-select" id="sortSelect" aria-label="정렬">
+                <option value="latest">최신순</option>
+                <option value="favorite">관심 많은 순</option>
             </select>
 
         </div>
 
 
-        <div id="requestList"></div>
+        <div class="chips" id="urgencyChips">
+
+            <a href="/request" class="chip"
+               th:classappend="${urgency == 'ALL'} ? 'active'">전체</a>
+
+            <a href="/request?urgency=URGENT" class="chip"
+               th:classappend="${urgency == 'URGENT'} ? 'active'">급해요</a>
+
+            <a href="/request?urgency=NORMAL" class="chip"
+               th:classappend="${urgency == 'NORMAL'} ? 'active'">여유있어요</a>
+
+        </div>
+
+
+        <div id="requestList">
+
+            <article class="post" th:each="post : ${posts}"
+                     th:with="isUrgent=${post.urgency == 'URGENT'}">
+
+                <div class="timeline">
+                    <div class="tl-badge"
+                         th:classappend="${isUrgent} ? 'urgent' : 'normal'"
+                         th:text="${isUrgent} ? '🚨' : '🍀'">🍀</div>
+                    <div class="tl-line"></div>
+                    <div class="tl-dot"></div>
+                </div>
+
+                <div class="avatar">
+                    <svg width="40" height="40" viewBox="0 0 40 40" aria-hidden="true">
+                        <circle cx="20" cy="15" r="8" fill="#d4d4d4"/>
+                        <path d="M4 40c0-9 7-15 16-15s16 6 16 15z" fill="#d4d4d4"/>
+                    </svg>
+                </div>
+
+                <div class="post-main">
+
+                    <div class="post-head">
+                        <span class="nickname" th:text="${nicknames[post.userId]} ?: '알 수 없음'">닉네임</span>
+                        <span class="urgency-badge"
+                              th:classappend="${isUrgent} ? 'urgent' : 'normal'"
+                              th:text="${isUrgent} ? '급해요' : '여유있어요'">여유있어요</span>
+                        <span class="post-time"
+                              th:text="${#temporals.format(post.createdAt, 'MM/dd HH:mm')}">10분전</span>
+                    </div>
+
+                    <a th:href="@{/request/requestdetail(id=${post.id})}" class="post-title"
+                       th:text="${post.title}">게시글 제목이 이곳에 들어갑니다</a>
+
+                    <p class="post-content" th:text="${post.content}">본문 내용입니다.</p>
+
+                    <div class="hashtags" th:if="${post.category != null}">
+                <span th:each="tag : ${#strings.arraySplit(post.category, '>')}"
+                      th:text="'# ' + ${#strings.trim(tag)}"># 수면</span>
+                    </div>
+
+                    <div class="post-region">
+                        <span class="mini-icon">📍</span>
+                        <span th:text="${post.tradeRegion} ?: '지역 미입력'">서울시 마포구</span>
+                    </div>
+
+                </div>
+
+                <div class="post-side">
+                    <button type="button" class="btn-more" aria-label="더보기">
+                        <svg width="22" height="6" viewBox="0 0 22 6"><circle cx="3" cy="3" r="2.2" fill="currentColor"/><circle cx="11" cy="3" r="2.2" fill="currentColor"/><circle cx="19" cy="3" r="2.2" fill="currentColor"/></svg>
+                    </button>
+                    <div class="post-actions">
+                        <button type="button" class="btn-action btn-fav" aria-pressed="false">
+                            <span class="action-icon heart-icon">♡</span> 관심
+                        </button>
+                    </div>
+                </div>
+
+            </article>
+
+            <p th:if="${postCount == 0}" style="padding:60px 0;text-align:center;color:#999">
+                아직 등록된 요청글이 없습니다.
+            </p>
+
+        </div>
 
         <p class="scroll-hint">
             더 많은 요청을 보려면 아래로 스크롤 해주세요 ↓
@@ -1160,278 +1200,6 @@
 
 
 <script>
-
-    /* =========================================================
-       1. 목록 더미 데이터
-       ========================================================= */
-
-    const dummyRequests = [
-
-        { urgency: 'URGENT' },
-        { urgency: 'NORMAL' },
-        { urgency: 'URGENT' },
-        { urgency: 'URGENT' },
-        { urgency: 'NORMAL' },
-        { urgency: 'URGENT' }
-
-    ].map(item => ({
-
-        ...item,
-
-        member: {
-
-            NICKNAME: '닉네임',
-
-            profileImage: null
-
-        },
-
-        time: '10분전',
-
-        title: '게시글 제목이 이곳에 들어갑니다',
-
-        content:
-            '본문 내용의 윗줄입니다.\n본문 내용의 아랫줄 내용입니다.',
-
-        tags: ['수면', '유아용품'],
-
-        region: '서울시 마포구'
-
-    }));
-
-
-    /* 기본 아바타 */
-
-    const avatarSvg = `
-
-  <svg
-    width="40"
-    height="40"
-    viewBox="0 0 40 40"
-    aria-hidden="true"
-  >
-
-    <circle
-      cx="20"
-      cy="15"
-      r="8"
-      fill="#d4d4d4"
-    />
-
-    <path
-      d="M4 40c0-9 7-15 16-15s16 6 16 15z"
-      fill="#d4d4d4"
-    />
-
-  </svg>
-
-`;
-
-
-    /* =========================================================
-       2. 요청글 목록 출력
-       ========================================================= */
-
-    function renderList(list) {
-
-        const html = list.map(post => {
-
-            const isUrgent =
-                post.urgency === 'URGENT';
-
-            const levelClass =
-                isUrgent ? 'urgent' : 'normal';
-
-            const levelText =
-                isUrgent ? '급해요' : '여유있어요';
-
-            const avatar =
-                post.member.profileImage
-
-                    ? `<img
-             src="${post.member.profileImage}"
-             alt=""
-           >`
-
-                    : avatarSvg;
-
-
-            return `
-
-      <article class="post">
-
-        <div class="timeline">
-
-          <div class="tl-badge ${levelClass}">
-            아이콘
-          </div>
-
-          <div class="tl-line"></div>
-
-          <div class="tl-dot"></div>
-
-        </div>
-
-
-        <div class="avatar">
-          ${avatar}
-        </div>
-
-
-        <div class="post-main">
-
-          <div class="post-head">
-
-            <span class="nickname">
-              ${post.member.NICKNAME}
-            </span>
-
-            <span class="urgency-badge ${levelClass}">
-
-              ${
-                isUrgent
-                    ? '<span class="mini-icon"></span>'
-                    : ''
-            }
-
-              ${levelText}
-
-            </span>
-
-            <span class="post-time">
-              ${post.time}
-            </span>
-
-          </div>
-
-
-          <!-- TODO: 요청 상세 페이지 연결 -->
-
-          <a href="/request/requestdetail" class="post-title">
-            ${post.title}
-          </a>
-
-
-          <p class="post-content">
-            ${post.content}
-          </p>
-
-
-          <div class="hashtags">
-
-            ${
-                post.tags
-                    .map(
-                        t => `<span># ${t}</span>`
-                    )
-                    .join('')
-            }
-
-          </div>
-
-
-          <div class="post-region">
-
-            <span class="mini-icon"></span>
-
-            ${post.region}
-
-          </div>
-
-        </div>
-
-
-        <div class="post-side">
-
-          <button
-            type="button"
-            class="btn-more"
-            aria-label="더보기"
-          >
-
-            <svg
-              width="22"
-              height="6"
-              viewBox="0 0 22 6"
-            >
-
-              <circle
-                cx="3"
-                cy="3"
-                r="2.2"
-                fill="currentColor"
-              />
-
-              <circle
-                cx="11"
-                cy="3"
-                r="2.2"
-                fill="currentColor"
-              />
-
-              <circle
-                cx="19"
-                cy="3"
-                r="2.2"
-                fill="currentColor"
-              />
-
-            </svg>
-
-          </button>
-
-
-          <!-- 관심 / 도와줄게요 -->
-
-          <div class="post-actions">
-
-            <button
-              type="button"
-              class="btn-action btn-fav"
-              aria-pressed="false"
-            >
-
-              <!-- 빈 하트 -->
-              <span class="action-icon heart-icon">
-                ♡
-              </span>
-
-              관심
-
-            </button>
-
-
-            <button
-              type="button"
-              class="btn-action btn-help"
-            >
-
-              <!-- 도움 이모지 -->
-              <span class="action-icon help-icon">
-                🤝
-              </span>
-
-              도와줄게요
-
-            </button>
-
-          </div>
-
-        </div>
-
-      </article>
-
-    `;
-
-        }).join('');
-
-
-        document.getElementById('requestList').innerHTML = html;
-
-    }
-
-
-    renderList(dummyRequests);
 
 
     /* =========================================================

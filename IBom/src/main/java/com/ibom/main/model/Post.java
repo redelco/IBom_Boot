@@ -65,10 +65,12 @@ public class Post {
     @Column(name = "IS_DELETED")
     private Boolean isDeleted;
 
-    @Column(name = "CREATED_AT", insertable = false, updatable = false)
+    @Setter
+    @Column(name = "CREATED_AT")
     private LocalDateTime createdAt;
 
-    @Column(name = "UPDATED_AT", insertable = false, updatable = false)
+    @Setter
+    @Column(name = "UPDATED_AT")
     private LocalDateTime updatedAt;
 
     public Long getId() { return id; }
