@@ -25,7 +25,7 @@ public class PostFavorite {
     @Column(name = "POST_ID", nullable = false)
     private Long postId;
 
-    @Column(name = "CREATED_AT", insertable = false, updatable = false)
+    @Column(name = "CREATED_AT")
     private LocalDateTime createdAt;
 
     public Long getId() { return id; }
@@ -38,4 +38,5 @@ public class PostFavorite {
     public void setPostId(Long postId) { this.postId = postId; }
 
     public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 }

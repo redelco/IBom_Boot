@@ -1,3 +1,4 @@
+```
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -436,8 +437,10 @@
       .filter-sections{ grid-template-columns: 1fr; }
       .card-grid{ grid-template-columns: repeat(2, 1fr); }
     }
-    /* 카드 전체를 링크로 사용 */
-    a.card{ text-decoration:none; color:inherit; display:block; }
+    /* 카드 본문을 링크로 사용 */
+    a.card-body{ text-decoration:none; color:inherit; display:block; }
+    .card-fav{ border:none; cursor:pointer; font-size:17px; line-height:1; color:#bbb; }
+    .card-fav.on{ color: var(--pink-main); }
   </style>
   <link rel="stylesheet" href="/css/common.css">
 </head>
@@ -651,31 +654,33 @@
 
     <div class="card-grid" id="cardGrid">
 
-      <a class="card" th:each="post : ${posts}"
-         th:href="@{/board/shareDetail(id=${post.id})}">
+      <div class="card" th:each="post : ${posts}"
+           th:with="fav=${myFavorites.contains(post.id)}">
 
         <div class="card-image">
-          <div class="icon-circle-sm">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 5.6a5 5 0 0 0-7.1 0L12 7.3l-1.7-1.7a5 5 0 0 0-7.1 7.1l8.8 8.8 8.8-8.8a5 5 0 0 0 0-7.1z"/></svg>
-          </div>
+          <form action="/favorite/toggle" method="post" style="margin:0">
+            <input type="hidden" name="postId" th:value="${post.id}">
+            <input type="hidden" name="back" value="/board/share">
+            <button type="submit" class="icon-circle-sm card-fav"
+                    th:classappend="${fav} ? 'on'"
+                    th:text="${fav} ? '♥' : '♡'" aria-label="관심">♡</button>
+          </form>
         </div>
 
-        <div class="card-body">
+        <a class="card-body" th:href="@{/board/shareDetail(id=${post.id})}">
           <div class="title" th:text="${post.title}">글 제목</div>
-
           <div class="meta">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-6.5-5.9-6.5-11A6.5 6.5 0 0 1 12 3.5 6.5 6.5 0 0 1 18.5 10c0 5.1-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.2"/></svg>
             <span th:text="${post.tradeRegion} ?: '지역 미입력'">서울 강남구</span>
             ·
             <span th:text="${#temporals.format(post.createdAt, 'MM/dd HH:mm')}">1시간전</span>
           </div>
-
           <div class="hashtags" th:if="${post.category != null}">
             <span th:each="tag : ${#strings.arraySplit(post.category, '>')}"
                   th:text="'# ' + ${#strings.trim(tag)}"># 수면</span>
           </div>
-        </div>
-      </a>
+        </a>
+      </div>
 
       <p th:if="${postCount == 0}" style="padding:60px 0;text-align:center;color:#999;grid-column:1/-1">
         아직 등록된 나눔글이 없습니다.

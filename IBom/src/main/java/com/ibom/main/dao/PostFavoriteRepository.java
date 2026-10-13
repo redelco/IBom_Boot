@@ -12,8 +12,6 @@ public interface PostFavoriteRepository extends JpaRepository<PostFavorite, Long
     /** 내가 관심 누른 개수 */
     long countByUserId(Long userId);
 
-
-
     /** 내가 관심 누른 글 목록 (관심목록 화면에서 사용 예정) */
     List<PostFavorite> findByUserIdOrderByCreatedAtDesc(Long userId);
 
@@ -22,5 +20,7 @@ public interface PostFavoriteRepository extends JpaRepository<PostFavorite, Long
     @Transactional
     void deleteByUserIdAndPostId(Long userId, Long postId);
 
+    /** 이 글에 관심 누른 사람 수 */
+    long countByPostId(Long postId);
 
 }

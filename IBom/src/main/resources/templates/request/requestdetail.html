@@ -1,3 +1,4 @@
+```
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -136,7 +137,6 @@
             width:16px;
             height:16px;
             border-radius:3px;
-            background: var(--gray);
             display:inline-block;
         }
 
@@ -195,7 +195,6 @@
             width:15px;
             height:15px;
             border-radius:3px;
-            background: var(--gray);
             display:inline-block;
         }
 
@@ -368,8 +367,19 @@
             .divider-full{ margin: 0 -20px; }
             .comment.reply{ margin-left:24px; width: calc(100% - 24px); }
         }
+
+        /* 관심(하트) 버튼 */
+        .btn-fav-count{
+            display:inline-flex; align-items:center; gap:6px;
+            padding:6px 14px; border:1px solid #e3e3e3; border-radius:999px;
+            background:#fff; font-size:15px; color:#888; cursor:pointer;
+            font-family:inherit;
+        }
+        .btn-fav-count:hover{ border-color: var(--pink-main); }
+        .btn-fav-count.on{ border-color: var(--pink-main); color: var(--pink-main); }
+        .btn-fav-count .heart{ font-size:16px; line-height:1; }
     </style>
-  <link rel="stylesheet" href="/css/common.css">
+    <link rel="stylesheet" href="/css/common.css">
 </head>
 <body>
 
@@ -381,7 +391,10 @@
         <div class="post-topbar">
             <span class="tag-urgent" th:text="${post.urgency == 'URGENT'} ? '급해요' : '여유있어요'">급해요</span>
             <div class="topbar-right">
-                <span class="share-btn"><span class="mini-icon"></span> 공유하기</span>
+                <button type="button" class="share-btn" id="btnShare">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg>
+                    공유하기
+                </button>
                 <button class="more-btn">⋯</button>
             </div>
         </div>
@@ -400,8 +413,15 @@
         <div class="post-footer-row">
             <div class="post-category" th:text="${post.category} ?: '카테고리 없음'">카테고리 · 세부 카테고리</div>
             <div class="post-stats">
-                <span class="stat"><span class="mini-icon"></span> 00</span>
-                <span class="stat"><span class="mini-icon"></span> 00</span>
+                <form action="/favorite/toggle" method="post" style="margin:0">
+                    <input type="hidden" name="postId" th:value="${post.id}">
+                    <input type="hidden" name="back" th:value="'/request/requestdetail?id=' + ${post.id}">
+                    <button type="submit" class="btn-fav-count" th:classappend="${favorited} ? 'on'">
+                        <span class="heart" th:text="${favorited} ? '♥' : '♡'">♡</span>
+                        <span th:text="${favoriteCount}">0</span>
+                        관심
+                    </button>
+                </form>
             </div>
         </div>
 
@@ -452,5 +472,13 @@
     </div>
 </div>
 
+<script>
+    document.getElementById('btnShare').addEventListener('click', () => {
+        navigator.clipboard.writeText(location.href)
+            .then(() => alert('게시글 주소가 복사되었습니다.'))
+            .catch(() => alert('복사에 실패했습니다. 주소창을 복사해주세요.'));
+    });
+</script>
 </body>
 </html>
+```
