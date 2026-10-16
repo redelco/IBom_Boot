@@ -43,39 +43,49 @@ public class RequestController {
         this.postFavoriteRepository = postFavoriteRepository;
     }
 
-    /** 요청 게시판 목록 (전체 / 급해요 / 여유있어요) */
+    /** 요청 게시판 목록 + 긴급도 탭 + 상세필터 (여러 개 선택 가능) */
     @GetMapping
-    public String request(@RequestParam(value = "urgency", required = false) String urgency,
+    public String request(@RequestParam(value = "urgency",   required = false) String urgency,
+                          @RequestParam(value = "itemType",  required = false) List<String> itemType,
+                          @RequestParam(value = "category",  required = false) List<String> category,
+                          @RequestParam(value = "tradeType", required = false) List<String> tradeType,
                           Model model,
                           HttpSession session) {
 
-        List<Post> posts;
+        String urgencyFilter = ("URGENT".equals(urgency) || "NORMAL".equals(urgency)) ? urgency : null;
 
-        if ("URGENT".equals(urgency) || "NORMAL".equals(urgency)) {
-            posts = postRepository
-                    .findByTypeAndUrgencyAndIsDeletedFalseOrderByCreatedAtDesc("REQUEST", urgency);
-        } else {
-            urgency = "ALL";
-            posts = postRepository
-                    .findByTypeAndIsDeletedFalseOrderByCreatedAtDesc("REQUEST");
-        }
+        List<String> itemTypes  = clean(itemType);
+        List<String> categories = clean(category);
+        List<String> tradeTypes = clean(tradeType);
 
+        List<Post> all = (urgencyFilter == null)
+                ? postRepository.findByTypeAndIsDeletedFalseOrderByCreatedAtDesc("REQUEST")
+                : postRepository.findByTypeAndUrgencyAndIsDeletedFalseOrderByCreatedAtDesc("REQUEST", urgencyFilter);
+
+        List<Post> posts = new ArrayList<>();
         List<Long> userIds = new ArrayList<>();
-        for (Post p : posts) {
-            if (!userIds.contains(p.getUserId())) {
-                userIds.add(p.getUserId());
+
+        for (Post p : all) {
+            if (matchesFilter(p, itemTypes, categories, tradeTypes)) {
+                posts.add(p);
+                if (!userIds.contains(p.getUserId())) {
+                    userIds.add(p.getUserId());
+                }
             }
         }
 
         model.addAttribute("posts", posts);
         model.addAttribute("postCount", posts.size());
         model.addAttribute("nicknames", nicknamesOf(userIds));
-        model.addAttribute("urgency", urgency);
         model.addAttribute("myFavorites", myFavoriteIds(session));
+        model.addAttribute("urgency", urgencyFilter == null ? "ALL" : urgencyFilter);
+
+        model.addAttribute("fItemType",  itemTypes);
+        model.addAttribute("fCategory",  categories);
+        model.addAttribute("fTradeType", tradeTypes);
 
         return "request/request";
     }
-
     /** 요청 상세 */
     @GetMapping("/requestdetail")
     public String requestDetail(@RequestParam("id") Long id,
@@ -109,6 +119,64 @@ public class RequestController {
                 userId != null && postFavoriteRepository.existsByUserIdAndPostId(userId, id));
 
         return "request/requestdetail";
+    }
+
+    /** 체크된 값 중 빈 문자열("전체")을 걸러낸다 */
+    private List<String> clean(List<String> values) {
+
+        List<String> result = new ArrayList<>();
+
+        if (values == null) {
+            return result;
+        }
+
+        for (String v : values) {
+            if (v != null && !v.isBlank()) {
+                result.add(v);
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * 글이 선택된 필터에 맞는지 본다.
+     * 한 항목에서 아무것도 안 골랐으면 그 항목은 통과(= 전체).
+     * CATEGORY 는 "유아용품 > 수면" 형태라 앞/뒤로 나눠서 확인한다.
+     */
+    private boolean matchesFilter(Post post,
+                                  List<String> itemTypes,
+                                  List<String> categories,
+                                  List<String> tradeTypes) {
+
+        String category  = post.getCategory()  == null ? "" : post.getCategory();
+        String tradeType = post.getTradeType() == null ? "" : post.getTradeType();
+
+        if (!itemTypes.isEmpty()) {
+            boolean hit = false;
+            for (String t : itemTypes) {
+                if (category.startsWith(t)) { hit = true; break; }
+            }
+            if (!hit) return false;
+        }
+
+        if (!categories.isEmpty()) {
+            boolean hit = false;
+            for (String c : categories) {
+                if (category.endsWith(c)) { hit = true; break; }
+            }
+            if (!hit) return false;
+        }
+
+        if (!tradeTypes.isEmpty()) {
+            boolean hit = "BOTH".equals(tradeType);     // 직거래+택배 글은 양쪽 다 통과
+            for (String t : tradeTypes) {
+                if (tradeType.equals(t)) { hit = true; break; }
+            }
+            if (!hit) return false;
+        }
+
+        return true;
     }
 
     /* ===================== 아래는 도우미 메서드 ===================== */

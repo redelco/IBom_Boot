@@ -304,7 +304,7 @@
     width:118px;
     height:98px;
     border-radius:6px;
-    background: var(--gray);
+    background: #FFE9E4;
     flex-shrink:0;
     display:flex;
     align-items:center;
@@ -534,14 +534,20 @@
 
       <div class="post-list" id="list-SHARE">
         <div class="post-item" th:each="post : ${sharePosts}">
-          <div class="post-thumb">이미지</div>
+          <div class="post-thumb">
+            <img th:if="${post.imageUrl != null}" th:src="${post.imageUrl}" alt="">
+            <span th:if="${post.imageUrl == null}">사진 없음</span>
+          </div>
           <div class="post-main">
             <div class="post-head">
               <span class="status-badge" th:text="${post.status == 'COMPLETED'} ? '나눔 완료' : '나눔 중'">나눔 중</span>
-              <a href="#" class="post-title" th:text="${post.title}">게시글의 제목이 들어갑니다.</a>
+              <a th:href="@{/board/shareDetail(id=${post.id})}" class="post-title" th:text="${post.title}">게시글의 제목이 들어갑니다.</a>
             </div>
             <div class="post-meta" th:text="${#temporals.format(post.createdAt, 'yyyy.MM.dd')}">1시간 전</div>
-            <div class="hashtags"><span th:text="'# ' + ${post.category}"># 수면</span></div>
+            <div class="hashtags" th:if="${post.category != null}">
+              <span th:each="tag : ${#strings.arraySplit(post.category, '>')}"
+                    th:text="'# ' + ${#strings.trim(tag)}"># 수면</span>
+            </div>
           </div>
         </div>
         <p th:if="${#lists.isEmpty(sharePosts)}" style="padding:40px 0; text-align:center; color:#999;">작성한 나눔 글이 없습니다.</p>
@@ -549,12 +555,11 @@
 
       <div class="post-list" id="list-REQUEST" hidden>
         <div class="post-item" th:each="post : ${requestPosts}">
-          <div class="post-thumb">이미지</div>
           <div class="post-main">
             <div class="post-head">
               <span th:class="'status-badge ' + (${post.urgency == 'URGENT'} ? 'urgent' : 'normal')"
                     th:text="${post.urgency == 'URGENT'} ? '긴급요청' : '일반요청'">긴급요청</span>
-              <a href="#" class="post-title" th:text="${post.title}">게시글의 제목이 들어갑니다.</a>
+              <a th:href="@{/request/requestdetail(id=${post.id})}" class="post-title" th:text="${post.title}">게시글의 제목이 들어갑니다.</a>
             </div>
             <div class="post-meta" th:text="${#temporals.format(post.createdAt, 'yyyy.MM.dd')}">1시간 전</div>
             <div class="hashtags"><span th:text="'# ' + ${post.category}"># 수면</span></div>

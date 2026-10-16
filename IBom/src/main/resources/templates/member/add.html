@@ -234,6 +234,27 @@
       nav{ gap:24px; order:3; width:100%; justify-content:space-between; }
       .signup-card{ padding: 36px 24px 32px; }
     }
+
+    .check-msg{
+      font-size:13px;
+      font-weight:500;
+      margin-top:6px;
+    }
+    .check-msg.ok{ color:#2E9E5B; }
+    .check-msg.ng{ color: var(--pink-main); }
+
+    .alert-dup{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      background:#FFF0F3;
+      color: var(--pink-main);
+      font-size:14px;
+      font-weight:500;
+      padding:12px 16px;
+      border-radius:8px;
+      margin-bottom:18px;
+    }
   </style>
   <link rel="stylesheet" href="/css/common.css">
 </head>
@@ -246,6 +267,10 @@
 
     <form action="/member/add" method="post">
 
+      <div class="alert-dup" th:if="${param.error != null}">
+        이미 사용 중인 아이디입니다. 다른 아이디로 가입해주세요.
+      </div>
+
       <div class="signup-title">회원가입</div>
       <div class="signup-sub">함께 키우는 아름다운 나눔 문화</div>
 
@@ -253,8 +278,9 @@
         <label for="LOGIN_ID">아이디</label>
         <div class="field-row">
           <input type="text" id="LOGIN_ID" name="LOGIN_ID">
-          <button type="button" class="btn-action">중복 검색</button>
+          <button type="button" class="btn-action" id="btnCheckId">중복 검색</button>
         </div>
+        <div class="check-msg" id="idMsg"></div>
       </div>
 
       <div class="field">
@@ -272,7 +298,11 @@
 
       <div class="field">
         <label for="NICKNAME">닉네임</label>
-        <input type="text" id="NICKNAME" name="NICKNAME">
+        <div class="field-row">
+          <input type="text" id="NICKNAME" name="NICKNAME">
+          <button type="button" class="btn-action" id="btnCheckNick">중복 검색</button>
+        </div>
+        <div class="check-msg" id="nickMsg"></div>
       </div>
 
       <div class="field phone-block">
@@ -325,6 +355,75 @@
 
   </div>
 </div>
+
+<script>
+  /* =========================================================
+     1. 중복 검색 (아이디 · 닉네임 공통)
+     ========================================================= */
+  function bindDupCheck(btnId, inputId, msgId, url, paramName){
+
+    const btn   = document.getElementById(btnId);
+    const input = document.getElementById(inputId);
+    const msg   = document.getElementById(msgId);
+
+    btn.addEventListener('click', () => {
+
+      const value = input.value.trim();
+
+      fetch(url + '?' + paramName + '=' + encodeURIComponent(value))
+              .then(res => res.text())
+              .then(result => {
+
+                if (result === 'EMPTY') {
+                  msg.className = 'check-msg ng';
+                  msg.textContent = '먼저 입력해주세요.';
+
+                } else if (result === 'DUP') {
+                  msg.className = 'check-msg ng';
+                  msg.textContent = '이미 사용 중입니다.';
+
+                } else {
+                  msg.className = 'check-msg ok';
+                  msg.textContent = '사용할 수 있습니다.';
+                }
+              })
+              .catch(() => {
+                msg.className = 'check-msg ng';
+                msg.textContent = '확인에 실패했습니다. 잠시 후 다시 시도해주세요.';
+              });
+    });
+
+    /* 다시 고치면 결과 문구를 지운다 */
+    input.addEventListener('input', () => { msg.textContent = ''; });
+  }
+
+  bindDupCheck('btnCheckId',   'LOGIN_ID', 'idMsg',   '/member/check-login-id', 'loginId');
+  bindDupCheck('btnCheckNick', 'NICKNAME', 'nickMsg', '/member/check-nickname', 'nickname');
+
+
+  /* =========================================================
+     2. 약관 전체 동의
+     ========================================================= */
+  const agreeAll = document.getElementById('agree-all');
+
+  const agrees = [
+    document.getElementById('agree-terms'),
+    document.getElementById('agree-privacy'),
+    document.getElementById('agree-marketing')
+  ];
+
+  /* 전체 동의를 누르면 → 3개 모두 따라간다 */
+  agreeAll.addEventListener('change', () => {
+    agrees.forEach(box => box.checked = agreeAll.checked);
+  });
+
+  /* 3개를 개별로 누르면 → 전부 체크됐을 때만 전체 동의가 켜진다 */
+  agrees.forEach(box => {
+    box.addEventListener('change', () => {
+      agreeAll.checked = agrees.every(item => item.checked);
+    });
+  });
+</script>
 
 </body>
 </html>

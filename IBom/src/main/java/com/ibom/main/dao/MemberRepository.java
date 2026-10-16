@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+
 import com.ibom.main.model.Member;
 
 public interface MemberRepository extends JpaRepository<Member, Long> {
@@ -25,4 +26,11 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     boolean existsNicknameExceptMe(@Param("nickname") String nickname,
                                    @Param("userId") Long userId);
 
+    /** 회원가입 - 아이디 중복 검사 */
+    @Query("SELECT COUNT(m) > 0 FROM Member m WHERE m.LOGIN_ID = :loginId")
+    boolean existsLoginIdForSignup(@Param("loginId") String loginId);
+
+    /** 회원가입 - 닉네임 중복 검사 */
+    @Query("SELECT COUNT(m) > 0 FROM Member m WHERE m.NICKNAME = :nickname")
+    boolean existsNicknameForSignup(@Param("nickname") String nickname);
 }

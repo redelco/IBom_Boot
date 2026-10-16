@@ -1,4 +1,3 @@
-```
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -170,13 +169,20 @@
 
     .hero-image{
       flex: 0 0 47%;
-      background: var(--gray);
+      background: linear-gradient(160deg, #FFF1F4 0%, #FFE2E9 100%);
       display:flex;
       align-items:center;
       justify-content:center;
       font-size:18px;
       color:#333;
       min-height:240px;
+    }
+
+    /* 배너 일러스트 */
+    .hero-art{
+      width:min(300px, 72%);
+      height:auto;
+      display:block;
     }
 
     /* ===== 본문 (요청 게시판과 동일한 220px 사이드바) ===== */
@@ -286,13 +292,13 @@
       -webkit-appearance:none;
       border:1px solid #dcdcdc;
       border-radius:999px;
-      padding: 9px 40px 9px 20px;
+      padding: 9px 34px 9px 16px;
       font-family:inherit;
       font-size:14px;
       color:#333;
-      background: var(--white);
       cursor:pointer;
       outline:none;
+      background: #fff url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none' stroke='%23888' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'><polyline points='1,5.5 6,1 11,5.5'/></svg>") no-repeat right 14px center;
     }
 
     /* ===== 카드 목록 ===== */
@@ -441,6 +447,10 @@
     a.card-body{ text-decoration:none; color:inherit; display:block; }
     .card-fav{ border:none; cursor:pointer; font-size:17px; line-height:1; color:#bbb; }
     .card-fav.on{ color: var(--pink-main); }
+
+    /* 초기화를 링크로 바꿨으므로 버튼처럼 보이게 */
+    a.btn-reset{ text-decoration:none; display:inline-block; }
+    .filter-side form{ display:flex; flex-direction:column; height:100%; }
   </style>
   <link rel="stylesheet" href="/css/common.css">
 </head>
@@ -468,8 +478,26 @@
       </form>
     </div>
 
-    <!-- TODO: 나눔 게시판 배너 이미지 연결 예정 (static/img/ 에 파일 추가 후 교체) -->
-    <div class="hero-image">이미지 자리</div>
+    <!-- 나눔 게시판 배너 일러스트 -->
+    <div class="hero-image">
+      <svg class="hero-art" viewBox="0 0 300 200" fill="none" aria-hidden="true">
+        <ellipse cx="150" cy="178" rx="100" ry="12" fill="#F8466D" opacity=".10"/>
+        <!-- 주고받는 두 손 -->
+        <path d="M34 120c12-10 26-14 40-12l26 4" stroke="#F8466D" stroke-width="3.4" stroke-linecap="round"/>
+        <path d="M266 120c-12-10-26-14-40-12l-26 4" stroke="#F8466D" stroke-width="3.4" stroke-linecap="round"/>
+        <rect x="24" y="118" width="46" height="30" rx="14" fill="#FFD9E2" stroke="#F8466D" stroke-width="3"/>
+        <rect x="230" y="118" width="46" height="30" rx="14" fill="#FFD9E2" stroke="#F8466D" stroke-width="3"/>
+        <!-- 선물 상자 -->
+        <rect x="104" y="92" width="92" height="60" rx="9" fill="#fff" stroke="#F8466D" stroke-width="3"/>
+        <rect x="96" y="76" width="108" height="24" rx="7" fill="#FFD9E2" stroke="#F8466D" stroke-width="3"/>
+        <rect x="142" y="76" width="16" height="76" fill="#F8466D" opacity=".18"/>
+        <path d="M150 76c-11-5-20-11-20-19a10 10 0 0 1 20 2 10 10 0 0 1 20-2c0 8-9 14-20 19z" fill="#F8466D"/>
+        <!-- 하트 -->
+        <path d="M150 52c4-7 15-7 18 2 2 7-5 13-12 20-7-7-14-13-12-20 3-9 14-9 6-2z" fill="#FF8FA8"/>
+        <circle cx="62" cy="58" r="4" fill="#FFC9D6"/>
+        <circle cx="240" cy="66" r="5" fill="#FFC9D6"/>
+      </svg>
+    </div>
 
   </div>
 </section>
@@ -478,168 +506,73 @@
 <main class="wrap board-layout">
   <!-- ===== 왼쪽: 필터 ===== -->
   <aside class="filter-side" id="filterSide">
+    <form method="get" action="/board/share">
 
-    <div class="filter-head">
-      <h2>상세필터</h2>
-      <button type="button" class="btn-reset" id="btnReset">초기화</button>
-    </div>
-
-    <div class="filter-sections">
-
-      <!-- 1. 용품 종류 -->
-      <div class="filter-section" data-group="itemType">
-        <h3>용품 종류</h3>
-
-        <label class="check-item">
-          <input type="checkbox" name="itemType" value="ALL" checked>
-          전체
-        </label>
-
-        <label class="check-item">
-          <input type="checkbox" name="itemType" value="BABY">
-          유아용품
-        </label>
-
-        <label class="check-item">
-          <input type="checkbox" name="itemType" value="MOM">
-          엄마용품
-        </label>
+      <div class="filter-head">
+        <h2>상세필터</h2>
+        <a href="/board/share" class="btn-reset">초기화</a>
       </div>
 
+      <div class="filter-sections">
 
-      <!-- 2. 카테고리 -->
-      <div class="filter-section" data-group="category">
-        <h3>카테고리</h3>
+        <!-- 1. 용품 종류 -->
+        <div class="filter-section">
+          <h3>용품 종류</h3>
 
-        <label class="check-item">
-          <input type="checkbox" name="category" value="ALL" checked>
-          전체
-        </label>
+          <label class="check-item">
+            <input type="checkbox" name="itemType" value="" th:checked="${fItemType.isEmpty()}">
+            전체
+          </label>
+          <label class="check-item">
+            <input type="checkbox" name="itemType" value="유아용품" th:checked="${fItemType.contains('유아용품')}">
+            유아용품
+          </label>
+          <label class="check-item">
+            <input type="checkbox" name="itemType" value="엄마용품" th:checked="${fItemType.contains('엄마용품')}">
+            엄마용품
+          </label>
+        </div>
 
-        <label class="check-item">
-          <input type="checkbox" name="category" value="0~6개월">
-          0~6개월
-        </label>
+        <!-- 2. 카테고리 -->
+        <div class="filter-section">
+          <h3>카테고리</h3>
 
-        <label class="check-item">
-          <input type="checkbox" name="category" value="6~12개월">
-          6~12개월
-        </label>
+          <label class="check-item">
+            <input type="checkbox" name="category" value="" th:checked="${fCategory.isEmpty()}">
+            전체
+          </label>
+          <label class="check-item" th:each="c : ${ {'수유','의류','외출','위생','수면','놀이','건강'} }">
+            <input type="checkbox" name="category" th:value="${c}" th:checked="${fCategory.contains(c)}">
+            <span th:text="${c}">수유</span>
+          </label>
+        </div>
 
-        <label class="check-item">
-          <input type="checkbox" name="category" value="12~24개월">
-          12~24개월
-        </label>
+        <!-- 3. 거래방식 -->
+        <div class="filter-section">
+          <h3>거래방식</h3>
 
-        <label class="check-item">
-          <input type="checkbox" name="category" value="2~3세">
-          2~3세
-        </label>
+          <label class="check-item">
+            <input type="checkbox" name="tradeType" value="" th:checked="${fTradeType.isEmpty()}">
+            전체
+          </label>
+          <label class="check-item">
+            <input type="checkbox" name="tradeType" value="DIRECT" th:checked="${fTradeType.contains('DIRECT')}">
+            직거래
+          </label>
+          <label class="check-item">
+            <input type="checkbox" name="tradeType" value="DELIVERY" th:checked="${fTradeType.contains('DELIVERY')}">
+            택배
+          </label>
+        </div>
 
-        <label class="check-item">
-          <input type="checkbox" name="category" value="3~5세">
-          3~5세
-        </label>
-
-        <label class="check-item">
-          <input type="checkbox" name="category" value="5~7세">
-          5~7세
-        </label>
-
-        <label class="check-item">
-          <input type="checkbox" name="category" value="기타">
-          기타
-        </label>
       </div>
 
-
-      <!-- 3. 물건 상태 -->
-      <div class="filter-section" data-group="itemCondition">
-        <h3>물건 상태</h3>
-
-        <label class="check-item">
-          <input type="checkbox" name="itemCondition" value="ALL" checked>
-          전체
-        </label>
-
-        <label class="check-item">
-          <input type="checkbox" name="itemCondition" value="NEW">
-          미개봉(새 상품)
-        </label>
-
-        <label class="check-item">
-          <input type="checkbox" name="itemCondition" value="LIKE_NEW">
-          거의 새 것
-        </label>
-
-        <label class="check-item">
-          <input type="checkbox" name="itemCondition" value="USED">
-          사용감 있음
-        </label>
+      <div class="filter-foot">
+        <button type="submit" class="btn-apply">적용하기</button>
       </div>
 
-
-      <!-- 4. 안심키워드 -->
-      <div class="filter-section" data-group="safeKeyword">
-        <h3>안심키워드</h3>
-
-        <label class="check-item">
-          <input type="checkbox" name="safeKeyword" value="NON_SMOKING">
-          비흡연
-        </label>
-
-        <label class="check-item">
-          <input type="checkbox" name="safeKeyword" value="NO_PET">
-          반려동물 없음
-        </label>
-
-        <label class="check-item">
-          <input type="checkbox" name="safeKeyword" value="DISINFECTED">
-          살균 완료
-        </label>
-      </div>
-
-
-      <!-- 5. 거래 방식 -->
-      <div class="filter-section" data-group="tradeType">
-        <h3>거래방식</h3>
-
-        <label class="check-item">
-          <input type="checkbox" name="tradeType" value="ALL" checked>
-          전체
-        </label>
-
-        <label class="check-item">
-          <input type="checkbox" name="tradeType" value="DELIVERY">
-          택배
-        </label>
-
-        <label class="check-item">
-          <input type="checkbox" name="tradeType" value="DIRECT">
-          직거래
-        </label>
-
-        <label class="check-item">
-          <input type="checkbox" name="tradeType" value="DOORKNOB">
-          문고리 거래
-        </label>
-
-        <label class="check-item">
-          <input type="checkbox" name="tradeType" value="CONTACTLESS">
-          비대면 거래
-        </label>
-      </div>
-
-    </div>
-
-    <div class="filter-foot">
-      <button type="button" class="btn-apply" id="btnApply">
-        적용하기
-      </button>
-    </div>
-
+    </form>
   </aside>
-
 
   <!-- ===== 오른쪽: 목록 ===== -->
   <section>
@@ -657,7 +590,8 @@
       <div class="card" th:each="post : ${posts}"
            th:with="fav=${myFavorites.contains(post.id)}">
 
-        <div class="card-image">
+        <div class="card-image"
+             th:style="${post.imageUrl != null} ? 'background-image:url(' + ${post.imageUrl} + ');background-size:cover;background-position:center' : ''">
           <form action="/favorite/toggle" method="post" style="margin:0">
             <input type="hidden" name="postId" th:value="${post.id}">
             <input type="hidden" name="back" value="/board/share">
@@ -709,6 +643,41 @@
 
 
 <script>
+
+  /* =========================================================
+   필터 체크박스 - "전체" 동작
+     · 전체를 켜면   → 그 그룹의 나머지는 모두 꺼진다
+     · 나머지를 켜면 → 전체가 꺼진다
+     · 나머지를 모두 끄면 → 전체가 다시 켜진다
+   ========================================================= */
+  document.querySelectorAll('.filter-sections input[type="checkbox"]').forEach(box => {
+
+    box.addEventListener('change', () => {
+
+      /* 같은 name 을 가진 것들이 한 그룹 */
+      const group  = document.querySelectorAll('.filter-sections input[name="' + box.name + '"]');
+
+      /* value 가 빈 값인 것이 그 그룹의 "전체" */
+      const allBox = document.querySelector('.filter-sections input[name="' + box.name + '"][value=""]');
+
+      const others = [...group].filter(item => item !== allBox);
+
+      if (box === allBox) {
+
+        if (box.checked) {
+          others.forEach(item => item.checked = false);
+        } else {
+          /* 전체만 꺼버리면 아무것도 선택되지 않으므로 다시 켠다 */
+          box.checked = true;
+        }
+
+      } else {
+        /* 나머지가 하나라도 켜져 있으면 전체는 꺼진다 */
+        allBox.checked = !others.some(item => item.checked);
+      }
+    });
+  });
+
   /* =========================================================
      1. 목록 더미 데이터
      TODO: 백엔드 연결 시 이 부분을 지우고 Thymeleaf th:each 로 교체
@@ -719,29 +688,7 @@
   document.getElementById('cardGrid').innerHTML = cardsHtml;
 
   /* =========================================================
-     2. '전체' 체크 규칙 (요청 게시판과 동일)
-     ========================================================= */
-  function bindAllCheckbox(name){
-    const inputs = document.querySelectorAll(`input[name="${name}"]`);
-    const all = document.querySelector(`input[name="${name}"][value="ALL"]`);
-    if(!all) return;
-    inputs.forEach(input => {
-      input.addEventListener('change', () => {
-        if(input === all){
-          inputs.forEach(i => i.checked = (i === all));
-        } else {
-          all.checked = false;
-          if(![...inputs].some(i => i !== all && i.checked)) all.checked = true;
-        }
-      });
-    });
-  }
-  bindAllCheckbox('tradeType');
-  bindAllCheckbox('itemCondition');
-  bindAllCheckbox('itemType');
-
-  /* =========================================================
-     3. 필터 값
+     2. 필터 값
      ========================================================= */
   function getFilterValues(){
     const checked = name =>
@@ -757,7 +704,7 @@
   }
 
   /* =========================================================
-     4. 초기화 / 적용하기
+     3. 초기화 / 적용하기
      ========================================================= */
   document.getElementById('btnReset').addEventListener('click', () => {
     ['tradeType', 'itemCondition', 'itemType'].forEach(name => {
@@ -773,7 +720,7 @@
   });
 
   /* =========================================================
-     5. 정렬 / 검색
+     4. 정렬 / 검색
      ========================================================= */
   document.getElementById('sortSelect').addEventListener('change', () => {
     // TODO: 백엔드 연결 예정
@@ -783,6 +730,7 @@
     e.preventDefault();
     // TODO: 나눔 검색 백엔드 연결 예정
   });
+
 </script>
 
 </body>

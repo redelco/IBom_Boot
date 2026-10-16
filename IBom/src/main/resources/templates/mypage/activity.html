@@ -286,7 +286,7 @@
       width:118px;
       height:98px;
       border-radius:6px;
-      background: var(--gray);
+      background: #FFE9E4;
       flex-shrink:0;
       display:flex;
       align-items:center;
@@ -581,7 +581,10 @@
     <div class="card" th:if="${tab == 'SHARE' or tab == 'REQUEST'}">
 
       <div class="post-item" th:each="post : ${posts}">
-        <div class="post-thumb" th:if="${tab == 'SHARE'}">이미지</div>
+        <div class="post-thumb" th:if="${tab == 'SHARE'}">
+          <img th:if="${post.imageUrl != null}" th:src="${post.imageUrl}" alt="">
+          <span th:if="${post.imageUrl == null}">사진 없음</span>
+        </div>
 
         <div class="post-main">
           <div class="post-head">
@@ -622,7 +625,10 @@
     <div class="card" th:if="${tab == 'FAVORITE' and favType != 'NEWS'}">
 
       <div class="post-item" th:each="post : ${posts}">
-        <div class="post-thumb" th:if="${favType == 'SHARE'}">이미지</div>
+        <div class="post-thumb" th:if="${favType == 'SHARE'}">
+          <img th:if="${post.imageUrl != null}" th:src="${post.imageUrl}" alt="">
+          <span th:if="${post.imageUrl == null}">사진 없음</span>
+        </div>
 
         <div class="post-main">
           <div class="post-head">

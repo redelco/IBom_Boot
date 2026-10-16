@@ -174,16 +174,23 @@
       flex-shrink:0;
     }
 
-    /* 오른쪽 회색 이미지 자리 + 글쓰기 버튼 */
+    /* 오른쪽 일러스트 + 글쓰기 버튼 (높이를 왼쪽 텍스트 영역에 맞춘다) */
     .hero-image{
       flex: 0 0 47%;
-      background: var(--gray);
       display:flex;
       flex-direction:column;
       align-items:center;
       justify-content:center;
-      gap:26px;
+      gap:18px;
       min-height:240px;
+      padding: 16px 0;
+    }
+
+    /* 가로로 넓은 비율(420x170)이라 높이를 지정해도 배너가 커지지 않는다 */
+    .hero-art{
+      width:auto;
+      height: clamp(92px, 12vw, 128px);
+      display:block;
     }
 
     .hero-image-label{
@@ -251,7 +258,7 @@
     }
 
     /* ===== 긴급 요청 ===== */
-    .section-wrap{ padding-bottom: 40px; }
+    .section-wrap{ padding-top: 32px;}
 
     .urgent-box{
       border: 1px solid var(--line);
@@ -286,7 +293,6 @@
       padding: 20px 28px;
       border-bottom: 1px solid #f4f4f4;
     }
-    .urgent-row:last-of-type{ border-bottom:none; }
 
     .tag-urgent{
       background: var(--pink-soft);
@@ -350,6 +356,7 @@
     .urgent-footer{
       text-align:center;
       padding: 20px;
+      border-top: 1px solid var(--line);
     }
     .urgent-footer a{
       color: var(--pink-main);
@@ -491,7 +498,6 @@
       .hero-image{
         flex:none;
         min-height:0;
-        background:transparent;
         padding-bottom:36px;
       }
       .hero-image-label{ display:none; }
@@ -507,12 +513,16 @@
       .urgent-row{ flex-wrap:wrap; gap:12px; padding:18px 18px; }
       .urgent-stats{ order:3; }
       .hero-buttons a{ padding:14px 22px; font-size:15px; }
+      .hero-art{ height:88px; }
     }
 
     /* 긴급 요청 줄 / 최근 나눔 카드를 링크로 사용 */
     a.urgent-row, a.card{ text-decoration:none; color:inherit; }
     a.urgent-row:hover{ background:#fff7f9; }
 
+    a.card-body{ text-decoration:none; color:inherit; display:block; }
+    .card-fav{ border:none; cursor:pointer; font-size:17px; line-height:1; color:#bbb; background:none; }
+    .card-fav.on{ color: var(--pink-main); }
   </style>
   <link rel="stylesheet" href="/css/common.css">
 </head>
@@ -540,9 +550,36 @@
       </form>
     </div>
 
-    <!-- TODO: 메인 배너 이미지 연결 예정 (static/img/ 에 파일 추가 후 교체) -->
     <div class="hero-image">
-      <span class="hero-image-label">이미지 자리</span>
+
+      <!-- 가로로 넓은 비율(420x170)로 그려서 배너 높이를 키우지 않는다 -->
+      <svg class="hero-art" viewBox="0 0 420 170" fill="none" aria-hidden="true">
+
+        <!-- 바닥 그림자 -->
+        <ellipse cx="210" cy="152" rx="118" ry="11" fill="#F8466D" opacity=".10"/>
+
+        <!-- 선물 상자 -->
+        <rect x="160" y="84" width="100" height="62" rx="9" fill="#FFFFFF" stroke="#F8466D" stroke-width="3"/>
+        <rect x="152" y="66" width="116" height="24" rx="7" fill="#FFD9E2" stroke="#F8466D" stroke-width="3"/>
+        <rect x="200" y="66" width="18" height="80" fill="#F8466D" opacity=".18"/>
+        <path d="M209 66c-13-6-24-13-24-22a12 12 0 0 1 24 2 12 12 0 0 1 24-2c0 9-11 16-24 22z" fill="#F8466D"/>
+
+        <!-- 하트 (오른쪽) -->
+        <path d="M330 86c-14-11-23-20-20-29 2-8 13-9 20-1 7-8 18-7 20 1 3 9-6 18-20 29z" fill="#FF8FA8"/>
+        <path d="M372 122c-9-7-14-13-12-18 1-5 8-6 12-1 4-5 11-4 12 1 2 5-3 11-12 18z" fill="#FFB3C4"/>
+
+        <!-- 체리 (로고 모티프, 왼쪽) -->
+        <path d="M58 104c12-20 30-26 46-23" stroke="#7BC67E" stroke-width="3" stroke-linecap="round"/>
+        <circle cx="56" cy="114" r="11" fill="#F8466D"/>
+        <circle cx="80" cy="122" r="11" fill="#FF6B8A"/>
+
+        <!-- 반짝임 -->
+        <circle cx="394" cy="76" r="4.5" fill="#FFC9D6"/>
+        <circle cx="38"  cy="62" r="5"   fill="#FFC9D6"/>
+        <circle cx="124" cy="46" r="3.5" fill="#FFD9E2"/>
+        <circle cx="300" cy="134" r="3.5" fill="#FFD9E2"/>
+      </svg>
+
       <div class="hero-buttons">
         <a href="/board/shareWrite" class="btn-share">나눔 글쓰기</a>
         <a href="/board/requestWrite" class="btn-request">요청 글쓰기</a>
@@ -608,14 +645,21 @@
 
   <div class="card-grid" id="recentGrid">
 
-    <a class="card" th:each="post : ${recentShares}"
-       th:href="@{/board/shareDetail(id=${post.id})}">
-      <div class="card-image">
-        <div class="icon-circle-sm">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 5.6a5 5 0 0 0-7.1 0L12 7.3l-1.7-1.7a5 5 0 0 0-7.1 7.1l8.8 8.8 8.8-8.8a5 5 0 0 0 0-7.1z"/></svg>
-        </div>
+    <div class="card" th:each="post : ${recentShares}"
+         th:with="fav=${myFavorites.contains(post.id)}">
+
+      <div class="card-image"
+           th:style="${post.imageUrl != null} ? 'background-image:url(' + ${post.imageUrl} + ');background-size:cover;background-position:center' : ''">
+        <form action="/favorite/toggle" method="post" style="margin:0">
+          <input type="hidden" name="postId" th:value="${post.id}">
+          <input type="hidden" name="back" value="/">
+          <button type="submit" class="icon-circle-sm card-fav"
+                  th:classappend="${fav} ? 'on'"
+                  th:text="${fav} ? '♥' : '♡'" aria-label="관심">♡</button>
+        </form>
       </div>
-      <div class="card-body">
+
+      <a class="card-body" th:href="@{/board/shareDetail(id=${post.id})}">
         <div class="title" th:text="${post.title}">글 제목</div>
         <div class="meta">
           📍 <span th:text="${post.tradeRegion} ?: '지역 미입력'">서울 강남구</span>
@@ -626,8 +670,8 @@
           <span th:each="tag : ${#strings.arraySplit(post.category, '>')}"
                 th:text="'# ' + ${#strings.trim(tag)}"># 수면</span>
         </div>
-      </div>
-    </a>
+      </a>
+    </div>
 
   </div>
 

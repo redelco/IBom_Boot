@@ -62,6 +62,10 @@ public class Post {
     private String tradeRegion;
 
     @Setter
+    @Column(name = "IMAGE_URL", length = 500)
+    private String imageUrl;
+
+    @Setter
     @Column(name = "IS_DELETED")
     private Boolean isDeleted;
 
@@ -97,4 +101,6 @@ public class Post {
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public LocalDateTime getUpdatedAt() { return updatedAt; }
+
+    public String getImageUrl() { return imageUrl; }
 }
