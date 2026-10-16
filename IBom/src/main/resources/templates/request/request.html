@@ -158,7 +158,7 @@
         /* ===== Hero ===== */
 
         .page-hero {
-            background: var(--pink-bg);
+            background: linear-gradient(160deg, #FFF1F4 0%, #FFE2E9 100%);
         }
 
         .hero-inner {
@@ -219,13 +219,19 @@
 
         .hero-image {
             flex: 0 0 47%;
-            background: var(--gray);
+            background: transparent;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 18px;
             color: #333;
             min-height: 240px;
+        }
+
+        .hero-art {
+            width: min(300px, 72%);
+            height: auto;
+            display: block;
         }
 
         /* ===== 본문 ===== */
@@ -361,7 +367,8 @@
             display: flex;
             gap: 12px;
             flex-wrap: wrap;
-            margin-bottom: 22px;
+            padding-bottom: 22px;
+            border-bottom: 1px solid var(--line);
         }
 
         .chip {
@@ -385,8 +392,7 @@
             align-items: center;
             justify-content: space-between;
             gap: 12px;
-            padding-bottom: 16px;
-            border-bottom: 1px solid var(--line);
+            margin-bottom: 18px;
         }
 
         .list-count {
@@ -399,13 +405,13 @@
             -webkit-appearance: none;
             border: 1px solid #dcdcdc;
             border-radius: 999px;
-            padding: 9px 40px 9px 20px;
+            padding: 9px 34px 9px 16px;
             font-family: inherit;
             font-size: 14px;
             color: #333;
-            background: var(--white);
             cursor: pointer;
             outline: none;
+            background: #fff url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none' stroke='%23888' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'><polyline points='1,5.5 6,1 11,5.5'/></svg>") no-repeat right 14px center;
         }
 
         /* ===== Request list ===== */
@@ -586,7 +592,6 @@
         .post-region .mini-icon {
             width: 22px;
             height: 22px;
-            background: var(--gray);
             flex-shrink: 0;
         }
 
@@ -631,7 +636,6 @@
             white-space: nowrap;
         }
 
-        /* 기존 회색 네모 대신 사용하는 아이콘 */
         .action-icon {
             display: inline-flex;
             align-items: center;
@@ -642,22 +646,18 @@
             line-height: 1;
         }
 
-        /* 빈 하트 */
         .heart-icon {
             color: var(--pink-main);
         }
 
-        /* 채워진 하트 */
         .btn-fav.on .heart-icon {
             color: var(--pink-main);
         }
 
-        /* 도와줄게요 이모지 */
         .help-icon {
             font-size: 23px;
         }
 
-        /* 클릭했을 때 살짝 커지는 효과 */
         .btn-fav.on .heart-icon {
             transform: scale(1.08);
         }
@@ -703,7 +703,6 @@
         /* ===== Responsive ===== */
 
         @media (max-width: 1100px) {
-
             nav {
                 gap: 32px;
             }
@@ -718,7 +717,6 @@
         }
 
         @media (max-width: 900px) {
-
             .hero-inner {
                 flex-direction: column;
                 gap: 0;
@@ -749,7 +747,6 @@
         }
 
         @media (max-width: 700px) {
-
             .wrap {
                 padding: 0 16px;
             }
@@ -796,11 +793,9 @@
 
             .post {
                 grid-template-columns: 36px 1fr;
-
                 grid-template-areas:
-      "tl main"
-      "tl side";
-
+                    "tl main"
+                    "tl side";
                 column-gap: 12px;
             }
 
@@ -837,17 +832,33 @@
                 font-size: 15px;
             }
         }
-        /* 긴급도 탭을 링크로 사용 */
-        a.chip{ text-decoration:none; display:inline-flex; align-items:center; }
-    </style>
-  <link rel="stylesheet" href="/css/common.css">
-</head>
 
+        /* 긴급도 탭을 링크로 사용 */
+        a.chip {
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        a.btn-reset {
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .filter-side form {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+    </style>
+
+    <link rel="stylesheet" href="/css/common.css">
+</head>
 
 <body>
 
 <header th:replace="~{fragments/layout :: header('request')}"></header>
-
 
 <section class="page-hero">
 
@@ -893,13 +904,35 @@
         </div>
 
         <div class="hero-image">
-            이미지 자리
+            <svg class="hero-art" viewBox="0 0 300 200" fill="none" aria-hidden="true">
+                <ellipse cx="150" cy="178" rx="100" ry="12" fill="#F8466D" opacity=".10"/>
+
+                <!-- 도움 요청 말풍선 -->
+                <path d="M62 44h120a14 14 0 0 1 14 14v56a14 14 0 0 1-14 14H108l-24 22v-22H62a14 14 0 0 1-14-14V58a14 14 0 0 1 14-14z"
+                      fill="#fff" stroke="#F8466D" stroke-width="3"/>
+
+                <path d="M122 68v34" stroke="#F8466D" stroke-width="7" stroke-linecap="round"/>
+                <circle cx="122" cy="112" r="4.4" fill="#F8466D"/>
+
+                <!-- 손 내밀기 -->
+                <rect x="196" y="122" width="56" height="30" rx="14"
+                      fill="#FFD9E2" stroke="#F8466D" stroke-width="3"/>
+
+                <path d="M196 137c-14 0-26-6-34-14"
+                      stroke="#F8466D" stroke-width="3.4" stroke-linecap="round"/>
+
+                <!-- 반짝임 -->
+                <path d="M228 42l4 10 10 4-10 4-4 10-4-10-10-4 10-4z"
+                      fill="#FF8FA8"/>
+
+                <circle cx="52" cy="140" r="5" fill="#FFC9D6"/>
+                <circle cx="70" cy="160" r="3" fill="#FFD9E2"/>
+            </svg>
         </div>
 
     </div>
 
 </section>
-
 
 <main class="wrap board-layout">
 
@@ -907,186 +940,110 @@
 
     <aside class="filter-side" id="filterSide">
 
-        <div class="filter-head">
+        <form method="get" action="/request">
 
-            <h2>필터</h2>
+            <!-- 탭에서 고른 긴급도를 유지한다 -->
+            <input type="hidden" name="urgency"
+                   th:value="${urgency == 'ALL'} ? '' : ${urgency}">
 
-            <button
-                    type="button"
-                    class="btn-reset"
-                    id="btnReset"
-            >
-                초기화
-            </button>
+            <div class="filter-head">
+                <h2>상세필터</h2>
+                <a href="/request" class="btn-reset">초기화</a>
+            </div>
 
-        </div>
+            <div class="filter-sections">
 
+                <!-- 용품 종류 -->
+                <div class="filter-section">
+                    <h3>용품 종류</h3>
 
-        <div class="filter-sections">
+                    <label class="check-item">
+                        <input type="checkbox" name="itemType" value=""
+                               th:checked="${fItemType.isEmpty()}">
+                        전체
+                    </label>
 
-            <!-- 카테고리 -->
+                    <label class="check-item">
+                        <input type="checkbox" name="itemType" value="유아용품"
+                               th:checked="${fItemType.contains('유아용품')}">
+                        유아용품
+                    </label>
 
-            <div class="filter-section" data-group="category">
+                    <label class="check-item">
+                        <input type="checkbox" name="itemType" value="엄마용품"
+                               th:checked="${fItemType.contains('엄마용품')}">
+                        엄마용품
+                    </label>
+                </div>
 
-                <h3>카테고리</h3>
+                <!-- 카테고리 -->
+                <div class="filter-section">
+                    <h3>카테고리</h3>
 
-                <label class="check-item">
-                    <input
-                            type="checkbox"
-                            name="category"
-                            value="ALL"
-                            checked
-                    >
-                    전체
-                </label>
+                    <label class="check-item">
+                        <input type="checkbox" name="category" value=""
+                               th:checked="${fCategory.isEmpty()}">
+                        전체
+                    </label>
 
-                <label class="check-item">
-                    <input
-                            type="checkbox"
-                            name="category"
-                            value="유아용품"
-                    >
-                    유아용품
-                </label>
+                    <label class="check-item"
+                           th:each="c : ${ {'수유','의류','외출','위생','수면','놀이','건강'} }">
 
-                <label class="check-item">
-                    <input
-                            type="checkbox"
-                            name="category"
-                            value="의류"
-                    >
-                    의류
-                </label>
+                        <input type="checkbox" name="category"
+                               th:value="${c}"
+                               th:checked="${fCategory.contains(c)}">
 
-                <label class="check-item">
-                    <input
-                            type="checkbox"
-                            name="category"
-                            value="외출용품"
-                    >
-                    외출용품
-                </label>
+                        <span th:text="${c}">수유</span>
+                    </label>
+                </div>
 
-                <label class="check-item">
-                    <input
-                            type="checkbox"
-                            name="category"
-                            value="위생용품"
-                    >
-                    위생용품
-                </label>
+                <!-- 거래방식 -->
+                <div class="filter-section">
+                    <h3>거래방식</h3>
 
-                <label class="check-item">
-                    <input
-                            type="checkbox"
-                            name="category"
-                            value="수면용품"
-                    >
-                    수면용품
-                </label>
+                    <label class="check-item">
+                        <input type="checkbox" name="tradeType" value=""
+                               th:checked="${fTradeType.isEmpty()}">
+                        전체
+                    </label>
 
-                <label class="check-item">
-                    <input
-                            type="checkbox"
-                            name="category"
-                            value="장난감"
-                    >
-                    장난감
-                </label>
+                    <label class="check-item">
+                        <input type="checkbox" name="tradeType" value="DIRECT"
+                               th:checked="${fTradeType.contains('DIRECT')}">
+                        직거래
+                    </label>
 
-                <label class="check-item">
-                    <input
-                            type="checkbox"
-                            name="category"
-                            value="기타"
-                    >
-                    기타
-                </label>
+                    <label class="check-item">
+                        <input type="checkbox" name="tradeType" value="DELIVERY"
+                               th:checked="${fTradeType.contains('DELIVERY')}">
+                        택배
+                    </label>
+                </div>
+
+                <!-- 요청글 상태 -->
+                <div class="filter-section">
+                    <h3>요청글 상태</h3>
+
+                    <label class="check-item">
+                        <input type="checkbox" name="status" value="ACTIVE" checked>
+                        요청 중
+                    </label>
+
+                    <label class="check-item">
+                        <input type="checkbox" name="status" value="COMPLETED">
+                        요청 완료 보기
+                    </label>
+                </div>
 
             </div>
 
-
-            <!-- 거래 방식 -->
-
-            <div class="filter-section" data-group="tradeType">
-
-                <h3>거래 방식</h3>
-
-                <label class="check-item">
-                    <input
-                            type="checkbox"
-                            name="tradeType"
-                            value="ALL"
-                            checked
-                    >
-                    전체
-                </label>
-
-                <label class="check-item">
-                    <input
-                            type="checkbox"
-                            name="tradeType"
-                            value="DIRECT"
-                    >
-                    직거래 가능
-                </label>
-
-                <label class="check-item">
-                    <input
-                            type="checkbox"
-                            name="tradeType"
-                            value="DELIVERY"
-                    >
-                    택배 거래
-                </label>
-
+            <div class="filter-foot">
+                <button type="submit" class="btn-apply">적용하기</button>
             </div>
 
-
-            <!-- 요청글 상태 -->
-
-            <div class="filter-section">
-
-                <h3>요청글 상태</h3>
-
-                <label class="check-item">
-                    <input
-                            type="checkbox"
-                            name="status"
-                            value="ACTIVE"
-                            checked
-                    >
-                    요청 중
-                </label>
-
-                <label class="check-item">
-                    <input
-                            type="checkbox"
-                            name="status"
-                            value="COMPLETED"
-                    >
-                    요청 완료 보기
-                </label>
-
-            </div>
-
-        </div>
-
-
-        <div class="filter-foot">
-
-            <button
-                    type="button"
-                    class="btn-apply"
-                    id="btnApply"
-            >
-                적용하기
-            </button>
-
-        </div>
+        </form>
 
     </aside>
-
 
     <!-- ===== 오른쪽: 목록 ===== -->
 
@@ -1094,7 +1051,8 @@
 
         <div class="list-top">
 
-            <div class="list-count" th:text="'총 ' + ${postCount} + '개의 요청글'">
+            <div class="list-count"
+                 th:text="'총 ' + ${postCount} + '개의 요청글'">
                 총 0개의 요청글
             </div>
 
@@ -1105,20 +1063,24 @@
 
         </div>
 
-
         <div class="chips" id="urgencyChips">
 
             <a href="/request" class="chip"
-               th:classappend="${urgency == 'ALL'} ? 'active'">전체</a>
+               th:classappend="${urgency == 'ALL'} ? 'active'">
+                전체
+            </a>
 
             <a href="/request?urgency=URGENT" class="chip"
-               th:classappend="${urgency == 'URGENT'} ? 'active'">급해요</a>
+               th:classappend="${urgency == 'URGENT'} ? 'active'">
+                급해요
+            </a>
 
             <a href="/request?urgency=NORMAL" class="chip"
-               th:classappend="${urgency == 'NORMAL'} ? 'active'">여유있어요</a>
+               th:classappend="${urgency == 'NORMAL'} ? 'active'">
+                여유있어요
+            </a>
 
         </div>
-
 
         <div id="requestList">
 
@@ -1126,11 +1088,16 @@
                      th:with="isUrgent=${post.urgency == 'URGENT'}">
 
                 <div class="timeline">
+
                     <div class="tl-badge"
                          th:classappend="${isUrgent} ? 'urgent' : 'normal'"
-                         th:text="${isUrgent} ? '🚨' : '🍀'">🍀</div>
+                         th:text="${isUrgent} ? '🚨' : '🍀'">
+                        🍀
+                    </div>
+
                     <div class="tl-line"></div>
                     <div class="tl-dot"></div>
+
                 </div>
 
                 <div class="avatar">
@@ -1143,45 +1110,75 @@
                 <div class="post-main">
 
                     <div class="post-head">
-                        <span class="nickname" th:text="${nicknames[post.userId]} ?: '알 수 없음'">닉네임</span>
+
+                        <span class="nickname"
+                              th:text="${nicknames[post.userId]} ?: '알 수 없음'">
+                            닉네임
+                        </span>
+
                         <span class="urgency-badge"
                               th:classappend="${isUrgent} ? 'urgent' : 'normal'"
-                              th:text="${isUrgent} ? '급해요' : '여유있어요'">여유있어요</span>
+                              th:text="${isUrgent} ? '급해요' : '여유있어요'">
+                            여유있어요
+                        </span>
+
                         <span class="post-time"
-                              th:text="${#temporals.format(post.createdAt, 'MM/dd HH:mm')}">10분전</span>
+                              th:text="${#temporals.format(post.createdAt, 'MM/dd HH:mm')}">
+                            10분전
+                        </span>
+
                     </div>
 
-                    <a th:href="@{/request/requestdetail(id=${post.id})}" class="post-title"
-                       th:text="${post.title}">게시글 제목이 이곳에 들어갑니다</a>
+                    <a th:href="@{/request/requestdetail(id=${post.id})}"
+                       class="post-title"
+                       th:text="${post.title}">
+                        게시글 제목이 이곳에 들어갑니다
+                    </a>
 
-                    <p class="post-content" th:text="${post.content}">본문 내용입니다.</p>
+                    <p class="post-content" th:text="${post.content}">
+                        본문 내용입니다.
+                    </p>
 
                     <div class="hashtags" th:if="${post.category != null}">
-                <span th:each="tag : ${#strings.arraySplit(post.category, '>')}"
-                      th:text="'# ' + ${#strings.trim(tag)}"># 수면</span>
+                        <span th:each="tag : ${#strings.arraySplit(post.category, '>')}"
+                              th:text="'# ' + ${#strings.trim(tag)}">
+                            # 수면
+                        </span>
                     </div>
 
                     <div class="post-region">
                         <span class="mini-icon">📍</span>
-                        <span th:text="${post.tradeRegion} ?: '지역 미입력'">서울시 마포구</span>
+                        <span th:text="${post.tradeRegion} ?: '지역 미입력'">
+                            서울시 마포구
+                        </span>
                     </div>
 
                 </div>
 
                 <div class="post-side">
+
                     <button type="button" class="btn-more" aria-label="더보기">
-                        <svg width="22" height="6" viewBox="0 0 22 6"><circle cx="3" cy="3" r="2.2" fill="currentColor"/><circle cx="11" cy="3" r="2.2" fill="currentColor"/><circle cx="19" cy="3" r="2.2" fill="currentColor"/></svg>
+                        <svg width="22" height="6" viewBox="0 0 22 6">
+                            <circle cx="3" cy="3" r="2.2" fill="currentColor"/>
+                            <circle cx="11" cy="3" r="2.2" fill="currentColor"/>
+                            <circle cx="19" cy="3" r="2.2" fill="currentColor"/>
+                        </svg>
                     </button>
+
                     <div class="post-actions">
-                        <button type="button" class="btn-action btn-fav" aria-pressed="false">
-                            <span class="action-icon heart-icon">♡</span> 관심
+                        <button type="button" class="btn-action btn-fav"
+                                aria-pressed="false">
+                            <span class="action-icon heart-icon">♡</span>
+                            관심
                         </button>
                     </div>
+
                 </div>
 
             </article>
 
-            <p th:if="${postCount == 0}" style="padding:60px 0;text-align:center;color:#999">
+            <p th:if="${postCount == 0}"
+               style="padding:60px 0;text-align:center;color:#999">
                 아직 등록된 요청글이 없습니다.
             </p>
 
@@ -1195,316 +1192,128 @@
 
 </main>
 
-
 <footer th:replace="~{fragments/layout :: footer}"></footer>
-
 
 <script>
 
+    /* =========================================================
+   필터 체크박스 - "전체" 동작
+     · 전체를 켜면   → 그 그룹의 나머지는 모두 꺼진다
+     · 나머지를 켜면 → 전체가 꺼진다
+     · 나머지를 모두 끄면 → 전체가 다시 켜진다
+   ========================================================= */
+    document.querySelectorAll('.filter-sections input[type="checkbox"]').forEach(box => {
+
+        box.addEventListener('change', () => {
+
+            /* 같은 name 을 가진 것들이 한 그룹 */
+            const group  = document.querySelectorAll('.filter-sections input[name="' + box.name + '"]');
+
+            /* value 가 빈 값인 것이 그 그룹의 "전체" */
+            const allBox = document.querySelector('.filter-sections input[name="' + box.name + '"][value=""]');
+
+            const others = [...group].filter(item => item !== allBox);
+
+            if (box === allBox) {
+
+                if (box.checked) {
+                    others.forEach(item => item.checked = false);
+                } else {
+                    /* 전체만 꺼버리면 아무것도 선택되지 않으므로 다시 켠다 */
+                    box.checked = true;
+                }
+
+            } else {
+                /* 나머지가 하나라도 켜져 있으면 전체는 꺼진다 */
+                allBox.checked = !others.some(item => item.checked);
+            }
+        });
+    });
 
     /* =========================================================
-       3. 관심 / 도와줄게요 버튼
+       1. 관심 버튼
        ========================================================= */
 
     document
         .getElementById('requestList')
         .addEventListener('click', e => {
 
-
-            /* =========================
-               관심 버튼
-               ========================= */
-
-            const fav =
-                e.target.closest('.btn-fav');
-
+            const fav = e.target.closest('.btn-fav');
 
             if (fav) {
 
-                const on =
-                    fav.classList.toggle('on');
+                const on = fav.classList.toggle('on');
 
+                fav.setAttribute('aria-pressed', on);
 
-                fav.setAttribute(
-                    'aria-pressed',
-                    on
-                );
-
-
-                /*
-                 * 하트 모양 변경
-                 *
-                 * false → ♡
-                 * true  → ♥
-                 */
-
-                const heart =
-                    fav.querySelector('.heart-icon');
-
+                const heart = fav.querySelector('.heart-icon');
 
                 if (on) {
-
                     heart.textContent = '♥';
-
                 } else {
-
                     heart.textContent = '♡';
-
                 }
 
-
-                // TODO:
-                // 백엔드 연결 시 관심 등록/삭제 API 연결
-
+                // TODO: 백엔드 연결 시 관심 등록/삭제 API 연결
                 return;
-
             }
 
-
-            /* =========================
-               도와줄게요 버튼
-               ========================= */
-
-            const help =
-                e.target.closest('.btn-help');
-
+            const help = e.target.closest('.btn-help');
 
             if (help) {
-
-                // TODO:
-                // 도와줄게요 기능 연결 예정
-
+                // TODO: 도와줄게요 기능 연결 예정
                 console.log('도와줄게요 클릭');
-
             }
 
         });
 
-
     /* =========================================================
-       4. 긴급도 칩
-       ========================================================= */
-
-    const chips =
-        document.querySelectorAll(
-            '#urgencyChips .chip'
-        );
-
-
-    chips.forEach(chip => {
-
-        chip.addEventListener(
-            'click',
-            () => {
-
-                chips.forEach(c =>
-                    c.classList.remove('active')
-                );
-
-                chip.classList.add('active');
-
-                // TODO:
-                // 백엔드 연결 예정
-
-            }
-        );
-
-    });
-
-
-    /* =========================================================
-       5. 전체 체크박스 처리
-       ========================================================= */
-
-    function bindAllCheckbox(name) {
-
-        const inputs =
-            document.querySelectorAll(
-                `input[name="${name}"]`
-            );
-
-        const all =
-            document.querySelector(
-                `input[name="${name}"][value="ALL"]`
-            );
-
-
-        inputs.forEach(input => {
-
-            input.addEventListener(
-                'change',
-                () => {
-
-                    if (input === all) {
-
-                        inputs.forEach(
-                            i => i.checked = (i === all)
-                        );
-
-                    } else {
-
-                        all.checked = false;
-
-
-                        if (
-                            ![...inputs]
-                                .some(
-                                    i =>
-                                        i !== all &&
-                                        i.checked
-                                )
-                        ) {
-
-                            all.checked = true;
-
-                        }
-
-                    }
-
-                }
-            );
-
-        });
-
-    }
-
-
-    bindAllCheckbox('category');
-    bindAllCheckbox('tradeType');
-
-
-    /* =========================================================
-       6. 필터 값
+       2. 필터 값 확인
        ========================================================= */
 
     function getFilterValues() {
 
-        const checked =
-            name =>
-                [
-                    ...document.querySelectorAll(
-                        `input[name="${name}"]:checked`
-                    )
-                ].map(i => i.value);
-
+        const checked = name =>
+            [
+                ...document.querySelectorAll(
+                    `input[name="${name}"]:checked`
+                )
+            ].map(i => i.value);
 
         return {
-
-            urgency:
-            document
-                .querySelector(
-                    '#urgencyChips .chip.active'
-                )
-                .dataset.urgency,
-
-            category:
-                checked('category'),
-
-            tradeType:
-                checked('tradeType'),
-
-            status:
-                checked('status')
-
+            itemType: checked('itemType'),
+            category: checked('category'),
+            tradeType: checked('tradeType'),
+            status: checked('status')
         };
 
     }
 
-
     /* =========================================================
-       7. 필터 초기화
-       ========================================================= */
-
-    document
-        .getElementById('btnReset')
-        .addEventListener(
-            'click',
-            () => {
-
-
-                ['category', 'tradeType']
-                    .forEach(name => {
-
-                        document
-                            .querySelectorAll(
-                                `input[name="${name}"]`
-                            )
-                            .forEach(
-                                i =>
-                                    i.checked =
-                                        (i.value === 'ALL')
-                            );
-
-                    });
-
-
-                document
-                    .querySelectorAll(
-                        'input[name="status"]'
-                    )
-                    .forEach(
-                        i =>
-                            i.checked =
-                                (i.value === 'ACTIVE')
-                    );
-
-            }
-        );
-
-
-    /* =========================================================
-       8. 필터 적용
-       ========================================================= */
-
-    document
-        .getElementById('btnApply')
-        .addEventListener(
-            'click',
-            () => {
-
-                console.log(
-                    '적용할 필터:',
-                    getFilterValues()
-                );
-
-            }
-        );
-
-
-    /* =========================================================
-       9. 정렬
+       3. 정렬
        ========================================================= */
 
     document
         .getElementById('sortSelect')
-        .addEventListener(
-            'change',
-            () => {
+        .addEventListener('change', () => {
 
-                // TODO:
-                // 백엔드 연결 예정
+            // TODO: 백엔드 연결 예정
 
-            }
-        );
-
+        });
 
     /* =========================================================
-       10. 검색
+       4. 검색
        ========================================================= */
 
     document
         .getElementById('searchForm')
-        .addEventListener(
-            'submit',
-            e => {
+        .addEventListener('submit', e => {
 
-                e.preventDefault();
+            e.preventDefault();
 
-                // TODO:
-                // 검색 백엔드 연결 예정
+            // TODO: 검색 백엔드 연결 예정
 
-            }
-        );
+        });
 
 </script>
 

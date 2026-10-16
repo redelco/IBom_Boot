@@ -391,8 +391,10 @@
 
   <!-- ===== 게시글 + 댓글 ===== -->
   <article class="card">
-    <!-- TODO: 게시글 이미지 연결 예정 -->
-    <div class="post-image">이미지 자리</div>
+    <div class="post-image">
+      <img th:if="${post.imageUrl != null}" th:src="${post.imageUrl}" alt="">
+      <span th:if="${post.imageUrl == null}" style="color:#999">등록된 사진이 없습니다</span>
+    </div>
 
     <div class="post-body">
       <div class="post-top">

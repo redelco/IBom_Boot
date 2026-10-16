@@ -151,7 +151,7 @@
   }
   .hero-image{
     flex: 0 0 44%;
-    background: #E3E7EE;
+    background: linear-gradient(160deg, #EDF1FA 0%, #DCE4F7 100%);
     display:flex;
     align-items:center;
     justify-content:center;
@@ -433,6 +433,30 @@
     .col-no{ width:56px; }
     .col-file{ width:60px; }
   }
+  .hero-art{ width:min(280px, 72%); height:auto; display:block; }
+  /* 페이지 버튼을 링크로 사용 */
+  .pagination a{
+    min-width:34px;
+    height:34px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:6px;
+    font-size:14px;
+    color:#555;
+    text-decoration:none;
+  }
+  .pagination a:hover{ background:#F2F5FC; }
+  .pagination a.active{
+    background:#3F6FE0;
+    color:#fff;
+    font-weight:700;
+  }
+  .pagination a.arrow{ color:#aaa; }
+  .pagination a.disabled{
+    pointer-events:none;
+    opacity:.35;
+  }
 </style>
   <link rel="stylesheet" href="/css/common.css">
 </head>
@@ -446,7 +470,25 @@
       <h1>육아소식</h1>
       <p>임신 · 출산 · 육아 · 저출산 정책과 지원 정보를<br>한눈에 확인하세요.</p>
     </div>
-    <div class="hero-image">이미지 자리</div>
+    <div class="hero-image">
+      <svg class="hero-art" viewBox="0 0 300 200" fill="none" aria-hidden="true">
+        <ellipse cx="150" cy="178" rx="96" ry="12" fill="#3F6FE0" opacity=".10"/>
+        <!-- 신문 뒷장 -->
+        <rect x="74" y="46" width="150" height="112" rx="8" fill="#CFDAF4" transform="rotate(-5 149 102)"/>
+        <!-- 신문 앞장 -->
+        <rect x="66" y="52" width="150" height="112" rx="8" fill="#fff" stroke="#3F6FE0" stroke-width="3"/>
+        <rect x="80" y="68" width="60" height="38" rx="5" fill="#DCE4F7"/>
+        <path d="M150 72h52M150 86h52M150 100h36" stroke="#3F6FE0" stroke-width="4" stroke-linecap="round" opacity=".55"/>
+        <path d="M80 122h122M80 136h96" stroke="#3F6FE0" stroke-width="4" stroke-linecap="round" opacity=".35"/>
+        <!-- 돋보기 -->
+        <circle cx="222" cy="128" r="26" fill="#fff" stroke="#3F6FE0" stroke-width="3.4"/>
+        <path d="M241 147l18 18" stroke="#3F6FE0" stroke-width="5" stroke-linecap="round"/>
+        <!-- 알림 배지 -->
+        <circle cx="236" cy="52" r="13" fill="#3F6FE0"/>
+        <path d="M236 46v7" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+        <circle cx="236" cy="58" r="1.8" fill="#fff"/>
+      </svg>
+    </div>
   </div>
 </section>
 
@@ -526,7 +568,7 @@
       </thead>
       <tbody>
       <tr th:each="policy, stat : ${policies}">
-        <td th:text="${totalCount - stat.index}">127</td>
+        <td th:text="${totalCount - startIndex - stat.index}">127</td>
         <td>
           <div class="cell-title">
             <span class="cell-category" th:text="${policy.category}">카테고리</span>
@@ -550,17 +592,24 @@
     </table>
   </div>
 
-  <!-- TODO: 페이지 이동 백엔드 연결 예정 -->
-  <div class="pagination" id="pagination">
-    <button type="button" class="arrow" aria-label="이전">&#8249;</button>
-    <button type="button" class="active">1</button>
-    <button type="button">2</button>
-    <button type="button">3</button>
-    <button type="button">4</button>
-    <button type="button">5</button>
-    <span class="dots">...</span>
-    <button type="button">15</button>
-    <button type="button" class="arrow" aria-label="다음">&#8250;</button>
+  <div class="pagination" id="pagination" th:if="${totalPages > 1}">
+
+    <a class="arrow" aria-label="이전"
+       th:href="@{/news(category=${category}, scope=${scope}, region=${region},
+                        keyword=${keyword}, sort=${sort}, page=${page - 1})}"
+       th:classappend="${page == 1} ? 'disabled'">&#8249;</a>
+
+    <a th:each="p : ${#numbers.sequence(1, totalPages)}"
+       th:text="${p}"
+       th:classappend="${p == page} ? 'active'"
+       th:href="@{/news(category=${category}, scope=${scope}, region=${region},
+                        keyword=${keyword}, sort=${sort}, page=${p})}">1</a>
+
+    <a class="arrow" aria-label="다음"
+       th:href="@{/news(category=${category}, scope=${scope}, region=${region},
+                        keyword=${keyword}, sort=${sort}, page=${page + 1})}"
+       th:classappend="${page == totalPages} ? 'disabled'">&#8250;</a>
+
   </div>
 
   <div class="notice">
@@ -670,15 +719,6 @@
    검색 / 적용 / 정렬 : 폼을 그대로 제출해서 서버가 걸러줌
    ========================================================= */
   sortSelect.addEventListener('change', () => filterForm.submit());
-
-  /* TODO: 페이징 붙일 때 서버 조회로 교체 예정 */
-  const pagination = document.getElementById('pagination');
-  pagination.addEventListener('click', e => {
-    const btn = e.target.closest('button');
-    if(!btn || btn.classList.contains('arrow')) return;
-    pagination.querySelectorAll('button').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-  });
 </script>
 
 </body>

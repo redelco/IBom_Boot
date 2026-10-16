@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import com.ibom.main.model.Post;
 
@@ -24,14 +26,16 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     /** 회원 탈퇴 시 그 회원의 글을 한꺼번에 가져옴 */
     List<Post> findByUserIdAndIsDeletedFalse(Long userId);
 
-    /** 나눔/요청 게시판 목록 (최신순) */
+    /** 게시판 목록 (최신순) */
     List<Post> findByTypeAndIsDeletedFalseOrderByCreatedAtDesc(String type);
+
+    /** 요청 게시판 - 긴급도 탭 */
+    List<Post> findByTypeAndUrgencyAndIsDeletedFalseOrderByCreatedAtDesc(String type, String urgency);
 
     /** 메인 - 긴급 요청 3개 */
     List<Post> findTop3ByTypeAndUrgencyAndIsDeletedFalseOrderByCreatedAtDesc(String type, String urgency);
 
-    /** 메인 - 최근 나눔 4개 */
-    List<Post> findTop4ByTypeAndIsDeletedFalseOrderByCreatedAtDesc(String type);
+    /** 메인 - 최근 나눔 5개 (카드 그리드가 5칸) */
+    List<Post> findTop5ByTypeAndIsDeletedFalseOrderByCreatedAtDesc(String type);
 
-    List<Post> findByTypeAndUrgencyAndIsDeletedFalseOrderByCreatedAtDesc(String request, String urgency);
 }

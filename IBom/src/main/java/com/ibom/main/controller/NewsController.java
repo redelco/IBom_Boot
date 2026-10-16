@@ -19,6 +19,9 @@ import jakarta.servlet.http.HttpSession;
 @Controller
 public class NewsController {
 
+    /** 한 페이지에 보여줄 개수 */
+    private static final int PAGE_SIZE = 10;
+
     private final PolicyRepository policyRepository;
     private final PolicyBookmarkRepository bookmarkRepository;
 
@@ -28,13 +31,14 @@ public class NewsController {
         this.bookmarkRepository = bookmarkRepository;
     }
 
-    /** 육아소식 목록 (검색 · 필터) */
+    /** 육아소식 목록 (검색 · 필터 · 페이지) */
     @GetMapping("/news")
     public String list(@RequestParam(required = false) String category,
                        @RequestParam(required = false) String scope,
                        @RequestParam(required = false) String region,
                        @RequestParam(required = false) String keyword,
                        @RequestParam(required = false, defaultValue = "latest") String sort,
+                       @RequestParam(required = false, defaultValue = "1") int page,
                        Model model) {
 
         String categoryValue = normalize(category);
@@ -47,7 +51,8 @@ public class NewsController {
                 ? Sort.by(Sort.Order.asc("createdAt"), Sort.Order.asc("id"))
                 : Sort.by(Sort.Order.desc("createdAt"), Sort.Order.desc("id"));
 
-        List<Policy> policies =
+        // 조건에 맞는 글을 모두 가져온 뒤
+        List<Policy> all =
                 policyRepository.search(
                         categoryValue,
                         scopeValue,
@@ -55,8 +60,36 @@ public class NewsController {
                         keywordValue,
                         sortOption);
 
+        int totalCount = all.size();
+
+        // 전체 페이지 수 (글이 없어도 1페이지는 있는 것으로 본다)
+        int totalPages = (totalCount + PAGE_SIZE - 1) / PAGE_SIZE;
+        if (totalPages < 1) {
+            totalPages = 1;
+        }
+
+        // 주소창에 이상한 값이 들어와도 범위 안으로 맞춘다
+        if (page < 1) {
+            page = 1;
+        }
+        if (page > totalPages) {
+            page = totalPages;
+        }
+
+        // 이번 페이지에 해당하는 구간만 잘라낸다
+        int fromIndex = (page - 1) * PAGE_SIZE;
+        int toIndex   = Math.min(fromIndex + PAGE_SIZE, totalCount);
+
+        List<Policy> policies = (fromIndex >= totalCount)
+                ? List.of()
+                : all.subList(fromIndex, toIndex);
+
         model.addAttribute("policies", policies);
-        model.addAttribute("totalCount", policies.size());
+        model.addAttribute("totalCount", totalCount);
+
+        model.addAttribute("page", page);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("startIndex", fromIndex);   // 번호 매길 때 사용
 
         // 화면이 선택 상태를 그대로 유지하도록 조건을 돌려줌
         model.addAttribute("category",

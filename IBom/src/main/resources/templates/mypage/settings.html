@@ -908,16 +908,22 @@
 </main>
 
 <script>
+
   /* =========================================================
      1. 차단 관리 안내 펼치기
      ========================================================= */
   const btnGuide = document.getElementById('btnGuide');
   const guideText = document.getElementById('guideText');
-  btnGuide.addEventListener('click', () => {
-    const open = guideText.hidden;
-    guideText.hidden = !open;
-    btnGuide.setAttribute('aria-expanded', open);
-  });
+
+  // 해당 HTML 요소가 존재할 때만 이벤트 등록
+  if (btnGuide && guideText) {
+    btnGuide.addEventListener('click', () => {
+      const open = guideText.hidden;
+      guideText.hidden = !open;
+      btnGuide.setAttribute('aria-expanded', open);
+    });
+  }
+
 
   /* =========================================================
    3. 조회 / 수정 모드 전환
